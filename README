@@ -30,8 +30,8 @@ https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 	数组，链表，哈希数组，平衡树结构等等。C/C++复杂数据结构是通过语言库STL来实现，并不是语言核心，而Python Php等复杂数据结构则是语言核心。我认为C/C++应该向Python学习，复杂数据结构不应作为库，而是应该作为语言核心。
 		
 三、条件和循环语句。
-		7
-		If for while 各个语言大同小异。 
+	
+	If for while 各个语言大同小异。 
 		
 四、函数
 
