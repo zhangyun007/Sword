@@ -27,7 +27,3 @@ print(list(a))
 def cube(x): return x*x*x;
 a = map(cube, range(1,11))
 print(list(a))
-
-seq = range(8)
-def square(x): return x * x
-map(None, seq, map(square, seq))
