@@ -11,3 +11,8 @@ ssh -T git@github.com
 git remote add master https://github.com/fly3ds/Shield.git
 
 git push -u master master
+
+git clone https://github.com/fly3ds/Shield.git
+
+zhangyun007
+test3ds123
