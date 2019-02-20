@@ -1,0 +1,19 @@
+﻿	<html>  
+	<body>  
+		
+		<a href="register">注册</a> <a href="login">登录</a>		
+		当前用户：{{user}}
+		<center>
+	    <form action="/upload" enctype="multipart/form-data" method="post">
+	    	<input name="myfile" type="file" value="选择文件"> 
+	    	<input type="submit" value="上传文件">  
+	    </form>  
+	    </center>
+		
+		最近上传的文件：
+	    <br>
+	    {% for item in items %}
+         <a href="delete?name=static/{{user}}/{{item}}">删除</a>   <a href="static/{{user}}/{{item}}"> {{item}} </a> <br>
+        {% end %}
+	</body>
+	</html>  
