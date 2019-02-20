@@ -1,0 +1,29 @@
+【以下内容由 HeapHeap 转寄于 KernelTech 版】
+发信人: HeapHeap (堆内存), 信区: KernelTech
+标  题: Re: 要想开机时打印一些自己的信息 在哪个文件里改呢？
+发信站: 水木社区 (Mon Dec 26 10:39:20 2016), 转信
+  
+大侠真是惜字如金。我也想到了可能是这个问题，于是在init/main.c中的start_kernel函数中加了如下几句：
+  
+printk(KERN_EMERG, "calling zhangxp2");
+printk(KERN_ALERT, "calling zhangxp3")
+printk(KERN_CRIT, "calling zhangxp4")
+printk(KERN_ERR, "calling zhangxp5")
+printk(KERN_WARNING, "calling zhangxp6")
+printk(KERN_NOTICE, "calling zhangxp7")
+printk(KERN_INFO, "calling zhangxp8")
+printk(KERN_DEBUG, "calling zhangxp9")
+  
+  
+重启系统，打印出了：
+calling zhangxp2
+calling zhangxp3
+calling zhangxp4
+calling zhangxp5
+  
+另外，在/var/log/debug和/var/log/message里找到了其它的打印信息。
+  
+问题圆满解决，多谢各位！
+  
+【 在 szdl 的大作中提到: 】
+: loglevel   
