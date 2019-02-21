@@ -1,6 +1,6 @@
 <?php
 
-/* PHP数组，hash数组。*/
+/* PHP数组，key-value数组*/
 
 define("GREETING","Hello world!\n");
 echo constant("GREETING");
