@@ -31,5 +31,13 @@ foreach($age as $key=>$value) {
    echo "\n";
 }
 
+$cars = array
+  (
+  array("Volvo",22,18, 13),
+  array("BMW",15),
+  array("Saab",5,2),
+  array("Land Rover",17,15,4)
+  );
 
+var_dump($cars)
 ?>
