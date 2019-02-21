@@ -23,4 +23,13 @@ $arr = array( "A", "B", "C" );
 unset( $arr[1] );
 var_dump($arr);
 print_r($arr);
+
+$age=array("Bill"=>"63","Steve"=>"56","Elon"=>"47");
+
+foreach($age as $key=>$value) {
+   echo "Key=" . $key . ", Value=" . $value;
+   echo "\n";
+}
+
+
 ?>
