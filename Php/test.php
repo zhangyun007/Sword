@@ -32,13 +32,27 @@ var_dump($array["multi"]["dimensional"]["array"]);
 
 echo "-------------------\n";
 
+$a = array(1 => 'one', 2 => 'two', 3 => 'three');
+unset($a[2]);
+/* will produce an array that would have been defined as
+   $a = array(1 => 'one', 3 => 'three');
+   and NOT
+   $a = array(1 => 'one', 2 =>'three');
+*/
+
+$b = array_values($a);
+// array_values取数组的值集合，类似，arrary_keys取键集合。
+// Now $b is array(0 => 'one', 1 =>'three')
+
+echo "-------------------\n";
+
 // 创建一个简单的数组
 $array = array(1, 2, 3, 4, 5);
 print_r($array);
 
 // 现在删除其中的所有元素，但保持数组本身不变:
-foreach ($array as $i => $value) {
-    unset($array[$i]);
+foreach ($array as $key => $value) {
+    unset($array[$key]);
 }
 print_r($array);
 
@@ -50,15 +64,6 @@ print_r($array);
 $array = array_values($array);
 $array[] = 7;
 print_r($array);
-
-echo "-------------------\n";
-
-$age=array("Bill"=>"63","Steve"=>"56","Elon"=>"47");
-
-foreach($age as $key=>$value) {
-   echo "Key=" . $key . ", Value=" . $value;
-   echo "\n";
-}
 
 echo "-------------------\n";
 
