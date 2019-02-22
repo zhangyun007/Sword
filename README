@@ -4,9 +4,10 @@ Py3/		Python3程序
 PHP/		Php和perl程序
 CPP
 	Fly/		C++/STL程序
-	Cmd/ Test/ 	C程序
+Linux
+	Cmd/ Test/ 	Linux C程序
+	Scripts/	Bash程序
 SQL/		MySQL程序
-Scripts/	Bash程序
 Node		Node.js程序
 
 
