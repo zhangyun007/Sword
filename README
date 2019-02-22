@@ -21,6 +21,7 @@ https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
 程序设计语言的几个重要元素：
 
+
 一、类型系统。
 	
 	静态类型还是动态类型？C,Java是静态类型，变量需要先声明，再使用。Python, Bash, Php是动态类型，变量直接使用。
@@ -48,4 +49,8 @@ https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 七、泛型编程
 
 	C++这类静态类型语言，应当有泛型编程元素，在C++里表现为模板template，有模板函数和类模板。
+	
+
+	
+想明白，哪些部分是语言核心，哪些部分作为外围的库函数或者类库。
 
