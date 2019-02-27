@@ -74,7 +74,7 @@ void DeleteNode(class Node<T, U> *node)
 template <class T, class U>
 AVL<T, U>::~AVL()
 {
-    //看这里！！！！！！！ 这是同名覆盖原则, 使用域标志:: 。这种写法在MFC中尤其常见。
+    //这是同名覆盖原则, 使用域标志:: 这种写法在MFC中尤其常见
     //例如在mfc中调用库中没有封装的api就会这么写 ::SendMessage(...);
     ::DeleteNode(root);
 }
