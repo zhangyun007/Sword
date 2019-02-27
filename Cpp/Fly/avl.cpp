@@ -29,13 +29,19 @@ template <class T, class U>
 class AVL {
     private:
         class Node<T, U> * root;
+		
         // node前面的&不能少，否则程序错误。
         void InsertNode(class Node<T, U> *&node, T t, U u);
         class Node<T, U> * FindKey(class Node<T, U> *node, T t);
         int TraverTree(class Node<T, U> *node);
+		
+		//删除以node节点为根节点的树
         void DeleteNode(class Node<T, U> *node);
+		
+		//从node为根节点的树中，删除key为t的节点。
         // node前面的&不能少，否则程序错误。
         void DeleteNode(class Node<T, U> *&node, T t);
+		
         int WriteNode(class Node<T, U> *node);
         void RotateWithLeftChild(class Node<T, U> * &k2);
         void RotateWithRightChild(class Node<T, U> * &k2);
