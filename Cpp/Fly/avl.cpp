@@ -1,3 +1,8 @@
+/*
+AVL树是一种平衡树，各个节点的子树深度差不能超过1。AVL是作者名字的缩写。
+STL map和set以及Linux内存管理都用到了红黑树，不知何故。但是红黑树很难理解，也不容易想到。
+所以自己写程序，要么用hashtab，要么用AVL树。实际的例子证明，AVL树不比红黑树慢多少。
+*/
 #include <iostream>
 
 using namespace std;
