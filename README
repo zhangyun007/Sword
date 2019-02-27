@@ -1,3 +1,6 @@
+Github里的文件名不要有中文，否则git push提交不上去。
+
+
 目录结构
 
 Py3/		Python3程序
