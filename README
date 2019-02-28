@@ -10,7 +10,7 @@ git push
 
 PHP/		Python3，Php，Perl程序
 Lua53/ 		Lua程序
-Fly/		C++/STL程序
+Fly/		Windows下可运行的C++/STL程序，用clang/LLVM编译。
 SQL/		MySQL程序
 Old/
 	Node		Node.js程序
