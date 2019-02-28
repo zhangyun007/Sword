@@ -22,11 +22,16 @@ template <class T, class U>
 class BST {
     private:
         class Node<T, U> * root;
+		
         // node前面的&不能少，否则程序错误。
         void InsertNode(class Node<T, U> *&node, T t, U u);
         class Node<T, U> * FindKey(class Node<T, U> *node, T t);
         int TraverTree(class Node<T, U> *node);
+		
+		//删除以node节点为根节点的树
         void DeleteNode(class Node<T, U> *node);
+		
+		//从node为根节点的树中，删除key为t的节点。
         // node前面的&不能少，否则程序错误。
         void DeleteNode(class Node<T, U> *&node, T t);
         int WriteNode(class Node<T, U> *node);
@@ -57,7 +62,7 @@ void DeleteNode(class Node<T, U> *node)
 template <class T, class U>
 BST<T, U>::~BST()
 {
-    //看这里！！！！！！！ 这是同名覆盖原则, 使用域标志:: 。这种写法在MFC中尤其常见。
+    //这是同名覆盖原则, 使用域标志:: 。这种写法在MFC中尤其常见。
     //例如在mfc中调用库中没有封装的api就会这么写 ::SendMessage(...);
     ::DeleteNode(root);
 }
