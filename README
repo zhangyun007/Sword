@@ -3,10 +3,9 @@ Github里的文件名最好不要有中文，否则有可能git push提交不上
 
 目录结构
 
-Py3/		Python3程序
-PHP/		Php和perl程序
-CPP
-	Fly/		C++/STL程序
+Py3/		Flask,Tornado等web框架程序
+PHP/		Python3，Php，Perl程序
+Fly/		C++/STL程序
 Linux
 	Cmd/ Test/ 	Linux C程序
 	Scripts/	Bash程序
