@@ -1,6 +1,11 @@
 Github里的文件名最好不要有中文，否则有可能git push提交不上去。
 
 
+git add *
+git commit -a
+git push
+
+
 目录结构
 
 PHP/		Python3，Php，Perl程序
