@@ -3,16 +3,15 @@ Github里的文件名最好不要有中文，否则有可能git push提交不上
 
 目录结构
 
-Py3/		Flask,Tornado等web框架程序
 PHP/		Python3，Php，Perl程序
+Lua53/ 		Lua程序
 Fly/		C++/STL程序
-Linux
-	Cmd/ Test/ 	Linux C程序
-	Scripts/	Bash程序
 SQL/		MySQL程序
-Node		Node.js程序
-
-
+Old/
+	Node		Node.js程序
+	Cpp
+	Linux
+	Py3
 	
 	
 hosts文件，修改后能连上大部分国外网站：
