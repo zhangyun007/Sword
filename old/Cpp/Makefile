@@ -6,7 +6,7 @@ CC = g++
 #CC = clang
 
 all: first vector1 vector2 vector3 vector4 deque list1 list2 list3 \
-	set1 set2 map1 map2  hash thread sort1 sort2 bitset1 bitset2 bst avl \
+	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
 
