@@ -10,7 +10,7 @@ git push
 
 目录结构
 
-PHP/		Python3，Php，Perl程序
+3P/			Python3，Php，Perl程序
 Lua53/ 		Lua程序
 Fly/		Windows下可运行的C++/STL程序，用clang/LLVM编译。
 SQL/		MySQL程序
