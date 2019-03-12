@@ -14,7 +14,9 @@ test3ds123
 Lua53/ 		Lua程序
 Node/		Node.js程序
 Fly/		Windows下可运行的C++/STL程序，用clang/LLVM编译。
-SQL/		MySQL程序
+MySQL/		MySQL程序
+SQLite3
+PostgreSQL
 Old/
 	Cpp
 	Linux
