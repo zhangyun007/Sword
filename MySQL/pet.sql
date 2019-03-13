@@ -143,3 +143,19 @@ insert into test values('wang', 'ping', 'people', 'm', NULL, NULL);
 begin;
 insert into test values('li', 'ping', 'people', 'm', NULL, NULL);
 commit;
+
+
+
+/*
+	在InnoDB中，select,insert,update,delete等语句执行时都会自动加解锁。select的锁一般执行完就释放了，修改操作的X锁会持有到事务结束，效率高很多。至于详细的加锁原理，见这里，搜“InnoDB存储引擎中不同SQL在不同隔离级别下锁比较”
+
+　　mysql也给用户提供了加锁的机会，只要在sql后加LOCK IN SHARE MODE 或FOR UPDATE
+
+　　共享锁（S）：SELECT * FROM table_name WHERE ... LOCK IN SHARE MODE
+　　排他锁（X）：SELECT * FROM table_name WHERE ... FOR UPDATE
+
+　　值得注意的是，自己加的锁没有释放锁的语句，所以锁会持有到事务结束。
+
+　　mysql 还提供了LOCK TABLES，UNLOCK TABLES，用于加表锁。
+
+*/
