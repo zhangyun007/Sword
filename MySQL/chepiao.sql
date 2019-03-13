@@ -1,4 +1,6 @@
-drop table if exists chepiao;
+drop database if exists testdb;
+create database testdb;
+use testdb;
 
 create table chepiao (checi char(10), qidian int, zhongdian int, chexiang int, zuowei int, id char(20));
 
@@ -52,6 +54,7 @@ begin;
 insert into test (checi, qidian, zhongdian, chexiang, zuowei, id) values ('G68', 2, 43, i, j, NULL);
 commit;
 
+drop database testdb;
 
 /*
 	在InnoDB中，select,insert,update,delete等语句执行时都会自动加解锁。select的锁一般执行完就释放了，修改操作的X锁会持有到事务结束，效率高很多。至于详细的加锁原理，见这里，搜“InnoDB存储引擎中不同SQL在不同隔离级别下锁比较”

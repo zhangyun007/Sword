@@ -1,5 +1,6 @@
-create database test;
-use test;
+drop database if exists testdb;
+create database testdb;
+use testdb;
 
 show engine innodb status;
 
@@ -14,7 +15,7 @@ CREATE TABLE pet (
 
 SHOW TABLES;
 
-warnings 
+warnings;
 LOAD DATA LOCAL INFILE './pet' INTO TABLE pet;
 show create table pet;
 
@@ -128,3 +129,5 @@ Commit;
 
 select * from employee;
 select * from telephone;
+
+drop database testdb;
