@@ -158,4 +158,7 @@ commit;
 
 　　mysql 还提供了LOCK TABLES，UNLOCK TABLES，用于加表锁。
 
+　　可以通过检查InnoDB_row_lock状态变量来分析系统上的行锁的争夺情况：
+　　mysql> show status like 'innodb_row_lock%';
+
 */
