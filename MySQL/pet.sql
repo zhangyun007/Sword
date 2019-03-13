@@ -34,7 +34,7 @@ select @counter;
 
 start transaction;
 update pet set sex="m" where name = "Claws";
-# 提交并开始一个新事务
+/* 提交并开始一个新事务 */
 commit and chain; 
 update pet set sex="f" where name = "Claws";
 commit;
