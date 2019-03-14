@@ -2,8 +2,6 @@ drop database if exists testdb;
 create database testdb;
 use testdb;
 
-show engine innodb status;
-
 CREATE TABLE pet (
 	name VARCHAR(20), 
 	owner VARCHAR(20), 

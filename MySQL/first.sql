@@ -2,7 +2,8 @@ drop database if exists testdb;
 create database testdb;
 use testdb;
 
-drop table if exists test;
+show engine innodb status;
+
 CREATE TABLE test (c1 float(10,2),c2 decimal(10,2));
 insert into test values(131072.32, 131072.32);
 select * from test;
