@@ -1,3 +1,4 @@
+drop database if exists testdb;
 create database testdb;
 use testdb;
 
@@ -5,7 +6,7 @@ create table chepiao (checi char(10), qidian int, zhongdian int, chexiang int, z
 
 delimiter //
 
-drop procedure if exists InsertProc;
+/* drop procedure if exists InsertProc; */
 create procedure InsertProc()
 begin
     declare i int;
