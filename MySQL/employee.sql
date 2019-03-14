@@ -54,9 +54,6 @@ Commit;
 select * from employee;
 select * from telephone;
 
-/*
- * memory表存储在RAM里。当服务器关闭时，存储在MEMORY表里的数据丢失。表的定义存在磁盘上的.frm文件中，所以表自身继续存在，服务器重启动后它们是空的。
- */
 CREATE TABLE tmp ENGINE = InnoDB select * from employee;
 select * from tmp;
 
