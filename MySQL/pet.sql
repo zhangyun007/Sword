@@ -1,4 +1,3 @@
-drop database if exists testdb;
 create database testdb;
 use testdb;
 
@@ -13,7 +12,8 @@ CREATE TABLE pet (
 
 SHOW TABLES;
 
-warnings;
+/* warnings; */
+/* 8.0不允许怎么办？*/
 LOAD DATA LOCAL INFILE './pet' INTO TABLE pet;
 show create table pet;
 
