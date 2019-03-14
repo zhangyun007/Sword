@@ -4,6 +4,7 @@ use testdb;
 show engines\G;
 show engine innodb status;
 
+show variables like '%storage_engine%';
 show variables like 'datadir';
 Show variables like 'have%';
 
