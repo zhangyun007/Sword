@@ -47,5 +47,4 @@ CREATE TABLE test (c1 float(10,2),c2 decimal(10,2));
 insert into test values(131072.32, 131072.32);
 select * from test;
 
-
 drop database testdb;
