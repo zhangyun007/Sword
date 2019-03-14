@@ -3,9 +3,6 @@
 status
 use test
 
-show engines\G;
-show variables like 'datadir';
-Show variables like 'have%';
 
 /* 存储过程被source后，存储在服务器端，退出mysql连接，重新mysql，该过程依然还在，直接可以调用。
  */

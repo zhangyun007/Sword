@@ -1,7 +1,11 @@
 create database testdb;
 use testdb;
 
+show engines\G;
 show engine innodb status;
+
+show variables like 'datadir';
+Show variables like 'have%';
 
 /*大约是查看字符集相关的信息，具体含义不明。*/
 show character set;
