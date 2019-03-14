@@ -44,19 +44,20 @@ INSERT INTO `telephone` (`employee_id`, `type`, `no`) VALUES
                         (8, 'land',     '325-888888');
 						
 
-						
+
+/* 雇员信息和电话号码要么都插入表中，要么都不插入。 beging开始一个“事务” */						
 begin;
-
-INSERT INTO `employee` (`id`, `first_name`, `last_name`,
-`job_title`, `salary`) VALUES (9, 'Grace', 'Williams',
-'Softwaree Engineer', 5000);
-
-INSERT INTO `telephone` (`id`, `employee_id`, `type`,
-`no`) VALUES (13, 9, 'mobile', '270-598712');
-
+INSERT INTO `employee` (`id`, `first_name`, `last_name`, `job_title`, `salary`) VALUES (9, 'Grace', 'Williams','Softwaree Engineer', 5000);
+INSERT INTO `telephone` (`id`, `employee_id`, `type`, `no`) VALUES (13, 9, 'mobile', '270-598712');
 Commit;
 
 select * from employee;
 select * from telephone;
+
+/*
+ * memory表存储在RAM里。当服务器关闭时，存储在MEMORY表里的数据丢失。表的定义存在磁盘上的.frm文件中，所以表自身继续存在，服务器重启动后它们是空的。
+ */
+CREATE TABLE tmp ENGINE = MEMORY select * from employee;
+ALTER TABLE tmp ENGINE = InnoDB;
 
 drop database testdb;
