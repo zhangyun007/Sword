@@ -6,7 +6,7 @@
 　　mysql> show status like 'innodb_row_lock%';
 	
 表锁：
-　　mysql 还提供了LOCK TABLES，UNLOCK TABLES，用于加表锁。
+　　mysql 还提供了LOCK TABLES，UNLOCK TABLES，用于加表锁。MySQL服务器层提供，而不是存储引擎提供。
 	
 行锁：	
 　　mysql也给用户提供了加行锁的机会，只要在sql后加LOCK IN SHARE MODE 或FOR UPDATE
@@ -16,8 +16,7 @@
 　　排他锁（X）：SELECT * FROM table_name WHERE ... FOR UPDATE
 	会对查询出来的所有“行”加锁。值得注意的是，自己加的锁没有释放锁的语句，所以锁会持有到事务结束。
 
-	
-	搜索“InnoDB存储引擎中不同SQL在不同隔离级别下锁比较”
+	行锁由innodb引擎提供。搜索“InnoDB存储引擎中不同SQL在不同隔离级别下锁比较”。
 */
 
 /* 
