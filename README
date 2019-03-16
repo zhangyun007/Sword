@@ -1,8 +1,8 @@
 Github里的文件名最好不要有中文，否则有可能git push提交不上去。
 
+进入项目根目录下：
 git add *
 git commit -a
-必须进入项目根目录下，才能push成功。
 git push
 
 zhangyun007
