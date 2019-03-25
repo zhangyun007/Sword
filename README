@@ -1,6 +1,9 @@
 git for windows镜像下载：
 https://github.com/waylau/git-for-win
 
+  git config --global user.email "zhangxp147@qq.com"
+  git config --global user.name "zhangyun007"
+  
 Github里的文件名最好不要有中文，否则有可能git push提交不上去。
 
 进入项目根目录下：
