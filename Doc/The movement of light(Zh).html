@@ -232,25 +232,21 @@ a<sub>light</sub> = g (1 - d<sub>sea</sub> / d<sub>light</sub>)
 航天员的手电筒发射出的圆柱体光束的速度为c<sub>0</sub>，密度为d<sub>2</sub>
 ，截面积为s，为了计算方便，假设航天员的手电筒垂直于水平面，并且贴紧水平面，也就是说，手电筒的光一经发出，就以速度c<sub>0</sub>进入水中，水的密度为d<sub>1</sub>。我们假设光全部进入水中，没有被反射，航天员打开手电筒t<sub>0</sub>秒后，关闭手电筒。我们近似认为，手电筒打开的t<sub>0</sub>秒内，水中的光束是一个逐渐增长的圆柱体，圆柱体的长度等于初始时刻发射出的光粒子运行的距离，圆柱体的增长速度等于初始时刻发射出光粒子的速度。
 <br><br>
-我们把上面得到流体阻力公式推广到流体（光）在流体（水）中运动、流体（光）在固体（玻璃）里运动，那么增长的圆柱体光束受到的阻力为：f = g*s*v(t)*d<sub>1</sub>，(0 <= t <= t<sub>0</sub>)。
+我们把上面得到流体阻力公式推广到流体（光）在流体（水）中运动、流体（光）在固体（玻璃）里运动，考虑刚刚进入水中的极小段时间内光束，该段光束速度为c0，密度为d2，受到的阻力为：f = g*s*c0*d<sub>1</sub>，(0 <= t <= t<sub>0</sub>)。
 <br><br> 
 于是，我们有：
 <br><br> 
-g*s*v(t)*d<sub>1</sub> = m(t)a(t)，m(t)为水中光束的总质量。
+g*s*c0*d<sub>1</sub> = m(t)a(t)，m(t)为t秒内光束的质量，a(t)为这段光束的加速度。
 <br><br> 
-g*s*v(t)*d<sub>1</sub> = d<sub>2</sub>*c0*t*s*a(t)
+g*s*c0*d<sub>1</sub> = d2*s*c0*t*a(t)
 <br><br> 
-v(t)/a(t)  = t*d<sub>2</sub>*c0/(g*d<sub>1</sub>)
-<br><br> 
-v(t)/a(t)  = n*t，n = (d<sub>2</sub>*c0)/(g*d<sub>1</sub>)
+a(t)=d1*g/(d2*t)
 <br><br>
-实际上，a(t)是v(t)的导函数，a(t)=v'(t)；联想到基本求导公式：(x<sup>m</sup>)' = mx<sup>m-1</sup>，于是我们猜测v(t)=x<sup>m</sup>，那么a(t)=mx<sup>m-1</sup>，v(t)/a(t)=x*1/m, 1/m = n, m =1/n；于是我们得到：
-<br><br> 
-v(t) = t<sup>(d<sub>1</sub>*g)/(d<sub>2</sub>*c0)</sup>
+于是，我们得到速度和距离公式：
+<br><br>
+v(t) = ∫a(t)dt =(d1*g/d2)*ln(t) + c; 
 <br>
-a(t) = (d<sub>1</sub>*g)/(d<sub>2</sub>*c0)*t<sup>(d<sub>1</sub>*g)/(d<sub>2</sub>*c0) - 1</sup>
-<br>
-r(t) = 1 / ((d<sub>1</sub>*g)/(d<sub>2</sub>*c0) + 1) *t<sup>(d<sub>1</sub>*g)/(d<sub>2</sub>*c0) + 1</sup>	
+r(t) = 
 <br><br>
 根据以上解出的距离、速度、加速度公式，我们能知道，手电筒照射t<sub>0</sub>秒，水中的光束的长度：
 <br>
