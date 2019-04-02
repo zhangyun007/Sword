@@ -26,8 +26,8 @@ Old/
 	Cpp
 	Linux
 	
-	
-hosts文件，修改后能连上大部分国外网站：
+
+C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
 https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
 
