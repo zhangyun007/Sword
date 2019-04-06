@@ -18,10 +18,7 @@ test3ds123
 3P/			Python3，Php，Perl程序
 Lua53/ 		Lua程序
 Node/		Node.js程序
-Fly/		Windows下可运行的C++/STL程序，用clang/LLVM编译。
-MySQL/		MySQL程序
-SQLite3
-PostgreSQL
+Fly/		Windows下可运行的C++/STL程序，用visual studio c++(cl.exe)编译。
 Old/
 	Cpp
 	Linux
