@@ -5,36 +5,12 @@ CFLAGS:= -ofast -g -Wall -Werror --std=c++11
 CC = g++
 #CC = clang
 
-all: vector1 vector2 vector3 vector4 deque list1 list2 list3 \
+all: deque \
 	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
 
-vector1: vector1.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-vector2: vector2.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-vector3: vector3.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-vector4: vector4.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
 deque: deque.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-list1: list1.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-list2: list2.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-list3: list3.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-map: map.cpp
 	$(CC) $(CFLAGS) -o $@ $+ 
 
 set1: set1.cpp
@@ -47,9 +23,6 @@ map1: map1.cpp
 	$(CC) $(CFLAGS) -o $@ $+ 
 
 map2: map2.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-hash: hash.cpp
 	$(CC) $(CFLAGS) -o $@ $+ 
 
 thread: thread.cpp
@@ -65,12 +38,6 @@ bitset1: bitset1.cpp
 	$(CC) $(CFLAGS) -o $@ $+  
 
 bitset2: bitset2.cpp
-	$(CC) $(CFLAGS) -o $@ $+  
-
-bst: bst.cpp
-	$(CC) $(CFLAGS) -o $@ $+  
-
-avl: avl.cpp
 	$(CC) $(CFLAGS) -o $@ $+  
 
 unorderedmap1: unorderedmap1.cpp
@@ -99,7 +66,7 @@ rtmp: rtmp.cpp
 
 clean:
 	rm -f a.out 
-	rm -f vector1 vector2 vector3 vector4 deque list1 list2 list3 \
-	set1 set2 map1 map2 hash thread sort1 sort2 bitset1 bitset2 bst avl \
+	rm -f deque \
+	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
