@@ -5,13 +5,9 @@ CFLAGS:= -ofast -g -Wall -Werror --std=c++11
 CC = g++
 #CC = clang
 
-all: deque \
-	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
+all: set1 set2 map1 map2 \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
-
-deque: deque.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
 
 set1: set1.cpp
 	$(CC) $(CFLAGS) -o $@ $+ 
@@ -27,18 +23,6 @@ map2: map2.cpp
 
 thread: thread.cpp
 	$(CC) $(CFLAGS) -o $@ $+  -lpthread
-
-sort1: sort1.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-sort2: sort2.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
-
-bitset1: bitset1.cpp
-	$(CC) $(CFLAGS) -o $@ $+  
-
-bitset2: bitset2.cpp
-	$(CC) $(CFLAGS) -o $@ $+  
 
 unorderedmap1: unorderedmap1.cpp
 	$(CC) $(CFLAGS) -o $@ $+  
@@ -66,7 +50,6 @@ rtmp: rtmp.cpp
 
 clean:
 	rm -f a.out 
-	rm -f deque \
-	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
+	rm -f set1 set2 map1 map2 thread \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
