@@ -6,7 +6,7 @@ CC = g++
 #CC = clang
 
 all: set1 set2 map1 map2 \
-	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
+	prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
 
 set1: set1.cpp
@@ -23,10 +23,7 @@ map2: map2.cpp
 
 thread: thread.cpp
 	$(CC) $(CFLAGS) -o $@ $+  -lpthread
-
-unorderedmap1: unorderedmap1.cpp
-	$(CC) $(CFLAGS) -o $@ $+  
-
+	
 prime: prime.cpp
 	$(CC) $(CFLAGS) -o $@ $+  
 
@@ -51,5 +48,5 @@ rtmp: rtmp.cpp
 clean:
 	rm -f a.out 
 	rm -f set1 set2 map1 map2 thread \
-	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
+	prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
