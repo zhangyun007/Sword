@@ -5,13 +5,10 @@ CFLAGS:= -ofast -g -Wall -Werror --std=c++11
 CC = g++
 #CC = clang
 
-all: first vector1 vector2 vector3 vector4 deque list1 list2 list3 \
+all: vector1 vector2 vector3 vector4 deque list1 list2 list3 \
 	set1 set2 map1 map2 thread sort1 sort2 bitset1 bitset2 \
 	unorderedmap1 prime epoll_example1 epoll_example2 epoll_example3 epoll_test \
 	rtsp rtmp
-
-first: first.cpp
-	$(CC) $(CFLAGS) -o $@ $+ 
 
 vector1: vector1.cpp
 	$(CC) $(CFLAGS) -o $@ $+ 

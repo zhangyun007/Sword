@@ -1,4 +1,7 @@
-avl.exe: avl.cpp
+first.exe:
+	cl /EHsc first.cpp
+
+avl.exe: 
 	cl /EHsc avl.cpp
 	
 bst.exe:
