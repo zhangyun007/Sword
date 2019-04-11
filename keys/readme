@@ -3,7 +3,8 @@ C:\Program Files\OpenSSL-Win64\bin
 1、生成.key文件
 openssl genrsa -des3 -out server.key 2048
 中间会提示输入密码(重复输入两次)，要记住这个密码；
-这时会在C:\OpenSSL-Win64\bin目录下生成server.key文件。
+
+生成server.key文件。
 
 2、生成.crt文件
 openssl req -new -x509 -key server.key -out server.crt -days 3650
@@ -15,4 +16,5 @@ Organization Name：这个可以忽略
 Organizational Unit Name：这个可以忽略
 Common Name：这个可以忽略
 Email Address：填写一个非QQ的邮箱地址
-这时会在C:\OpenSSL-Win64\bin目录下生成server.crt文件。
+
+生成server.crt文件。
