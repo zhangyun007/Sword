@@ -1,4 +1,4 @@
-C:\Program Files\OpenSSL-Win64\bin
+安装openssl，C:\Program Files\OpenSSL-Win64\bin
 
 1、生成.key文件（私钥文件）
 openssl genrsa -des3 -out server.key 2048
