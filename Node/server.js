@@ -11,7 +11,7 @@ var server = http.createServer(function(req, res) {
     res.write('<head><meta charset="utf-8"/></head>');
 
     // 通过响应对象的end方法输入html代码并结束响应流
-    res.end("奉天朝拜足球俱乐部");
+    res.end("足球俱乐部");
 });
 
 // 通过http对象中的listen方法指定服务器的使用端口及服务器绑定地址
