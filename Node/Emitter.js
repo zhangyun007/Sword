@@ -1,4 +1,8 @@
-// http://www.runoob.com/nodejs/nodejs-event.html
+/*
+ http://www.runoob.com/nodejs/nodejs-event.html
+ 
+ 这部分有点难，先放着以后再理解
+ */
 
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
