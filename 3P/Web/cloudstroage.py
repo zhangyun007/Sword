@@ -20,14 +20,14 @@ BaseDir = 'static/' + curr_user
 class MainHandler(tornado.web.RequestHandler):  
     def get(self):                  
         self.set_secure_cookie("user", 'guest');
-        self.render("disc.html",user=curr_user,items=os.listdir(BaseDir))
+        self.render("cloudstorage.html",user=curr_user,items=os.listdir(BaseDir))
 
 class DeleteHandler(tornado.web.RequestHandler):  
     def get(self):
         curr_user = self.get_argument("name").split('/')[1]
         BaseDir = 'static/' + curr_user
         os.remove(self.get_argument("name"))
-        self.render("disc.html",user=curr_user,items=os.listdir(BaseDir))
+        self.render("cloudstorage.html",user=curr_user,items=os.listdir(BaseDir))
 
 class UploadHandler(tornado.web.RequestHandler):  
     def post(self):         
@@ -49,7 +49,7 @@ class UploadHandler(tornado.web.RequestHandler):
             print(self.request.path)
             print(self.request.headers)
 
-            self.render("disc.html",user=curr_user,items=os.listdir(BaseDir))
+            self.render("cloudstorage.html",user=curr_user,items=os.listdir(BaseDir))
 
 class RegisterHandler(tornado.web.RequestHandler):
     def get(self):
@@ -116,7 +116,7 @@ class LoginHandler(tornado.web.RequestHandler):
             if os.path.exists(BaseDir) == False:
                 os.mkdir(BaseDir)           
             self.set_secure_cookie("user", curr_user);
-            self.render("disc.html",user=curr_user,items=os.listdir(BaseDir))
+            self.render("cloudstorage.html",user=curr_user,items=os.listdir(BaseDir))
         elif r == 1:
             self.write("密码不正确")
         elif r == 2:
