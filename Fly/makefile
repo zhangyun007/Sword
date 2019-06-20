@@ -16,6 +16,9 @@ hash2.exe:
 hashmap.exe:
 	cl /EHsc hashmap.cpp
 	
+unorderedmap.exe:
+	cl /EHsc unorderedmap.cpp
+	
 Clean: 
 	del *.obj 
 	del *.exe
