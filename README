@@ -48,7 +48,7 @@ https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
 五、类
 
-	封装。把相关的数据和函数封装在一起，便于查找，修改，维护。类能否继承？
+	主要起封装作用。把数据和相关的函数封装在一起，便于查找，修改和维护。类能否继承？ 
 	
 六、自动内存回收？
 	
