@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>平面几何</title>
+		<style type="text/css">
+			body {
+				background: #eeeeee;
+			}
+			#controls {
+				position: absolute;
+				left: 25px;
+				top: 25px;
+			}
+			#canvas {
+				background: #ffffff;
+				cursor: pointer;
+				margin-left: 10px;
+				margin-top: 10px;
+				-webkit-box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+				-moz-box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+				-box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="controls">
+			线段颜色:
+			<select id="strokeStyleSelect">
+				<option value="red">red</option>
+				<option value="green">green</option>
+				<option value="blue">blue</option>
+				<option value="orange">orange</option>
+			</select>
+			
+			坐标线:
+			<input type="checkbox" name="guidewireCheckbox" id="guidewireCheckbox" value=""  checked="checked"/>
+			虚线:
+			<input type="checkbox" name="Dashed" id="Dashed" value=""/>
+			<!-- 虚线选择 -->
+			矢量:
+			<input type="checkbox" name="vector" id="vector" value=""/>
+			<!-- 矢量箭头 -->
+			
+			<input type="button" name="eraseAllButton" id="eraseAllButton" value="清空画布" />
+			<p style="color: red;" id="message"></p>
+		</div>
+		<br><br>
+		<div>
+		<canvas id="canvas" width="600" height="400"></canvas>
+		</div>
+		<br><br>
+		<div>
+			基本元素：
+			<br><br>
+			点：  <p id="ptext" value=""></p>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext("2d");
+		var eraseAllButton = document.getElementById("eraseAllButton");
+		var strokeStyleSelect = document.getElementById("strokeStyleSelect");
+		var guidewireCheckbox = document.getElementById("guidewireCheckbox");
+		var dashedCheckbox = document.getElementById("Dashed");
+		var vectorCheckbox = document.getElementById("vector");
+		var message = document.getElementById("message");
+		
+		var drawingSurfacsImageData = null;
+		var mousedown = {};
+		var rubberbandRect = {};
+		var dragging = false;
+		var guidewires = guidewireCheckbox.checked;
+		var dashed = dashedCheckbox.checked;
+		var vector = vectorCheckbox.checked;
+		var loc=null;
+		
+		var ptext = document.getElementById("ptext");
+		var charlist = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+		var n = 0;
+		var	points = [];
+		
+		drawHorizontLine(0);
+		drawVerticalLine(0);
+		
+		/* 画圆（点）*/
+		function draw_point(ctx, point) {		
+			if (n <= 25) {
+				ctx.beginPath();
+				ctx.arc(point.x, point.y, 2, 0, 2*Math.PI);
+				ctx.stroke();
+				points[n] = [point.x, point.y, charlist[n]];
+				context.fillText(points[n][2], point.x + 2, point.y + 2);
+				ptext.innerHTML += points[n][2] + '(' + points[n][0] + ',' + points[n][1] + ') ';
+				n++;
+			}
+		}
+		
+		function generatePoints(startP, endP, stepSize = 30, ctx, aniOffset = 0.5, img) {
+    let radA = Math.atan((endP[1] - startP[1]) / (endP[0] - startP[0]));
+    if ((endP[0] - startP[0]) < 0) {
+        radA += Math.PI;
+    }
+    const dist = calcDist(startP, endP);
+    let points = [];
+    const steps = dist / stepSize;
+
+    const drawImg = (pX, pY) => {
+        if (img && ctx) {
+            ctx.save();
+            ctx.translate(pX , pY);  // consider img position and imgWidth/Height.
+            ctx.rotate(radA);
+            ctx.drawImage(img, -img.width / 2,  -img.width/2);
+            ctx.restore();
+        }
+    }
+
+    // gen points by stepSize.. if enable corner arrow, start s with (0~1) float number.
+    for (let s = aniOffset; s <= steps; s += 1) {
+        const pX = Math.round(startP[0] + s * stepSize * Math.cos(radA));
+        const pY = Math.round(startP[1] + s * stepSize * Math.sin(radA));
+        points.push([pX, pY]);
+        drawImg(pX, pY);
+    }
+    // console.warn(`icon Number: ${points.length}`);
+    return points;
+}
+
+		<!-- 画箭头 https://www.tuicool.com/articles/qYVbqq7 -->
+		function drawArrow(ctx, fromX, fromY, toX, toY,theta,headlen,width,color) {
+			
+			theta = typeof(theta) != 'undefined' ? theta : 30;
+			headlen = typeof(theta) != 'undefined' ? headlen : 10;
+			width = typeof(width) != 'undefined' ? width : 1;
+			color = typeof(color) != 'color' ? color : '#000';
+			
+			// 计算各角度和对应的P2,P3坐标
+			var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
+				angle1 = (angle + theta) * Math.PI / 180,
+				angle2 = (angle - theta) * Math.PI / 180,
+				topX = headlen * Math.cos(angle1),
+				topY = headlen * Math.sin(angle1),
+				botX = headlen * Math.cos(angle2),
+				botY = headlen * Math.sin(angle2);
+			
+			ctx.save();
+			ctx.beginPath();
+			
+			var arrowX = fromX - topX,
+				arrowY = fromY - topY;
+			
+			ctx.moveTo(arrowX, arrowY);
+			ctx.moveTo(fromX, fromY);
+			ctx.lineTo(toX, toY);
+			arrowX = toX + topX;
+			arrowY = toY + topY;
+			ctx.moveTo(arrowX, arrowY);
+			ctx.lineTo(toX, toY);
+			arrowX = toX + botX;
+			arrowY = toY + botY;
+			ctx.lineTo(arrowX, arrowY);
+			ctx.strokeStyle = color;
+			ctx.lineWidth = width;
+			ctx.stroke();
+			ctx.restore();
+		}
+
+		//获取实际的鼠标在canvas的位置
+		function windowToCanvas(x, y) {
+			var bbox = canvas.getBoundingClientRect();
+			return {
+				x : x - bbox.left * (canvas.width / bbox.width),
+				y : y - bbox.top * (canvas.height / bbox.width)
+			};
+		}
+		//保存当前的canvas上的数据
+		function saveDrawingSurface() {
+			drawingSurfacsImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		}
+		//恢复canvas的数据，主要用来显示最新的线段，擦除原来的线段
+		function restoreDrawingSurface() {
+			context.putImageData(drawingSurfacsImageData,
+					0, 0, 0, 0, canvas.width, canvas.height	
+				);
+		}
+		
+		//应该是计算需要偏移的量???不懂他要这个干嘛
+		function updateRubberbandRectangle(loc) {
+
+			rubberbandRect.width = Math.abs(loc.x - mousedown.x);
+			rubberbandRect.height = Math.abs(loc.y - mousedown.y);
+			if(loc.x > mousedown.x) {
+				rubberbandRect.left = mousedown.x;
+			} else {
+				rubberbandRect.left = loc.x;
+			}
+			if(loc.y > mousedown.y) {
+				rubberbandRect.top = mousedown.y;
+ 			} else {
+				rubberbandRect.top = loc.y;
+ 			}
+ 			
+ 			message.innerHTML = "mousedown.x="+mousedown.x+",mousedown.y="+mousedown.y+",loc.x="+loc.x+",loc.y="+loc.y;
+		}
+		//更新
+		function  updateRubberband(loc) {	
+			//此处在《HTML5 canvas核心技术——图形、动画与游戏开发》一书中
+			//updateRubberbandRectangle方法是没有注释的，但是我不懂要这个
+			//方法有什么作用，注释之后也不影响，话说我也不用话什么矩形哇
+			//有知道这个方法在这里是做什么的同学在下方评论一下告知哈
+			//updateRubberbandRectangle(loc);
+			drawRubberbandShape(loc);
+		}
+		//画最新的线条
+		function drawRubberbandShape(loc) {
+			context.beginPath();
+			if (vector) {
+				//generatePoints(startP, endP, stepSize = 30, ctx, aniOffset = 0.5, img)
+				drawArrow(context, mousedown.x, mousedown.y, loc.x, loc.y, 30, 20, 2,'#f36');
+			} else {
+				context.moveTo(mousedown.x, mousedown.y);
+				context.lineTo(loc.x, loc.y);
+				context.stroke();
+			}
+		}
+		//画横线，在y坐标上
+		function drawHorizontLine(y) {
+			context.beginPath();
+			context.moveTo(0, y+0.5);
+			context.lineTo(canvas.width, y+0.5);
+			context.stroke();
+		}
+		//画竖线
+		function drawVerticalLine(x) {
+			context.beginPath();
+			context.moveTo(x+0.5, 0);
+			context.lineTo(x+0.5,canvas.height);
+			context.stroke();
+		}
+		function drawGuidewires(x, y) {
+			context.save();
+			context.strokeStyle = "rgba(0,0,230, 0.4)";
+			context.lineWidth = 0.5;
+			drawHorizontLine(y);
+			drawVerticalLine(x);
+			context.restore();
+		}
+		canvas.onmousedown = function(e) {
+			loc = windowToCanvas(e.clientX, e.clientY);
+			draw_point(context, loc);
+			e.preventDefault();
+			saveDrawingSurface();
+			mousedown.x = loc.x;
+			mousedown.y = loc.y;
+			dragging = true;
+		};
+		canvas.onmouseup = function(e) {
+			loc = windowToCanvas(e.clientX, e.clientY);
+			restoreDrawingSurface();
+			updateRubberband(loc);
+			//鼠标抬起，拖动标记设为否
+			dragging = false;
+			if ((mousedown.x != loc.x) || (mousedown.y != loc.y))
+				draw_point(context, loc);
+		};
+		canvas.onmousemove = function(e){
+			//判断当前是否用户在拖动
+			if(dragging) {
+				e.preventDefault();
+				loc = windowToCanvas(e.clientX, e.clientY);
+				restoreDrawingSurface();
+				updateRubberband(loc);
+				if(guidewires) {
+					//如果选中的加入辅助线
+					//这里的辅助线应该只有在鼠标那个地方才出现的
+					drawGuidewires(loc.x, loc.y);
+				}
+			}
+		};
+		eraseAllButton.onclick = function(e){
+			ptext.innerHTML = "";
+			points.length = 0;
+			n = 0;
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			saveDrawingSurface();
+		};
+		strokeStyleSelect.onchange = function(e){
+			context.strokeStyle = strokeStyleSelect.value;
+		};
+		guidewireCheckbox.onchange = function(e){
+			guidewires = guidewireCheckbox.checked;
+		};
+		vectorCheckbox.onchange = function(e){
+			vector = vectorCheckbox.checked;
+		};
+		dashedCheckbox.onchange = function(e){
+			dashed = dashedCheckbox.checked;
+			if (dashed) {
+				context.setLineDash([5]);
+				context.lineCap="round";
+				context.stroke();
+			} else {
+				context.setLineDash([]);
+			}
+		};
+		
+		context.strokeStyle = strokeStyleSelect.value;
+		
+
+	</script>
+</html>
