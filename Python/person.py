@@ -36,4 +36,4 @@ kalam.howMany()
 swaroop.sayHi()
 swaroop.howMany()
 
-'''脚本退出之前调用了__del__'''
+'''脚本退出之前调用对象的__del__函数（析构函数）'''
