@@ -19,11 +19,10 @@ Python3		软件测试
 Php			网站建设
 Perl程序	文本处理
 Lua53/ 		软件、游戏嵌入
-Node/		Node.js，服务端程序
+Node/		Node.js，服务端程序 （基于node.js的http服务端web程序与Ngnix1/Apache + PhP做对比，）
 Fly/		C++/STL程序，用visual studio c++(cl.exe)编译。
 Linux
 	
-
 C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
 https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
