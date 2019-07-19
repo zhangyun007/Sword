@@ -3,7 +3,7 @@
 标  题: Re: 要想开机时打印一些自己的信息 在哪个文件里改呢？
 发信站: 水木社区 (Mon Dec 26 10:39:20 2016), 转信
   
-大侠真是惜字如金。我也想到了可能是这个问题，于是在init/main.c中的start_kernel函数中加了如下几句：
+在init/main.c中的start_kernel函数中加了如下几句：
   
 printk(KERN_EMERG, "calling zhangxp2");
 printk(KERN_ALERT, "calling zhangxp3")
@@ -23,7 +23,6 @@ calling zhangxp5
   
 另外，在/var/log/debug和/var/log/message里找到了其它的打印信息。
   
-问题圆满解决，多谢各位！
   
 【 在 szdl 的大作中提到: 】
 : loglevel   
