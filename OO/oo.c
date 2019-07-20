@@ -11,6 +11,7 @@
 #include <string.h>
 #include <pthread.h>
  
+ /* 结构体里放函数指针，类似于C++里的class*/
 typedef struct key_info 
 {
 	int (*init)(struct key_info *info);
