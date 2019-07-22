@@ -63,13 +63,69 @@ public:
 };
 
 /*
-基本按照stl vector实现。
+基本按照stl vector实现。Vector分配内存成倍增长。
 */
 template <class T>
 class TVector: TObject {
+public:
 	void show() {
-		cout << "TVector.\n";
+		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
+		/*
+		for (T *p = start; p < finish; p++) {
+			cout << *p << " ";
+		}
+		cout << "\nTVector ......\n";
+		*/
 	}
+	TVector() {
+		finish = start = (T *)malloc(1 * sizeof(T));
+		end_of_storage = start + 1;
+	}
+	virtual ~TVector() {
+		free(start);
+	}
+	void push_back(T t) {
+		if (finish < end_of_storage) {
+			//还有空间
+			*finish = t;
+			finish++;
+		} else {
+			//此时，finish == end_of_storage, 表示空间已满，capacity和size一样大。
+			 int c = capacity();
+			 
+			//重新分配原来2倍大小的内存
+			T * nstart = (T *)malloc(2 * c * sizeof(T));
+			//复制旧内存到新内存
+			memcpy(nstart, start, c * sizeof(T));
+			//释放旧空间
+			free(start);
+			
+			//重置各项指针值
+			start = nstart;
+			finish = start + c;
+			*finish = t;
+			finish++;
+			end_of_storage = start + 2*c;
+		}
+	}
+	T * begin() {
+		return start;
+	}
+	T * end() {
+		return end_of_storage;
+	}
+	/*可分配空间总容量*/
+	int capacity() {
+		return end_of_storage - start;
+	}
+	/**已占用空间大小*/
+	int size () {
+		return finish - start;
+	}
+private:
+	T * start;		//使用空间头指针
+	T * finish;		//使用空间尾指针
+	T * end_of_storage;		//总空间尾指针
 };
 
 template <class T>
@@ -86,7 +142,7 @@ class TDeque: TObject {
 	}
 };
 
-/*STL map用红黑树实现，太复杂，我们用Btree或者AVLtree实现*/
+/*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
 template <class T>
 class TBtreeMap: TObject {
 	void show() {
@@ -101,6 +157,7 @@ class TBtreeSet: TObject {
 	}
 };
 
+/*未排序的map和set*/
 template <class T>
 class THashMap: TObject {
 	void show() {
@@ -113,6 +170,12 @@ class THashSet: TObject {
 	void show() {
 		cout << "THashSet.\n";
 	}
+};
+
+class Test {
+public:
+	int i;
+	char ch;
 };
 
 int main()
@@ -150,6 +213,33 @@ int main()
 	
 	delete v1;
 	delete v2;
+	
+	TVector<int> Tv;
+	Tv.show();
+	Tv.push_back(1);
+	Tv.show();
+	Tv.push_back(3);
+	Tv.show();
+	Tv.push_back(5);
+	Tv.show();
+	Tv.push_back(7);
+	Tv.show();
+	
+	for (auto &i : Tv) {
+		cout << i << " ";
+	}
+	cout << "\n";
+
+	TVector<Test> Tt;
+	class Test t;
+	t.i = 1; t.ch = 'a';
+	Tt.push_back(t);
+	t.i = 2; t.ch = 'b';
+	Tt.push_back(t);
+	t.i = 3; t.ch = 'c';
+	Tt.push_back(t);
+	
+	Tt.show();	
 	
 	return 0;
 }
