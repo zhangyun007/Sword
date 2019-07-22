@@ -1,4 +1,4 @@
-/*
+﻿/*
  * http://en.cppreference.com/w/cpp/container/vector/erase
  */
 
@@ -16,8 +16,15 @@ using namespace std;
 */
 class TObject {
 public:
-	//纯虚（空虚）函数，表示该类不能实例化；虚函数，表示该函数在当前类中不用实现，要在子类中实现。
+	//零函数表示该函数在当前类中不用被实现，同时意味着该类不能实例化；虚函数意味着该函数在子类中可以有不同的实现；
 	virtual void show() = 0;
+	//当一个类有子类时，该类的析构函数必须是虚函数，否则子类对象被删除时，子类的析构函数不会被调用。
+	//有了虚析构函数，子类对象析构时，先调用子类的析构函数，再调用父类的析构函数。
+	//保险起见，不管三七二十一，见到析构函数，就加一个virtual，肯定没错。
+	virtual ~TObject() { 
+		cout << "TObject destruct!\n";
+		cout << "\n";
+	}
 };
 
 class TInt : TObject {
@@ -27,6 +34,9 @@ public:
 	}
 	TInt(int a) {
 		i = a;
+	}
+	virtual ~TInt(){
+		cout << i << "， TInt destruct.\n";
 	}
 private:
 	int i;
@@ -52,6 +62,7 @@ class TVector: TObject {
 };
 
 
+/*Triangle类模板继承了Shape类模板，但是这个例子只是说明了类模板能像类一样继承，本身的设计确不太好，将来要重新设计一个好的例子。*/
 template <class type>
 class Shape: TObject {
 protected:
@@ -60,6 +71,7 @@ private:
 
 public:
     virtual ~Shape(){
+		cout << "TShape destruct.\n";
     } //一定要用{}实现！！
     virtual void show() {
         cout  << "yes" << endl;
@@ -72,7 +84,9 @@ private:
 public:
     Triangle();
     Triangle(T, T, T);
-    ~Triangle(){}; //一定要用{}实现！！
+    virtual ~Triangle(){
+		cout << "Triangle destruct.\n";
+	}; //一定要用{}实现！！
     void show();
 };
 
@@ -111,6 +125,10 @@ int main()
 
 	Shape<int> a;
 	Triangle<int> b(5,6,7);
+	
+	delete label1;
+	delete button1;
+	delete int1;
 	
 	return 0;
 }
