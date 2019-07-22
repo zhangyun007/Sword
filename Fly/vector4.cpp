@@ -27,4 +27,14 @@ int main( )
         std::cout << i << " ";
     }
     std::cout << '\n';
+	
+	// 在堆内存里用vector
+	std::vector<float> *v = new std::vector<float>;
+	v->push_back(2.4);
+	v->push_back(4.5);
+	for (auto &i : *v) {
+        std::cout << i << " ";
+    }
+    std::cout << '\n';
+	delete v;
 }

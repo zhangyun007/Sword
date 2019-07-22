@@ -61,6 +61,9 @@ public:
 
 template <class T>
 class TVector: TObject {
+	void show() {
+		cout << "TVector.\n";
+	}
 };
 
 
@@ -112,9 +115,15 @@ int main()
 	class TObject * button1 = (TObject *)new TButton();
 	class TObject * int1 = (TObject *)new TInt(3);
 	
+	class TObject * v1 = (TObject *)new TVector<int>;
+	class TObject * v2 = (TObject *)new TVector<float>;
+	
 	v.push_back(label1);
 	v.push_back(button1);
 	v.push_back(int1);
+	
+	v.push_back(v1);
+	v.push_back(v2);
 	
 	for (auto &iter: v) {
 		iter->show();
@@ -124,13 +133,18 @@ int main()
 	m[label1] = label1;
 	m[button1] = button1;
 	m[int1] = label1;
-
-	Shape<int> a;
-	Triangle<int> b(5,6,7);
+	m[v1] = v2;
+	m[v2] = v1;
 	
 	delete label1;
 	delete button1;
 	delete int1;
+	
+	delete v1;
+	delete v2;
+	
+	Shape<int> a;
+	Triangle<int> b(5,6,7);
 	
 	return 0;
 }
