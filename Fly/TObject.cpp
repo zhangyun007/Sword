@@ -70,12 +70,6 @@ class TVector: TObject {
 public:
 	void show() {
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
-		/*
-		for (T *p = start; p < finish; p++) {
-			cout << *p << " ";
-		}
-		cout << "\nTVector ......\n";
-		*/
 	}
 	TVector() {
 		finish = start = (T *)malloc(1 * sizeof(T));
