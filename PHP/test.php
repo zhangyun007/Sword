@@ -102,6 +102,14 @@ echo "\n";
 
 echo "-------------------\n";
 
+
+// php7数据结构
+
+$sequence = new \Ds\Vector([1, 2, 3]);
+
+print_r($sequence->map(function($value) { return $value * 2; }));
+print_r($sequence);
+
 phpinfo();
 
 ?>

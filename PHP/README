@@ -40,6 +40,9 @@ as added, with support for all MySQL extensions (i.e., mysql, mysqli and PDO_MYS
 运行"php -a"，以行为单位回应用户的编程输入。
 
 
+思考怎么让php7支持ds模块（php_ds.dll），该扩展模块提供了各种复杂数据结构。
+
+
 
 三、SQLite3配置
 
