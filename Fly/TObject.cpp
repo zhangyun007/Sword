@@ -8,11 +8,11 @@
 #include <unordered_map>
 
 using namespace std;
-
 /*
 本程序目的是为了实现类似Python里的字典数据结构，key和value都可以是任意数据结构。
 我们的程序里用TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
 结合vector和map，我们可以得到一个保存所有对象指针的vector和能保存任意类型的key和value的map。
+接下来，我们实现自己的vector和map，继承自TObject。
 */
 class TObject {
 public:
@@ -46,9 +46,51 @@ public:
 	}
 };
 
-int main( )
+
+template <class T>
+class TVector: TObject {
+};
+
+
+template <class type>
+class Shape: TObject {
+protected:
+    type x, y, z, width, height;
+private:
+
+public:
+    virtual ~Shape(){
+    } //一定要用{}实现！！
+    virtual void show() {
+        cout  << "yes" << endl;
+    }
+};
+
+template <class T>
+class Triangle:public Shape<T> {
+private:
+public:
+    Triangle();
+    Triangle(T, T, T);
+    ~Triangle(){}; //一定要用{}实现！！
+    void show();
+};
+
+template <class T>
+void Triangle<T>::show() {
+    cout << "test"<< endl;
+}
+
+template <class T>
+Triangle<T>::Triangle(T a, T b, T c) {
+    this->x = a;
+    this->y = b;
+    this->z = c;
+}
+
+int main()
 {
-    std::vector<TObject *> v;
+	std::vector<TObject *> v;
 	
 	class TObject * label1 = (TObject *)new TLabel();
 	class TObject * button1 = (TObject *)new TButton();
@@ -66,4 +108,9 @@ int main( )
 	m[label1] = label1;
 	m[button1] = button1;
 	m[int1] = label1;
+
+	Shape<int> a;
+	Triangle<int> b(5,6,7);
+	
+	return 0;
 }
