@@ -9,9 +9,9 @@
 
 using namespace std;
 /*
-本程序目的是为了实现类似Python里的字典数据结构，key和value都可以是任意数据结构。
-我们的程序里用TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
-结合vector和map，我们可以得到一个保存所有对象指针的vector和能保存任意类型的key和value的map。
+本程序目的是为了实现类似Python里的列表、字典、集合，这三种数据结构中都可以存放各种类型的数据，而STL容器只能存放特定类型的对象。
+TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
+结合vector和map，我们可以得到一个保存所有对象指针的vector和能保存任意类型key和value的map。
 接下来，我们实现自己的vector和map，继承自TObject。
 
 所有类继承自一个TObject类不是我原创，而是从Delphi的VCL库（一个优秀的面向对象库）中学到的。
@@ -62,7 +62,9 @@ public:
 	}
 };
 
-
+/*
+基本按照stl vector实现。
+*/
 template <class T>
 class TVector: TObject {
 	void show() {
@@ -70,46 +72,48 @@ class TVector: TObject {
 	}
 };
 
-
-/*Triangle类模板继承了Shape类模板，但是这个例子只是说明了类模板能像类一样继承，本身的设计确不太好，将来要重新设计一个好的例子。*/
-template <class type>
-class Shape: TObject {
-protected:
-    type x, y, z, width, height;
-private:
-
-public:
-    virtual ~Shape(){
-		cout << "TShape destruct.\n";
-    } //一定要用{}实现！！
-    virtual void show() {
-        cout  << "yes" << endl;
-    }
+template <class T>
+class TList: TObject {
+	void show() {
+		cout << "TList.\n";
+	}
 };
 
 template <class T>
-class Triangle:public Shape<T> {
-private:
-public:
-    Triangle();
-    Triangle(T, T, T);
-    virtual ~Triangle(){
-		cout << "Triangle destruct.\n";
-	}; //一定要用{}实现！！
-    void show();
+class TDeque: TObject {
+	void show() {
+		cout << "TDeque.\n";
+	}
+};
+
+/*STL map用红黑树实现，太复杂，我们用Btree或者AVLtree实现*/
+template <class T>
+class TBtreeMap: TObject {
+	void show() {
+		cout << "TBtreeMap.\n";
+	}
 };
 
 template <class T>
-void Triangle<T>::show() {
-    cout << "test"<< endl;
-}
+class TBtreeSet: TObject {
+	void show() {
+		cout << "TBtreeSet.\n";
+	}
+};
 
 template <class T>
-Triangle<T>::Triangle(T a, T b, T c) {
-    this->x = a;
-    this->y = b;
-    this->z = c;
-}
+class THashMap: TObject {
+	void show() {
+		cout << "THashMap.\n";
+	}
+};
+
+template <class T>
+class THashSet: TObject {
+	void show() {
+		cout << "THashSet.\n";
+	}
+};
 
 int main()
 {
@@ -146,9 +150,6 @@ int main()
 	
 	delete v1;
 	delete v2;
-	
-	Shape<int> a;
-	Triangle<int> b(5,6,7);
 	
 	return 0;
 }
