@@ -6,6 +6,11 @@
 
 using namespace std;
 
+
+// 日志类，用于将各种信息输出到日志文件。之所以不直接用cout是因为，可能是窗口程序而不是控制台程序。
+class TLog {
+};
+
 /*
 本程序目的是为了实现类似Python里的列表、字典、集合，这三种数据结构中都可以存放各种类型的数据，而STL容器只能存放特定类型的对象。
 TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
@@ -31,9 +36,6 @@ public:
 	}
 };
 
-// 日志类，用于将各种信息输出到日志文件。
-class TLog {
-};
 
 class TInt : TObject {
 public:
