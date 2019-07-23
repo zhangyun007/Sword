@@ -3,12 +3,22 @@
  */
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 
-// 日志类，用于将各种信息输出到日志文件。之所以不直接用cout是因为，可能是窗口程序而不是控制台程序。
+// 日志类，用于将各种信息输出到当前目录下的日志文件中。之所以不直接用cout是因为，可能是窗口程序而不是控制台程序。
 class TLog {
+public:
+	TLog() {
+		strcpy(file, "");
+	}
+	void Write_Log(const char * info) {
+		//写日志到日志文件里
+	}
+private:
+	char file[16];	//日志文件名
 };
 
 /*
@@ -32,7 +42,6 @@ public:
 	//保险起见，不管三七二十一，见到析构函数，就加一个virtual，肯定没错。
 	virtual ~TObject() { 
 		cout << "TObject destruct!\n";
-		cout << "\n";
 	}
 };
 
@@ -52,18 +61,26 @@ private:
 	int i;
 };
 
-class TButton : TObject {
-public:
-	void show() {
-		cout << "TButton!\n";
-	}
-};
 
-class TLabel : TObject {
+class TString : TObject {
 public:
 	void show() {
-		cout << "TLabel!\n";
+		if (str) {
+			cout << str << "\n";
+		}
 	}
+	TString(char *p) {
+		str = (char *)malloc(strlen(p) + 1);
+		strcpy(str, p);
+	}
+	virtual ~TString() {
+		free(str);
+	}
+	char *GetStr() {
+		return str;
+	}
+private:
+	char *str;
 };
 
 

@@ -18,16 +18,14 @@ int main()
 {
 	std::vector<TObject *> v;
 	
-	class TObject * label1 = (TObject *)new TLabel();
-	class TObject * button1 = (TObject *)new TButton();
 	class TObject * int1 = (TObject *)new TInt(3);
+	class TObject * str1 = (TObject *)new TString("test\n");
 	
 	class TObject * v1 = (TObject *)new TVector<int>;
 	class TObject * v2 = (TObject *)new TVector<float>;
 	
-	v.push_back(label1);
-	v.push_back(button1);
 	v.push_back(int1);
+	v.push_back(str1);
 	
 	v.push_back(v1);
 	v.push_back(v2);
@@ -37,15 +35,13 @@ int main()
 	}
 	
 	std::unordered_map<TObject *, TObject *> m;
-	m[label1] = label1;
-	m[button1] = button1;
-	m[int1] = label1;
+	m[int1] = int1;
+	m[str1] = str1;
 	m[v1] = v2;
 	m[v2] = v1;
-	
-	delete label1;
-	delete button1;
+
 	delete int1;
+	delete str1;
 	
 	delete v1;
 	delete v2;
@@ -76,6 +72,9 @@ int main()
 	Tt.push_back(t);
 	
 	Tt.show();	
+	
+	TString Ts("C++ is good!\n");
+	cout << Ts.GetStr();
 	
 	return 0;
 }
