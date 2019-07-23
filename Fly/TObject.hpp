@@ -78,6 +78,12 @@ public:
 	}
 	TVector() {
 		finish = start = (T *)malloc(1 * sizeof(T));
+		//分配内存失败
+		if (start == NULL) {
+			//这里最好打印到log文件，因为有可能没有console
+			cout << "malloc fail, cause TVector constructor fail.\n";
+			return;
+		}
 		end_of_storage = start + 1;
 	}
 	virtual ~TVector() {
