@@ -12,13 +12,16 @@ using namespace std;
 class TLog {
 public:
 	TLog() {
-		strcpy(file, "");
+		//_pgmptr为当前程序的完整路径
+		strcpy(file, _pgmptr);
+		strcat(file, ".log");
 	}
 	void Write_Log(const char * info) {
 		//写日志到日志文件里
+		cout << file << "\n";
 	}
 private:
-	char file[16];	//日志文件名
+	char file[64];	//日志文件名
 };
 
 /*
@@ -71,6 +74,9 @@ public:
 	}
 	TString(char *p) {
 		str = (char *)malloc(strlen(p) + 1);
+		if (str == NULL) {
+			cout << "malloc fail, cause TString fail.\n";
+		}
 		strcpy(str, p);
 	}
 	virtual ~TString() {
@@ -164,11 +170,59 @@ struct _list_node {
 	struct _list_node<T> *next;
 };
 
+//双向链表，能很快在任意位置插入节点。
 template <class T>
 class TList: TObject {
+public:
 	void show() {
 		cout << "TList.\n";
 	}
+	TList() {
+		node = create_node(0);
+		node->next = node;
+		node->prev = node;
+	}
+	virtual ~TList() {
+		struct _list_node<T> *curr = begin();
+		while (curr != node) {
+			struct _list_node<T> *tmp = curr;
+			curr = curr->next;
+			free(tmp);
+		}
+		free(node);
+	}
+	//在curr前面插入新节点
+	void insert(struct _list_node<T> *curr, T t) {
+		struct _list_node<T> * tmp =  create_node(t);
+		//设置tmp的next和prev域
+		tmp->next = curr;
+		tmp->prev = curr->prev;
+		
+		//tmp前一个节点的next域设为tmp
+		curr->prev->next = tmp;
+		
+		//curr节点的prev域设为tmp
+		curr->prev = tmp;
+		
+		//返回新插入的节点
+		return tmp;
+	}
+	struct _list_node<T> * begin() {
+		//TList呈环状，首尾相连，尾指针node的next域即为首指针。
+		return node->next; 
+	}
+	struct _list_node<T> * end() {
+		return node;
+	}
+private:
+	struct _list_node<T> * create_node(T t) {
+		tmp = (struct _list_node<T> *)malloc(sizeof(struct _list_node<T>));
+		tmp->t = t;
+		tmp->next = tmp->prev = NULL;
+		
+		return tmp;
+	}
+	struct _list_node<T> * node;	//node指向尾节点，该节点的T域无意义。
 };
 
 

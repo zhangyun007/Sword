@@ -76,5 +76,8 @@ int main()
 	TString Ts("C++ is good!\n");
 	cout << Ts.GetStr();
 	
+	TLog log;
+	log.Write_Log("This is debug!\n");
+	
 	return 0;
 }
