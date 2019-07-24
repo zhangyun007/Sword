@@ -233,6 +233,21 @@ class TDeque: TObject {
 	}
 };
 
+template <class T>
+class TBSTMap: TObject {
+};
+
+template <class T>
+class TBSTSet: TObject {
+};
+
+template <class T>
+class TAVLMap: TObject {
+};
+
+template <class T>
+class TAVLSet: TObject {
+};
 
 /*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
 template <class T>
