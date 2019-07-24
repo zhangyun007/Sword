@@ -4,25 +4,11 @@
 
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 
 using namespace std;
 
-
-// 日志类，用于将各种信息输出到当前目录下的日志文件中。之所以不直接用cout是因为，可能是窗口程序而不是控制台程序。
-class TLog {
-public:
-	TLog() {
-		//_pgmptr为当前程序的完整路径
-		strcpy(file, _pgmptr);
-		strcat(file, ".log");
-	}
-	void Write_Log(const char * info) {
-		//写日志到日志文件里
-		cout << file << "\n";
-	}
-private:
-	char file[64];	//日志文件名
-};
+/*多处malloc失败的代码，这部分是否可以优化一下？*/
 
 /*
 本程序目的是为了实现类似Python里的列表、字典、集合，这三种数据结构中都可以存放各种类型的数据，而STL容器只能存放特定类型的对象。
@@ -48,6 +34,41 @@ public:
 	}
 };
 
+template <class T, class U> 
+class TPair: TObject {
+public:
+	TPair(T t, U u) {
+		first = t;
+		second = u;
+	}
+private:
+	T first;
+	U second;
+};
+
+//智能指针，自动释放ptr指向的对象
+template <class T> 
+class TAutoPtr: TObject {
+public:
+	//传入对象指针
+	TAutoPtr(T *t) {
+		ptr = t;
+	} 
+	~ TAutoPtr() {
+		delete ptr;
+	}
+	/*
+	void * operator =(const T *t) const{
+		ptr = t;
+	}*/
+	T * GetObjectPtr() {
+		return ptr;
+	}
+	void show() {
+	}
+private:
+	T *ptr;
+};
 
 class TInt : TObject {
 public:
@@ -63,7 +84,6 @@ public:
 private:
 	int i;
 };
-
 
 class TString : TObject {
 public:
@@ -84,6 +104,13 @@ public:
 	}
 	char *GetStr() {
 		return str;
+	}
+	void StrCat(char *p) {
+		char * tmp = (char *)malloc(strlen(str) + strlen(p));
+		strcpy(tmp, str);
+		strcat(tmp, p);
+		free(str);
+		str = tmp;
 	}
 private:
 	char *str;
@@ -217,6 +244,9 @@ public:
 private:
 	struct _list_node<T> * create_node(T t) {
 		tmp = (struct _list_node<T> *)malloc(sizeof(struct _list_node<T>));
+		if (tmp == NULL) {
+			cout << "create_node fail, because malloc fail.\n";
+		}
 		tmp->t = t;
 		tmp->next = tmp->prev = NULL;
 		
@@ -278,5 +308,16 @@ class THashSet: TObject {
 		cout << "THashSet.\n";
 	}
 };
+
+
+
+/*全局函数，包括各种STL算法函数*/
+
+void TLog(char *info) {
+	TString ts(_pgmptr);
+	ts.StrCat(".log");
+	cout << ts.GetStr() << "\n"; 
+}
+	
 
 

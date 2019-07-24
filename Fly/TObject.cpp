@@ -1,5 +1,4 @@
-
-#include <vector>
+﻿#include <vector>
 #include <iostream>
 #include <utility>
 #include <unordered_map>
@@ -16,13 +15,19 @@ public:
 
 int main()
 {
-	std::vector<TObject *> v;
 	
-	class TObject * int1 = (TObject *)new TInt(3);
-	class TObject * str1 = (TObject *)new TString("test\n");
+	TAutoPtr<TObject> p = (TObject *)(new TInt(39));
 	
-	class TObject * v1 = (TObject *)new TVector<int>;
-	class TObject * v2 = (TObject *)new TVector<float>;
+	//接下来思考，如何让TAutoPtr配合TVector等容器工作。
+	
+
+	std::vector <TObject *> v;
+	
+	TObject * int1 = (TObject *)new TInt(3);
+	TObject * str1 = (TObject *)new TString("test\n");
+	
+	TObject * v1 = (TObject *)new TVector<int>;
+	TObject * v2 = (TObject *)new TVector<float>;
 	
 	v.push_back(int1);
 	v.push_back(str1);
@@ -39,21 +44,17 @@ int main()
 	m[str1] = str1;
 	m[v1] = v2;
 	m[v2] = v1;
-
+	
 	delete int1;
 	delete str1;
-	
 	delete v1;
 	delete v2;
 	
+	
 	TVector<int> Tv;
-	Tv.show();
 	Tv.push_back(1);
-	Tv.show();
 	Tv.push_back(3);
-	Tv.show();
 	Tv.push_back(5);
-	Tv.show();
 	Tv.push_back(7);
 	Tv.show();
 	
@@ -62,22 +63,22 @@ int main()
 	}
 	cout << "\n";
 
-	TVector<Test> Tt;
-	class Test t;
-	t.i = 1; t.ch = 'a';
-	Tt.push_back(t);
-	t.i = 2; t.ch = 'b';
-	Tt.push_back(t);
-	t.i = 3; t.ch = 'c';
-	Tt.push_back(t);
-	
-	Tt.show();	
-	
+
 	TString Ts("C++ is good!\n");
 	cout << Ts.GetStr();
+
+
+	//需要实现TString的operator =
+	TVector<TString> Tv1;
+	Tv1.push_back(TString("hello"));
+	Tv1.push_back(TString("C++"));
+	Tv1.show();	
 	
-	TLog log;
-	log.Write_Log("This is debug!\n");
+	for (auto &iter: Tv1) {
+		iter.show();
+	}
 	
+	TLog("info");
+
 	return 0;
 }
