@@ -67,17 +67,18 @@ int main()
 	TString Ts("C++ is good!\n");
 	cout << Ts.GetStr();
 
-
-	//需要实现TString的operator =
+	//可能需要修改TString的operator =
 	TVector<TString> Tv1;
 	Tv1.push_back(TString("hello"));
 	Tv1.push_back(TString("C++"));
-	Tv1.show();	
-	
+	Tv1.show();		
+
 	for (auto &iter: Tv1) {
-		iter.show();
+		//下句导致程序段错误。
+		//iter.show();
+		cout << iter.GetStr() << " ";
 	}
-	
+
 	TLog("info");
 
 	return 0;

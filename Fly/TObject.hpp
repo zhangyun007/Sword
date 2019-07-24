@@ -93,17 +93,40 @@ public:
 		}
 	}
 	TString(char *p) {
-		str = (char *)malloc(strlen(p) + 1);
+		len = strlen(p);
+		str = (char *)malloc(len + 1);
 		if (str == NULL) {
 			cout << "malloc fail, cause TString fail.\n";
 		}
 		strcpy(str, p);
+		str[len] = '\0';
+	}
+	//注意：复制构造函数参数前要加上“&"
+	TString(TString& s) {
+		str = (char *)malloc(s.GetLen() + 1);
+		if (str == NULL) {
+			cout << "malloc fail, cause TString fail.\n";
+		}
+		strcpy(str, s.GetStr());
+		str[len] = '\0';
+	}
+	TString & operator =(TString &s) {
+		if (this != &s) {
+			str = (char *)malloc(s.GetLen() + 1);
+			len = s.GetLen();
+			strcpy(str, s.GetStr());
+			str[len] = '\0';
+		}
+		return *this;
 	}
 	virtual ~TString() {
 		free(str);
 	}
 	char *GetStr() {
 		return str;
+	}
+	int GetLen() {
+		return len;
 	}
 	void StrCat(char *p) {
 		char * tmp = (char *)malloc(strlen(str) + strlen(p));
@@ -113,7 +136,8 @@ public:
 		str = tmp;
 	}
 private:
-	char *str;
+	char *str; //以\0结尾
+	int len;	//字符串长度，不包括\0
 };
 
 
@@ -127,21 +151,21 @@ public:
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
 	}
 	TVector() {
-		finish = start = (T *)malloc(1 * sizeof(T));
+		finish = start = new T;
 		//分配内存失败
 		if (start == NULL) {
 			//这里最好打印到log文件，因为有可能没有console
-			cout << "malloc fail, cause TVector constructor fail.\n";
+			cout << "new T fail, cause TVector constructor fail.\n";
 			return;
 		}
 		end_of_storage = start + 1;
 	}
 	virtual ~TVector() {
-		free(start);
+		delete [] start;
 	}
 	void push_back(T t) {
 		if (finish < end_of_storage) {
-			//还有空间
+			//还有空余空间，下面语句要求class T实现了operator =
 			*finish = t;
 			finish++;
 		} else {
@@ -149,17 +173,18 @@ public:
 			 int c = capacity();
 			 
 			//重新分配原来2倍大小的内存
-			T * nstart = (T *)malloc(2 * c * sizeof(T));
+			T * nstart = new T[2 * c];
 			//分配内存失败
 			if (nstart == NULL) {
 				//这里最好打印到log文件，因为有可能没有console
-				cout << "malloc fail, cause push_back fail.\n";
+				cout << "new T[2*c] fail, cause push_back fail.\n";
 				return;
 			}
-			//复制旧内存到新内存
+			
+			//复制旧内存到新内存, 可能需要拷贝构造
+			//todo
 			memcpy(nstart, start, c * sizeof(T));
-			//释放旧空间
-			free(start);
+			delete [] start;
 			
 			//重置各项指针值
 			start = nstart;
