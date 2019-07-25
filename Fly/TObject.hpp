@@ -355,7 +355,7 @@ void TLog(char *info) {
 	
 /*返回指定值的迭代器，如果没有查到，返回end
 如下代码说明得迭代器必须实现operator ++，operator *和operator ！=
-而C指针指针++，*和！=，可以当做迭代器传入。
+而C指针指针++，*和！=，可以当做迭代器传入,Tvector即为普通指针。
 */
 template<class TIter, class T>
 TIter TFind(TIter begin, TIter end, const T &value) {
