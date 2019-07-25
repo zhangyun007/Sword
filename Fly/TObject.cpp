@@ -17,8 +17,9 @@ int main()
 {
 	
 	TAutoPtr<TObject> p = (TObject *)(new TInt(39));
+	TAutoPtr<TObject> *q = &p;
 	
-	//接下来思考，如何让TAutoPtr配合TVector等容器工作。
+	//可以在TVector中添加TAutoPtr<TObject> *类型变量
 	
 
 	std::vector <TObject *> v;

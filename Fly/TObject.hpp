@@ -48,7 +48,7 @@ private:
 
 //智能指针，自动释放ptr指向的对象
 template <class T> 
-class TAutoPtr: TObject {
+class TAutoPtr {
 public:
 	//传入对象指针
 	TAutoPtr(T *t) {
