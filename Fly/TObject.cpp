@@ -76,7 +76,7 @@ int main()
 	for (auto &iter: Tv1) {
 		//下句导致程序段错误。
 		//iter.show();
-		cout << iter.GetStr() << " ";
+		//cout << iter.GetStr() << " ";
 	}
 
 	TLog("info");

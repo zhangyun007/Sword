@@ -92,6 +92,10 @@ public:
 			cout << str << "\n";
 		}
 	}
+	TString() {
+		str = NULL;
+		len = 0;
+	}
 	TString(char *p) {
 		len = strlen(p);
 		str = (char *)malloc(len + 1);
