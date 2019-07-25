@@ -63,11 +63,14 @@ int main()
 		cout << i << " ";
 	}
 	cout << "\n";
-
+	
+	cout << *TFind(Tv.begin(), Tv.end(), 3);
+	cout << "\n";
 
 	TString Ts("C++ is good!\n");
 	cout << Ts.GetStr();
 
+/*
 	//可能需要修改TString的operator =
 	TVector<TString> Tv1;
 	Tv1.push_back(TString("hello"));
@@ -79,7 +82,7 @@ int main()
 		//iter.show();
 		//cout << iter.GetStr() << " ";
 	}
-
+*/
 	TLog("info");
 
 	return 0;

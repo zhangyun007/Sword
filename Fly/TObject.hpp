@@ -151,6 +151,7 @@ private:
 template <class T>
 class TVector: TObject {
 public:
+	typedef T * Iterator;
 	void show() {
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
 	}
@@ -213,9 +214,9 @@ public:
 		return finish - start;
 	}
 private:
-	T * start;		//使用空间头指针
-	T * finish;		//使用空间尾指针
-	T * end_of_storage;		//总空间尾指针
+	Iterator start;		//使用空间头指针
+	Iterator finish;		//使用空间尾指针
+	Iterator end_of_storage;		//总空间尾指针
 };
 
 
@@ -340,6 +341,10 @@ class THashSet: TObject {
 
 
 
+/*迭代器类，智能指针，思考其内容。*/
+struct TIterator {
+};
+
 /*全局函数，包括各种STL算法函数*/
 
 void TLog(char *info) {
@@ -348,5 +353,15 @@ void TLog(char *info) {
 	cout << ts.GetStr() << "\n"; 
 }
 	
+/*返回指定值的迭代器，如果没有查到，返回end
+如下代码说明得迭代器必须实现operator ++，operator *和operator ！=
+而C指针指针++，*和！=，可以当做迭代器传入。
+*/
+template<class TIter, class T>
+TIter TFind(TIter begin, TIter end, const T &value) {
+	while (begin != end && *begin != value)
+		++begin;
+	return begin;
+}
 
 
