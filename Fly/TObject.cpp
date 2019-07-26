@@ -66,8 +66,9 @@ int main()
 	cout << *TFind(Tv.begin(), Tv.end(), 3);
 	cout << "\n";
 
-	TString Ts("C++ is good!\n");
-	cout << Ts.GetStr();
+	TString Ts("你好abc");
+	cout << Ts.GetStr() << "\n";
+	cout << Ts.GetLen() << "\n";
 
 /*
 	//可能需要修改TString的operator =
@@ -84,5 +85,6 @@ int main()
 */
 	TLog("info");
 
+	
 	return 0;
 }

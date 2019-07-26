@@ -140,8 +140,8 @@ public:
 		str = tmp;
 	}
 private:
-	char *str; //以\0结尾
-	int len;	//字符串长度，不包括\0
+	char *str; //以\0结尾，中文字符用两个字节保存
+	int len;	//字符串长度，不包括\0，
 };
 
 
@@ -233,9 +233,10 @@ template <class T>
 class TList: TObject {
 public:
 	struct	Iterator {
-		struct _list_node<T> *node; //node指向最后一个节点的下一个节点
+		struct _list_node<T> *node; //node指向节点
+		Iterator(struct _list_node<T> *x):node(x) {};
 		//接下里实现迭代器的各种operator
-	}
+	};
 	void show() {
 		cout << "TList.\n";
 	}
@@ -254,26 +255,26 @@ public:
 		free(node);
 	}
 	//在curr前面插入新节点
-	void insert(struct _list_node<T> *curr, T t) {
+	Iterator insert(Iterator curr, T t) {
 		struct _list_node<T> * tmp =  create_node(t);
 		//设置tmp的next和prev域
-		tmp->next = curr;
-		tmp->prev = curr->prev;
+		tmp->next = curr.node;
+		tmp->prev = curr.node->prev;
 		
 		//tmp前一个节点的next域设为tmp
-		curr->prev->next = tmp;
+		curr.node->prev->next = tmp;
 		
 		//curr节点的prev域设为tmp
-		curr->prev = tmp;
+		curr.node->prev = tmp;
 		
-		//返回新插入的节点
+		//返回新插入的节点，将调用Iterator的构造函数。
 		return tmp;
 	}
-	struct _list_node<T> * begin() {
+	Iterator begin() {
 		//TList呈环状，首尾相连，尾指针node的next域即为首指针。
 		return node->next; 
 	}
-	struct _list_node<T> * end() {
+	Iterator end() {
 		return node;
 	}
 private:
