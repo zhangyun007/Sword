@@ -15,11 +15,10 @@ public:
 
 int main()
 {
-	
 	TAutoPtr<TObject> p = (TObject *)(new TInt(39));
 	TAutoPtr<TObject> *q = &p;
 	
-	//可以在TVector中添加TAutoPtr<TObject> *类型变量
+	//可以在TVector中添加TAutoPtr<TObject> *类型变量，避免使用二维指针。
 	
 
 	std::vector <TObject *> v;

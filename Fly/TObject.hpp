@@ -228,9 +228,14 @@ struct _list_node {
 };
 
 //双向链表，能很快在任意位置插入节点。
+//todo 实现TList迭代器，以适用于TFind等算法。
 template <class T>
 class TList: TObject {
 public:
+	struct	Iterator {
+		struct _list_node<T> *node; //node指向最后一个节点的下一个节点
+		//接下里实现迭代器的各种operator
+	}
 	void show() {
 		cout << "TList.\n";
 	}
@@ -282,7 +287,7 @@ private:
 		
 		return tmp;
 	}
-	struct _list_node<T> * node;	//node指向尾节点，该节点的T域无意义。
+	struct _list_node<T> * node; //node指向最后一个节点的下一个节点
 };
 
 
@@ -355,10 +360,10 @@ void TLog(char *info) {
 	
 /*返回指定值的迭代器，如果没有查到，返回end
 如下代码说明得迭代器必须实现operator ++，operator *和operator ！=
-而C指针指针++，*和！=，可以当做迭代器传入,Tvector即为普通指针。
+而C指针指针++，*和！=，可以当做迭代器传入,Tvector中的迭代器即为普通指针。
 */
-template<class TIter, class T>
-TIter TFind(TIter begin, TIter end, const T &value) {
+template<class Iter, class T>
+Iter TFind(Iter begin, Iter end, const T &value) {
 	while (begin != end && *begin != value)
 		++begin;
 	return begin;
