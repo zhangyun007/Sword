@@ -232,7 +232,6 @@ struct _list_node {
 };
 
 //双向链表，能很快在任意位置插入节点。
-//todo 实现TList迭代器，以适用于TFind等算法。
 template <class T>
 class TList: TObject {
 public:
