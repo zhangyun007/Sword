@@ -146,6 +146,10 @@ private:
 
 
 /*
+stl容器中end()总是返回最后一项的下一项。
+*/
+
+/*
 基本按照stl vector实现。Vector分配内存成倍增长。
 */
 template <class T>
@@ -222,7 +226,7 @@ private:
 
 template <class T>
 struct _list_node {
-	T * t;
+	T t;
 	struct _list_node<T> *prev;
 	struct _list_node<T> *next;
 };
@@ -238,18 +242,34 @@ public:
 		//接下里实现迭代器的各种operator
 	};
 	void show() {
+		struct _list_node<T> *tmp = node;
 		cout << "TList.\n";
+		while (1) {
+			tmp = tmp->next;
+			if (tmp != node) 
+				cout << tmp->t << " ";
+			else 
+				break;
+		}
 	}
 	TList() {
+		//node为空节点，prev和next都指向自己
 		node = create_node(0);
 		node->next = node;
 		node->prev = node;
 	}
 	virtual ~TList() {
-		struct _list_node<T> *curr = begin();
-		while (curr != node) {
-			struct _list_node<T> *tmp = curr;
-			curr = curr->next;
+		//tmp指向当前链表的最后一个节点，node为最后一个节点的下一个空节点。
+		struct _list_node<T> *tmp;
+		while (1) {
+			tmp = node->prev;	
+			
+			if (tmp == node) break;
+			
+			//将tmp从链表中断开
+			tmp->prev->next = node;
+			node->prev = tmp->prev;
+			
 			free(tmp);
 		}
 		free(node);
@@ -279,9 +299,9 @@ public:
 	}
 private:
 	struct _list_node<T> * create_node(T t) {
-		tmp = (struct _list_node<T> *)malloc(sizeof(struct _list_node<T>));
+		struct _list_node<T> *tmp = new (struct _list_node<T>);
 		if (tmp == NULL) {
-			cout << "create_node fail, because malloc fail.\n";
+			cout << "create_node fail, because new fail.\n";
 		}
 		tmp->t = t;
 		tmp->next = tmp->prev = NULL;

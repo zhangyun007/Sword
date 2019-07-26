@@ -70,6 +70,13 @@ int main()
 	cout << Ts.GetStr() << "\n";
 	cout << Ts.GetLen() << "\n";
 
+
+	TList<int> list1;
+	list1.insert(list1.begin(), 1);
+	list1.insert(list1.begin(), 4);
+	list1.insert(list1.begin(), 6);
+	list1.show();
+	
 /*
 	//可能需要修改TString的operator =
 	TVector<TString> Tv1;
