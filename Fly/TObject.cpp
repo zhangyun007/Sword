@@ -69,7 +69,6 @@ int main()
 	delete v2;
 
 
-
 	TList<int> list1;
 	list1.insert(list1.begin(), 1);
 	list1.insert(list1.begin(), 4);
