@@ -273,7 +273,7 @@ public:
 		}
 		free(node);
 	}
-	//在curr前面插入新节点
+	//在curr迭代器指向的节点前插入新节点
 	Iterator insert(Iterator curr, T t) {
 		struct _list_node<T> * tmp =  create_node(t);
 		//设置tmp的next和prev域
