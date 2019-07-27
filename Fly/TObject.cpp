@@ -7,12 +7,6 @@
 
 using namespace std;
 
-class Test {
-public:
-	int i;
-	char ch;
-};
-
 int main()
 {
 	TAutoPtr<TObject> p = (TObject *)(new TInt(39));
