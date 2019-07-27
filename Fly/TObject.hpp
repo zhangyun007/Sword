@@ -85,6 +85,10 @@ private:
 	int i;
 };
 
+
+//长字符串。用len储存字符串长度，这样避免了读者的程序中多次用strlen计算长度
+//大致上，字符串越长，需要用strlen的地方越多，TString的好处越明显。
+
 class TString : TObject {
 public:
 	void show() {
@@ -134,8 +138,8 @@ public:
 	}
 	void StrCat(char *p) {
 		char * tmp = (char *)malloc(strlen(str) + strlen(p));
-		strcpy(tmp, str);
-		strcat(tmp, p);
+		strcpy(tmp, str);		strcat(tmp, p);
+
 		free(str);
 		str = tmp;
 	}
@@ -160,11 +164,13 @@ public:
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
 	}
 	TVector() {
-		finish = start = new T;
-		//分配内存失败
+		// 新C++中new失败会抛出一个异常对象，但是C++也提供了老式的通过返回值是否为NULL来判断内存是否申请成功。
+		//这个内存申请操作符函数为：new(std::nothrow)，我还是喜欢传统的空指针判断方式，不喜欢抛出异常对象处理方式。
+		finish = start =  new(std::nothrow) T;
+		//分配内存失败,这里需要改正，new失败不是返回NULL，而是抛出异常。
 		if (start == NULL) {
 			//这里最好打印到log文件，因为有可能没有console
-			cout << "new T fail, cause TVector constructor fail.\n";
+			cout << "new(std::nothrow) T fail, cause TVector constructor fail.\n";
 			return;
 		}
 		end_of_storage = start + 1;
@@ -182,11 +188,11 @@ public:
 			 int c = capacity();
 			 
 			//重新分配原来2倍大小的内存
-			T * nstart = new T[2 * c];
+			T * nstart = new(std::nothrow) T[2 * c];
 			//分配内存失败
 			if (nstart == NULL) {
 				//这里最好打印到log文件，因为有可能没有console
-				cout << "new T[2*c] fail, cause push_back fail.\n";
+				cout << "new(std::nothrow) T[2*c] fail, cause push_back fail.\n";
 				return;
 			}
 			
@@ -307,9 +313,9 @@ public:
 	}
 private:
 	struct _list_node<T> * create_node(T t) {
-		struct _list_node<T> *tmp = new (struct _list_node<T>);
+		struct _list_node<T> *tmp = new(std::nothrow) (struct _list_node<T>);
 		if (tmp == NULL) {
-			cout << "create_node fail, because new fail.\n";
+			cout << "create_node fail, because new(std::nothrow) fail.\n";
 		}
 		tmp->t = t;
 		tmp->next = tmp->prev = NULL;
@@ -384,7 +390,7 @@ void TLog(char *info) {
 }
 	
 /*返回指定值的迭代器，如果没有查到，返回end
-如下代码说明得迭代器必须实现operator ++，operator *和operator ！=
+如下代码说明迭代器必须实现operator ++，operator *和operator ！=
 而C指针指针++，*和！=，可以当做迭代器传入,Tvector中的迭代器即为普通指针。
 */
 template<class Iter, class T>
