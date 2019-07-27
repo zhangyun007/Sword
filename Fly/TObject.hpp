@@ -375,10 +375,6 @@ class THashSet: TObject {
 
 
 
-/*迭代器类，智能指针，思考其内容。*/
-struct TIterator {
-};
-
 /*全局函数，包括各种STL算法函数*/
 
 void TLog(char *info) {
