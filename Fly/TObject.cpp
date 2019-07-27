@@ -7,14 +7,38 @@
 
 using namespace std;
 
+//该文件的主要作用是测试TObject.hpp中的各种类被正确的实现了
+
 int main()
 {
+	//中文占两个字符
+	TString Ts("你好abc");
+	cout << Ts.GetStr() << "\n";
+	cout << Ts.GetLen() << "\n";
+	
+	
 	TAutoPtr<TObject> p = (TObject *)(new TInt(39));
-	TAutoPtr<TObject> *q = &p;
-	
+	TAutoPtr<TObject> *q = &p;	
 	//可以在TVector中添加TAutoPtr<TObject> *类型变量，避免使用二维指针。
-	
 
+
+	TVector<int> Tv;
+	Tv.push_back(1);
+	Tv.push_back(3);
+	Tv.push_back(5);
+	Tv.push_back(7);
+	Tv.show();
+	
+	for (auto &i : Tv) {
+		cout << i << " ";
+	}
+	cout << "\n";
+	
+	cout << *TFind(Tv.begin(), Tv.end(), 3);
+	cout << "\n";
+
+	
+	//使用TObject *可以让vector和map实现Python中列表和字典的功能
 	std::vector <TObject *> v;
 	
 	TObject * int1 = (TObject *)new TInt(3);
@@ -43,26 +67,7 @@ int main()
 	delete str1;
 	delete v1;
 	delete v2;
-	
-	
-	TVector<int> Tv;
-	Tv.push_back(1);
-	Tv.push_back(3);
-	Tv.push_back(5);
-	Tv.push_back(7);
-	Tv.show();
-	
-	for (auto &i : Tv) {
-		cout << i << " ";
-	}
-	cout << "\n";
-	
-	cout << *TFind(Tv.begin(), Tv.end(), 3);
-	cout << "\n";
 
-	TString Ts("你好abc");
-	cout << Ts.GetStr() << "\n";
-	cout << Ts.GetLen() << "\n";
 
 
 	TList<int> list1;
