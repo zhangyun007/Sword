@@ -239,6 +239,15 @@ public:
 		struct _list_node<T> *node; //node指向节点
 		Iterator(struct _list_node<T> *x):node(x) {};
 		//接下里实现迭代器的各种operator
+		T operator *() {
+			return node->t;
+		}
+		struct _list_node<T> * operator ++() {
+			return (node = node->next);
+		}
+		bool operator !=(struct Iterator right) {
+			return (node != right.node);
+		}
 	};
 	void show() {
 		struct _list_node<T> *tmp = node;

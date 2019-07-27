@@ -76,7 +76,8 @@ int main()
 	list1.insert(list1.begin(), 4);
 	list1.insert(list1.begin(), 6);
 	list1.show();
-	TFind(list1.begin(), list2.end(), 4);
+	cout << *TFind(list1.begin(), list1.end(), 4);
+	cout << "\n";
 	
 /*
 	//可能需要修改TString的operator =
