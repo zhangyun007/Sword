@@ -8,6 +8,7 @@ int main () {
   std::vector<int> myvector;
   for (int i=1; i<10; ++i) myvector.push_back(i*10);
 
+	//为什么不和容器迭代器一样写成vector1<int>::Iterator iter呢？
   std::ostream_iterator<int> out_it (std::cout,", ");
   std::copy ( myvector.begin(), myvector.end(), out_it );
   return 0;
