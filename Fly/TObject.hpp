@@ -342,6 +342,243 @@ template <class T>
 class TBSTSet: TObject {
 };
 
+
+template <class T, class U>
+struct  BSTMapNode{
+    T   key;
+    U   value;
+    struct BSTMapNode * left;
+    struct BSTMapNode * right;
+};
+
+/* 
+* DiskNode结构是要写到磁盘上的
+* 二叉搜索树为什么要写到磁盘文件？这是数据库索引的基础，数据库索引就是将各种平衡树写到磁盘保存为索引文件，通过查找索引文件来加快的表的查询。
+* 对数据库表中的某个列建立索引，可能只需要key，不需要value。
+*/
+
+template <class T, class U>
+struct  BSPMapNodeToDisk{
+    T   key;
+    U   value;
+    int left;
+    int right;
+	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
+};
+
+/* Binary Search Tree 二叉搜索树*/
+
+template <class T, class U>
+class TBSTMap {
+public:
+    TBSTMap():root(NULL){}        
+    ~TBSTMap();
+    void Insert(T t, U u);
+    void Find(T t);
+    int Traver();
+    void Delete(T t);
+	//把节点写到DNode结构中
+    void Write();
+private:
+    class BSTMapNode<T, U> * root;
+	
+    // node前面的&不能少，否则程序错误。
+    void InsertNode(class BSTMapNode<T, U> *&node, T t, U u);
+    class BSTMapNode<T, U> * FindKey(class BSTMapNode<T, U> *node, T t);
+    int TraverTree(class BSTMapNode<T, U> *node);
+	
+	//删除以node节点为根节点的树
+    void DeleteNode(class BSTMapNode<T, U> *node);
+	
+	//从node为根节点的树中，删除key为t的节点。
+    // node前面的&不能少，否则程序错误。
+    void DeleteNode(class BSTMapNode<T, U> *&node, T t);
+    int WriteNode(class BSTMapNode<T, U> *node);
+};
+
+template <class T, class U>
+void DeleteNode(class BSTMapNode<T, U> *node)
+{
+    if (node->left) {
+        DeleteNode(node->left);
+    }
+    if (node->right) {
+        DeleteNode(node->right);
+    }
+    if (node) {
+        delete node;
+    }
+}
+
+template <class T, class U>
+TBSTMap<T, U>::~TBSTMap()
+{
+    //这是同名覆盖原则, 使用域标志:: 。这种写法在MFC中尤其常见。
+    //例如在mfc中调用库中没有封装的api就会这么写 ::SendMessage(...);
+    ::DeleteNode(root);
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::InsertNode(class BSTMapNode<T, U> *&node, T t, U u)
+{
+    if (node == NULL) {
+        //父节点指向新建子节点
+        node = new BSTMapNode<T, U>();
+        node->key = t;
+        node->value = u;
+        return;
+    }
+
+    if (node->key > t) {
+        InsertNode(node->left, t, u);
+    }
+
+    if (node->key < t) {
+        InsertNode(node->right, t, u);
+    }
+
+    if (node->key == t) {
+        node->value = u;
+        cout << "key " << t << " modified to " << u << '\n';
+    }
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::Insert(T t, U u) {
+    InsertNode(root, t, u);
+}
+
+template <class T, class U>
+class BSTMapNode<T, U> * TBSTMap<T, U>::FindKey(class BSTMapNode<T, U> *node, T t)
+{
+    if (node == NULL) {
+        return NULL;
+    } else {
+        if (t < node->key) {
+            cout << t << " < " << node->key <<'\n';
+            return FindKey(node->left, t);
+        } else if (t > node->key) {
+            cout << t << " > " << node->key <<'\n';
+            return FindKey(node->right, t);
+        } else if (t == node->key) {
+            cout << t << " == " << node->key <<'\n';
+            cout << node << '\n';
+            return node;
+        }
+        return NULL;
+    }
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::Find(T t)
+{
+    class BSTMapNode<T, U> *temp;
+    temp = FindKey(root, t);
+    if (temp) {
+        cout << "Find key " << t << " value is" << temp->value << '\n';
+    } else {
+        cout << "Not find key "  << t << '\n';
+    }
+}
+
+template <class T, class U>
+int TBSTMap<T, U>::TraverTree(class BSTMapNode<T, U> *node)
+{
+    if (node == NULL) {
+        return 0;
+    }
+    int m = TraverTree(node->left);
+    cout << "key is " << node->key << " value is " << node->value << '\n';
+    int n = TraverTree(node->right);
+    return m + n + 1;
+}
+
+template <class T, class U>
+int TBSTMap<T, U>::Traver()
+{
+    return TraverTree(root);
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::DeleteNode(class BSTMapNode<T, U> *&node, T t)
+{
+    if (node == NULL) {
+        return;
+    }
+
+    if (node->key > t) {
+        DeleteNode(node->left, t);
+    }
+
+    if (node->key < t ) {
+        DeleteNode(node->right, t);
+    }
+
+    if (node->key == t) {
+        if (node->left && node->right) {
+            class BSTMapNode<T, U> * temp = node->right;
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+            node->key = temp->key;
+            node->value = temp->value;
+            DeleteNode(node->right, temp->key);
+        } else {
+            class BSTMapNode<T, U> * temp = node;
+            if (node->left == NULL) {
+                node = node->right;
+            } else if (node->right == NULL) {
+                node = node->left;
+            }
+            delete(temp);
+        }
+    }
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::Delete(T t)
+{
+    DeleteNode(root, t);
+}
+
+/*
+ * 返回值表示右子树有n个节点
+ */
+template <class T, class U>
+int TBSTMap<T, U>::WriteNode(class BSTMapNode<T, U> *node)
+{
+    if (node == NULL)
+        return 0;
+
+    int m = WriteNode(node->left);
+
+    struct BSPMapNodeToDisk<T, U> dnode;
+    dnode.key = node->key;
+    dnode.value = node->value;
+    if (node->left == NULL)
+        dnode.left = 0;
+    else
+        dnode.left = -m - 1;
+    if (node->right ==NULL)
+        dnode.right = 0;
+    else
+        dnode.right = TraverTree(node->right->left) + 1;
+
+    cout << "key " << dnode.key << " value " << dnode.value << " left " << dnode.left << " right " << dnode.right << '\n';
+
+    WriteNode(node->right);
+
+	// 返回右子树拥有的节点数目
+    return TraverTree(node->right);
+}
+
+template <class T, class U>
+void TBSTMap<T, U>::Write()
+{
+    WriteNode(root);
+}
+
+
 template <class T>
 class TAVLMap: TObject {
 };
@@ -382,7 +619,7 @@ class THashSet: TObject {
 
 
 
-/*全局函数，包括各种STL算法函数*/
+/*全局函数，包括各种泛型算法函数*/
 
 void TLog(char *info) {
 	TString ts(_pgmptr);
@@ -399,6 +636,13 @@ Iter TFind(Iter begin, Iter end, const T &value) {
 	while (begin != end && *begin != value)
 		++begin;
 	return begin;
+}
+
+
+/*STL使用函数对象，我认为没有必要，直接用函数模板，将函数传入泛型算法作为参数即可。*/
+template <class T>
+bool greater(T &a, T &b) {
+	return (a > b);
 }
 
 
