@@ -336,6 +336,22 @@ class TDeque: TObject {
 };
 
 
+template <class T>
+class TMap: TObject {
+	void show() {
+		cout << "TMap.\n";
+	}
+};
+
+template <class T>
+class TSet: TObject {
+	void show() {
+		cout << "TSet.\n";
+	}
+};
+
+
+
 template <class T, class U>
 struct  BSTSetNode{
     T   key;
@@ -349,11 +365,11 @@ class TBSTSet: TObject {
 
 
 template <class T, class U>
-struct  BSTMapNode{
+struct  MapNode{
     T   key;
     U   value;
-    struct BSTMapNode * left;
-    struct BSTMapNode * right;
+    struct MapNode * left;
+    struct MapNode * right;
 };
 
 /* 
@@ -363,7 +379,7 @@ struct  BSTMapNode{
 */
 
 template <class T, class U>
-struct  BSPMapNodeToDisk{
+struct  MapNodeToDisk{
     T   key;
     U   value;
     int left;
@@ -387,24 +403,24 @@ public:
 	//把节点写到BSPMapNodeToDisk结构中
     void Write();
 private:
-    class BSTMapNode<T, U> * root;
+    class MapNode<T, U> * root;
 	
     // node前面的&不能少，否则程序错误。
-    void InsertNode(class BSTMapNode<T, U> *&node, T t, U u);
-    class BSTMapNode<T, U> * FindKey(class BSTMapNode<T, U> *node, T t);
-    int TraverTree(class BSTMapNode<T, U> *node);
+    void InsertNode(class MapNode<T, U> *&node, T t, U u);
+    class MapNode<T, U> * FindKey(class MapNode<T, U> *node, T t);
+    int TraverTree(class MapNode<T, U> *node);
 	
 	//删除以node节点为根节点的树
-    void DeleteNode(class BSTMapNode<T, U> *node);
+    void DeleteNode(class MapNode<T, U> *node);
 	
 	//从node为根节点的树中，删除key为t的节点。
     // node前面的&不能少，否则程序错误。
-    void DeleteNode(class BSTMapNode<T, U> *&node, T t);
-    int WriteNode(class BSTMapNode<T, U> *node);
+    void DeleteNode(class MapNode<T, U> *&node, T t);
+    int WriteNode(class MapNode<T, U> *node);
 };
 
 template <class T, class U>
-void DeleteNode(class BSTMapNode<T, U> *node)
+void DeleteNode(class MapNode<T, U> *node)
 {
     if (node->left) {
         DeleteNode(node->left);
@@ -426,11 +442,11 @@ TBSTMap<T, U>::~TBSTMap()
 }
 
 template <class T, class U>
-void TBSTMap<T, U>::InsertNode(class BSTMapNode<T, U> *&node, T t, U u)
+void TBSTMap<T, U>::InsertNode(class MapNode<T, U> *&node, T t, U u)
 {
     if (node == NULL) {
         //父节点指向新建子节点
-        node = new BSTMapNode<T, U>();
+        node = new MapNode<T, U>();
         node->key = t;
         node->value = u;
         return;
@@ -456,7 +472,7 @@ void TBSTMap<T, U>::Insert(T t, U u) {
 }
 
 template <class T, class U>
-class BSTMapNode<T, U> * TBSTMap<T, U>::FindKey(class BSTMapNode<T, U> *node, T t)
+class MapNode<T, U> * TBSTMap<T, U>::FindKey(class MapNode<T, U> *node, T t)
 {
     if (node == NULL) {
         return NULL;
@@ -479,7 +495,7 @@ class BSTMapNode<T, U> * TBSTMap<T, U>::FindKey(class BSTMapNode<T, U> *node, T 
 template <class T, class U>
 void TBSTMap<T, U>::Find(T t)
 {
-    class BSTMapNode<T, U> *temp;
+    class MapNode<T, U> *temp;
     temp = FindKey(root, t);
     if (temp) {
         cout << "Find key " << t << " value is" << temp->value << '\n';
@@ -489,7 +505,7 @@ void TBSTMap<T, U>::Find(T t)
 }
 
 template <class T, class U>
-int TBSTMap<T, U>::TraverTree(class BSTMapNode<T, U> *node)
+int TBSTMap<T, U>::TraverTree(class MapNode<T, U> *node)
 {
     if (node == NULL) {
         return 0;
@@ -507,7 +523,7 @@ int TBSTMap<T, U>::Traver()
 }
 
 template <class T, class U>
-void TBSTMap<T, U>::DeleteNode(class BSTMapNode<T, U> *&node, T t)
+void TBSTMap<T, U>::DeleteNode(class MapNode<T, U> *&node, T t)
 {
     if (node == NULL) {
         return;
@@ -523,7 +539,7 @@ void TBSTMap<T, U>::DeleteNode(class BSTMapNode<T, U> *&node, T t)
 
     if (node->key == t) {
         if (node->left && node->right) {
-            class BSTMapNode<T, U> * temp = node->right;
+            class MapNode<T, U> * temp = node->right;
             while (temp->left != NULL) {
                 temp = temp->left;
             }
@@ -531,7 +547,7 @@ void TBSTMap<T, U>::DeleteNode(class BSTMapNode<T, U> *&node, T t)
             node->value = temp->value;
             DeleteNode(node->right, temp->key);
         } else {
-            class BSTMapNode<T, U> * temp = node;
+            class MapNode<T, U> * temp = node;
             if (node->left == NULL) {
                 node = node->right;
             } else if (node->right == NULL) {
@@ -552,14 +568,14 @@ void TBSTMap<T, U>::Delete(T t)
  * 返回值表示右子树有n个节点
  */
 template <class T, class U>
-int TBSTMap<T, U>::WriteNode(class BSTMapNode<T, U> *node)
+int TBSTMap<T, U>::WriteNode(class MapNode<T, U> *node)
 {
     if (node == NULL)
         return 0;
 
     int m = WriteNode(node->left);
 
-    struct BSPMapNodeToDisk<T, U> dnode;
+    struct MapNodeToDisk<T, U> dnode;
     dnode.key = node->key;
     dnode.value = node->value;
     if (node->left == NULL)
@@ -584,6 +600,7 @@ void TBSTMap<T, U>::Write()
 {
     WriteNode(root);
 }
+
 
 
 template <class T>
