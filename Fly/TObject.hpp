@@ -8,6 +8,32 @@
 
 using namespace std;
 
+
+//智能指针，自动释放ptr指向的对象
+template <class T> 
+class AutoPtr {
+public:
+	//传入对象指针
+	AutoPtr(T *t) {
+		ptr = t;
+	} 
+	~ AutoPtr() {
+		delete ptr;
+	}
+	/*
+	void * operator =(const T *t) const{
+		ptr = t;
+	}*/
+	T * GetObjectPtr() {
+		return ptr;
+	}
+	void show() {
+	}
+private:
+	T *ptr;
+};
+
+
 /*多处malloc失败的代码，这部分是否可以优化一下？*/
 
 /*
@@ -34,41 +60,6 @@ public:
 	}
 };
 
-template <class T, class U> 
-class TPair: TObject {
-public:
-	TPair(T t, U u) {
-		first = t;
-		second = u;
-	}
-private:
-	T first;
-	U second;
-};
-
-//智能指针，自动释放ptr指向的对象
-template <class T> 
-class TAutoPtr {
-public:
-	//传入对象指针
-	TAutoPtr(T *t) {
-		ptr = t;
-	} 
-	~ TAutoPtr() {
-		delete ptr;
-	}
-	/*
-	void * operator =(const T *t) const{
-		ptr = t;
-	}*/
-	T * GetObjectPtr() {
-		return ptr;
-	}
-	void show() {
-	}
-private:
-	T *ptr;
-};
 
 class TInt : TObject {
 public:
@@ -84,7 +75,6 @@ public:
 private:
 	int i;
 };
-
 
 //长字符串。用len储存字符串长度，这样避免了读者的程序中多次用strlen计算长度
 //大致上，字符串越长，需要用strlen的地方越多，TString的好处越明显。
@@ -148,6 +138,17 @@ private:
 	int len;	//字符串长度，不包括\0，
 };
 
+template <class T, class U> 
+class TPair: TObject {
+public:
+	TPair(T t, U u) {
+		first = t;
+		second = u;
+	}
+private:
+	T first;
+	U second;
+};
 
 /*
 stl容器中end()总是返回最后一项的下一项。
@@ -334,8 +335,12 @@ class TDeque: TObject {
 	}
 };
 
-template <class T>
-class TBSTMap: TObject {
+
+template <class T, class U>
+struct  BSTSetNode{
+    T   key;
+    struct BSTSetNode * left;
+    struct BSTSetNode * right;
 };
 
 template <class T>
@@ -369,15 +374,17 @@ struct  BSPMapNodeToDisk{
 /* Binary Search Tree 二叉搜索树*/
 
 template <class T, class U>
-class TBSTMap {
+class TBSTMap : TObject {
 public:
     TBSTMap():root(NULL){}        
     ~TBSTMap();
+	void show() {};
     void Insert(T t, U u);
     void Find(T t);
     int Traver();
     void Delete(T t);
-	//把节点写到DNode结构中
+	
+	//把节点写到BSPMapNodeToDisk结构中
     void Write();
 private:
     class BSTMapNode<T, U> * root;
