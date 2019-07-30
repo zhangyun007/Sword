@@ -336,10 +336,21 @@ class TDeque: TObject {
 };
 
 
-template <class T>
+template <class T, class U>
 class TMap: TObject {
-	void show() {
+	virtual void show() {
 		cout << "TMap.\n";
+	}
+    virtual void Insert(T t, U u) = 0;
+    virtual void Find(T t) = 0;
+    virtual int Traver() = 0;
+    virtual void Delete(T t) = 0;
+	
+	//把节点写到BSPMapNodeToDisk结构中
+    virtual void Write() = 0;
+	
+	virtual ~TMap() {
+		cout << "TMap \n";
 	}
 };
 
@@ -348,24 +359,35 @@ class TSet: TObject {
 	void show() {
 		cout << "TSet.\n";
 	}
+	virtual void show() {
+		cout << "TMap.\n";
+	}
+    virtual void Insert(T t) = 0;
+    virtual void Find(T t) = 0;
+    virtual int Traver() = 0;
+    virtual void Delete(T t) = 0;
+	
+	//把节点写到BSPMapNodeToDisk结构中
+    virtual void Write() = 0;
+	
+	virtual ~TSet() {
+		cout << "TSet \n";
+	}
 };
 
 
 
 template <class T, class U>
-struct  BSTSetNode{
+struct  SetNode{
     T   key;
-    struct BSTSetNode * left;
-    struct BSTSetNode * right;
+    struct SetNode * left;
+    struct SetNode * right;
 };
 
-template <class T>
-class TBSTSet: TObject {
-};
 
 
 template <class T, class U>
-struct  MapNode{
+struct  MapNode {
     T   key;
     U   value;
     struct MapNode * left;
@@ -387,21 +409,20 @@ struct  MapNodeToDisk{
 	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
 };
 
+
+template <class T, class U>
+class TBSTSet: TSet {
+};
+
 /* Binary Search Tree 二叉搜索树*/
 
 template <class T, class U>
-class TBSTMap : TObject {
+class TBSTMap : TMap {
 public:
     TBSTMap():root(NULL){}        
-    ~TBSTMap();
-	void show() {};
-    void Insert(T t, U u);
-    void Find(T t);
-    int Traver();
-    void Delete(T t);
-	
-	//把节点写到BSPMapNodeToDisk结构中
-    void Write();
+    ~TBSTMap() {
+		DeleteNode(root);
+	}
 private:
     class MapNode<T, U> * root;
 	
@@ -420,7 +441,7 @@ private:
 };
 
 template <class T, class U>
-void DeleteNode(class MapNode<T, U> *node)
+void TBSTMap<T, U>::DeleteNode(class MapNode<T, U> *node)
 {
     if (node->left) {
         DeleteNode(node->left);
@@ -431,14 +452,6 @@ void DeleteNode(class MapNode<T, U> *node)
     if (node) {
         delete node;
     }
-}
-
-template <class T, class U>
-TBSTMap<T, U>::~TBSTMap()
-{
-    //这是同名覆盖原则, 使用域标志:: 。这种写法在MFC中尤其常见。
-    //例如在mfc中调用库中没有封装的api就会这么写 ::SendMessage(...);
-    ::DeleteNode(root);
 }
 
 template <class T, class U>
@@ -604,23 +617,23 @@ void TBSTMap<T, U>::Write()
 
 
 template <class T>
-class TAVLMap: TObject {
+class TAVLMap: TMap {
 };
 
 template <class T>
-class TAVLSet: TObject {
+class TAVLSet: TSet {
 };
 
 /*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
 template <class T>
-class TBtreeMap: TObject {
+class TBtreeMap: TMap {
 	void show() {
 		cout << "TBtreeMap.\n";
 	}
 };
 
 template <class T>
-class TBtreeSet: TObject {
+class TBtreeSet: TSet {
 	void show() {
 		cout << "TBtreeSet.\n";
 	}
@@ -628,14 +641,14 @@ class TBtreeSet: TObject {
 
 /*未排序的map和set*/
 template <class T>
-class THashMap: TObject {
+class THashMap: TMap {
 	void show() {
 		cout << "THashMap.\n";
 	}
 };
 
 template <class T>
-class THashSet: TObject {
+class THashSet: TSet {
 	void show() {
 		cout << "THashSet.\n";
 	}
