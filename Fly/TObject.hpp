@@ -337,13 +337,38 @@ class TDeque: TObject {
 
 
 template <class T, class U>
+struct  MapNode {
+    T   key;
+    U   value;
+    struct MapNode * left;
+    struct MapNode * right;
+};
+
+template <class T, class U>
 class TMap: TObject {
+public:
+	//TMap迭代器，返回指向某个节点的指针。
+	//思考要实现那些操作符
+	struct ITerator {
+		struct  MapNode<T, U> * node;
+		//迭代器构造函数
+		ITerator(struct  MapNode<T, U> * p):node(p) {}
+		struct  MapNode<T, U> operator *() {
+			return (*node);
+		}
+	};
+	
 	virtual void show() {
 		cout << "TMap.\n";
 	}
-    virtual void Insert(T t, U u) = 0;
-    virtual void Find(T t) = 0;
+	
+	virtual U& operator [](T& t) = 0;
+	
+    virtual ITerator Insert(T t, U u) = 0;
+	virtual ITerator FindKey(ITerator iter, T t);
+	
     virtual int Traver() = 0;
+	
     virtual void Delete(T t) = 0;
 	
 	//把节点写到BSPMapNodeToDisk结构中
@@ -353,6 +378,195 @@ class TMap: TObject {
 		cout << "TMap \n";
 	}
 };
+
+
+/* 
+* DiskNode结构是要写到磁盘上的
+* 二叉搜索树为什么要写到磁盘文件？这是数据库索引的基础，数据库索引就是将各种平衡树写到磁盘保存为索引文件，通过查找索引文件来加快的表的查询。
+* 对数据库表中的某个列建立索引，可能只需要key，不需要value。
+*/
+
+template <class T, class U>
+struct  MapNodeToDisk{
+    T   key;
+    U   value;
+    int left;
+    int right;
+	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
+};
+
+
+/* Binary Search Tree 二叉搜索树*/
+
+template <class T, class U>
+class TBSTMap : TMap<T, U> {
+public:
+    TBSTMap():root(NULL){}        
+    ~TBSTMap() {
+		DeleteNode(root);
+	}
+	U& operator [](T& t) {
+		return (*FindKey(root, t)).u;
+	}
+	ITerator Insert(T t, U u) {
+		return InsertNode(root, t, u);
+	}
+	ITerator FindKey(ITerator node, T t)
+	{
+		if (node == NULL) {
+			return NULL;
+		} else {
+			if (t < (*node).key) {
+				cout << t << " < " << (*node).key <<'\n';
+				return FindKey((*node).left, t);
+			} else if (t > (*node).key) {
+				cout << t << " > " << (*node).key <<'\n';
+				return FindKey((*node).right, t);
+			} else if (t == (*node).key) {
+				cout << t << " == " << (*node).key <<'\n';
+				return node;
+			}
+			return NULL;
+		}
+	}
+
+private:
+    class MapNode<T, U> * root;
+
+	//节点个数
+	int TBSTMap<T, U>::Traver()
+	{
+		return TraverTree(root);
+	}
+
+	int TraverTree(class MapNode<T, U> *node)
+	{
+		if (node == NULL) {
+			return 0;
+		}
+		int m = TraverTree(node->left);
+		cout << "key is " << node->key << " value is " << node->value << '\n';
+		int n = TraverTree(node->right);
+		return m + n + 1;
+	}
+	
+    // node前面的&不能少，否则程序错误。
+	class MapNode<T, U> * InsertNode(class MapNode<T, U> *&node, T t, U u)
+	{
+		if (node == NULL) {
+			//父节点指向新建子节点
+			node = new MapNode<T, U>();
+			node->key = t;
+			node->value = u;
+			return node;
+		}
+	
+		if (node->key > t) {
+			return InsertNode(node->left, t, u);
+		}
+	
+		if (node->key < t) {
+			return InsertNode(node->right, t, u);
+		}
+	
+		if (node->key == t) {
+			node->value = u;
+			cout << "key " << t << " modified to " << u << '\n';
+		}
+	}
+
+	//删除以node节点为根节点的树
+    void DeleteNode(class MapNode<T, U> *node);
+	{
+		if (node->left) {
+			DeleteNode(node->left);
+		}
+		if (node->right) {
+			DeleteNode(node->right);
+		}
+		if (node) {
+			delete node;
+		}
+	}
+	
+	//从node为根节点的树中，删除key为t的节点。
+    // node前面的&不能少，否则程序错误。
+	void DeleteNode(class MapNode<T, U> *&node, T t)
+	{
+		if (node == NULL) {
+			return;
+		}
+	
+		if (node->key > t) {
+			DeleteNode(node->left, t);
+		}
+	
+		if (node->key < t ) {
+			DeleteNode(node->right, t);
+		}
+	
+		if (node->key == t) {
+			if (node->left && node->right) {
+				class MapNode<T, U> * temp = node->right;
+				while (temp->left != NULL) {
+					temp = temp->left;
+				}
+				node->key = temp->key;
+				node->value = temp->value;
+				DeleteNode(node->right, temp->key);
+			} else {
+				class MapNode<T, U> * temp = node;
+				if (node->left == NULL) {
+					node = node->right;
+				} else if (node->right == NULL) {
+					node = node->left;
+				}
+				delete(temp);
+			}
+		}
+	}
+	
+	void Delete(T t)
+	{
+		DeleteNode(root, t);
+	}
+
+	/*
+	* 返回值表示右子树有n个节点
+	*/
+	int WriteNode(class MapNode<T, U> *node)
+	{
+		if (node == NULL)
+			return 0;
+	
+		int m = WriteNode(node->left);
+	
+		struct MapNodeToDisk<T, U> dnode;
+		dnode.key = node->key;
+		dnode.value = node->value;
+		if (node->left == NULL)
+			dnode.left = 0;
+		else
+			dnode.left = -m - 1;
+		if (node->right ==NULL)
+			dnode.right = 0;
+		else
+			dnode.right = TraverTree(node->right->left) + 1;
+	
+		cout << "key " << dnode.key << " value " << dnode.value << " left " << dnode.left << " right " << dnode.right << '\n';
+	
+		WriteNode(node->right);
+	
+		// 返回右子树拥有的节点数目
+		return TraverTree(node->right);
+	}
+	void Write()
+	{
+		WriteNode(root);
+	}
+
+};
+
 
 template <class T>
 class TSet: TObject {
@@ -376,7 +590,6 @@ class TSet: TObject {
 };
 
 
-
 template <class T, class U>
 struct  SetNode{
     T   key;
@@ -385,235 +598,9 @@ struct  SetNode{
 };
 
 
-
-template <class T, class U>
-struct  MapNode {
-    T   key;
-    U   value;
-    struct MapNode * left;
-    struct MapNode * right;
-};
-
-/* 
-* DiskNode结构是要写到磁盘上的
-* 二叉搜索树为什么要写到磁盘文件？这是数据库索引的基础，数据库索引就是将各种平衡树写到磁盘保存为索引文件，通过查找索引文件来加快的表的查询。
-* 对数据库表中的某个列建立索引，可能只需要key，不需要value。
-*/
-
-template <class T, class U>
-struct  MapNodeToDisk{
-    T   key;
-    U   value;
-    int left;
-    int right;
-	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
-};
-
-
 template <class T, class U>
 class TBSTSet: TSet {
 };
-
-/* Binary Search Tree 二叉搜索树*/
-
-template <class T, class U>
-class TBSTMap : TMap {
-public:
-    TBSTMap():root(NULL){}        
-    ~TBSTMap() {
-		DeleteNode(root);
-	}
-private:
-    class MapNode<T, U> * root;
-	
-    // node前面的&不能少，否则程序错误。
-    void InsertNode(class MapNode<T, U> *&node, T t, U u);
-    class MapNode<T, U> * FindKey(class MapNode<T, U> *node, T t);
-    int TraverTree(class MapNode<T, U> *node);
-	
-	//删除以node节点为根节点的树
-    void DeleteNode(class MapNode<T, U> *node);
-	
-	//从node为根节点的树中，删除key为t的节点。
-    // node前面的&不能少，否则程序错误。
-    void DeleteNode(class MapNode<T, U> *&node, T t);
-    int WriteNode(class MapNode<T, U> *node);
-};
-
-template <class T, class U>
-void TBSTMap<T, U>::DeleteNode(class MapNode<T, U> *node)
-{
-    if (node->left) {
-        DeleteNode(node->left);
-    }
-    if (node->right) {
-        DeleteNode(node->right);
-    }
-    if (node) {
-        delete node;
-    }
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::InsertNode(class MapNode<T, U> *&node, T t, U u)
-{
-    if (node == NULL) {
-        //父节点指向新建子节点
-        node = new MapNode<T, U>();
-        node->key = t;
-        node->value = u;
-        return;
-    }
-
-    if (node->key > t) {
-        InsertNode(node->left, t, u);
-    }
-
-    if (node->key < t) {
-        InsertNode(node->right, t, u);
-    }
-
-    if (node->key == t) {
-        node->value = u;
-        cout << "key " << t << " modified to " << u << '\n';
-    }
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::Insert(T t, U u) {
-    InsertNode(root, t, u);
-}
-
-template <class T, class U>
-class MapNode<T, U> * TBSTMap<T, U>::FindKey(class MapNode<T, U> *node, T t)
-{
-    if (node == NULL) {
-        return NULL;
-    } else {
-        if (t < node->key) {
-            cout << t << " < " << node->key <<'\n';
-            return FindKey(node->left, t);
-        } else if (t > node->key) {
-            cout << t << " > " << node->key <<'\n';
-            return FindKey(node->right, t);
-        } else if (t == node->key) {
-            cout << t << " == " << node->key <<'\n';
-            cout << node << '\n';
-            return node;
-        }
-        return NULL;
-    }
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::Find(T t)
-{
-    class MapNode<T, U> *temp;
-    temp = FindKey(root, t);
-    if (temp) {
-        cout << "Find key " << t << " value is" << temp->value << '\n';
-    } else {
-        cout << "Not find key "  << t << '\n';
-    }
-}
-
-template <class T, class U>
-int TBSTMap<T, U>::TraverTree(class MapNode<T, U> *node)
-{
-    if (node == NULL) {
-        return 0;
-    }
-    int m = TraverTree(node->left);
-    cout << "key is " << node->key << " value is " << node->value << '\n';
-    int n = TraverTree(node->right);
-    return m + n + 1;
-}
-
-template <class T, class U>
-int TBSTMap<T, U>::Traver()
-{
-    return TraverTree(root);
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::DeleteNode(class MapNode<T, U> *&node, T t)
-{
-    if (node == NULL) {
-        return;
-    }
-
-    if (node->key > t) {
-        DeleteNode(node->left, t);
-    }
-
-    if (node->key < t ) {
-        DeleteNode(node->right, t);
-    }
-
-    if (node->key == t) {
-        if (node->left && node->right) {
-            class MapNode<T, U> * temp = node->right;
-            while (temp->left != NULL) {
-                temp = temp->left;
-            }
-            node->key = temp->key;
-            node->value = temp->value;
-            DeleteNode(node->right, temp->key);
-        } else {
-            class MapNode<T, U> * temp = node;
-            if (node->left == NULL) {
-                node = node->right;
-            } else if (node->right == NULL) {
-                node = node->left;
-            }
-            delete(temp);
-        }
-    }
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::Delete(T t)
-{
-    DeleteNode(root, t);
-}
-
-/*
- * 返回值表示右子树有n个节点
- */
-template <class T, class U>
-int TBSTMap<T, U>::WriteNode(class MapNode<T, U> *node)
-{
-    if (node == NULL)
-        return 0;
-
-    int m = WriteNode(node->left);
-
-    struct MapNodeToDisk<T, U> dnode;
-    dnode.key = node->key;
-    dnode.value = node->value;
-    if (node->left == NULL)
-        dnode.left = 0;
-    else
-        dnode.left = -m - 1;
-    if (node->right ==NULL)
-        dnode.right = 0;
-    else
-        dnode.right = TraverTree(node->right->left) + 1;
-
-    cout << "key " << dnode.key << " value " << dnode.value << " left " << dnode.left << " right " << dnode.right << '\n';
-
-    WriteNode(node->right);
-
-	// 返回右子树拥有的节点数目
-    return TraverTree(node->right);
-}
-
-template <class T, class U>
-void TBSTMap<T, U>::Write()
-{
-    WriteNode(root);
-}
-
 
 
 template <class T>
@@ -676,7 +663,7 @@ Iter TFind(Iter begin, Iter end, const T &value) {
 }
 
 
-/*STL使用函数对象，我认为没有必要，直接用函数模板，将函数传入泛型算法作为参数即可。*/
+/*STL使用函数对象，实际上，直接用函数模板，将函数传入泛型算法作为参数即可。*/
 template <class T>
 bool greater(T &a, T &b) {
 	return (a > b);
