@@ -7,7 +7,7 @@ using namespace std;
 
 template <class T>
 bool big(T &a, T &b) {
-	return (a < b);
+	return (a > b);
 }
 
 int main(int argc, char *argv[])

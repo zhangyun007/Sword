@@ -8,11 +8,11 @@
 
 using namespace std;
 
-//æ™ºèƒ½æŒ‡é’ˆï¼Œè‡ªåŠ¨é‡Šæ”¾ptræŒ‡å‘çš„å¯¹è±¡
+//ÖÇÄÜÖ¸Õë£¬×Ô¶¯ÊÍ·ÅptrÖ¸ÏòµÄ¶ÔÏó
 template <class T> 
 class AutoPtr {
 public:
-	//ä¼ å…¥å¯¹è±¡æŒ‡é’ˆ
+	//´«Èë¶ÔÏóÖ¸Õë
 	AutoPtr(T *t) {
 		ptr = t;
 	} 
@@ -33,27 +33,27 @@ private:
 };
 
 
-/*å¤šå¤„mallocå¤±è´¥çš„ä»£ç ï¼Œè¿™éƒ¨åˆ†æ˜¯å¦å¯ä»¥ä¼˜åŒ–ä¸€ä¸‹ï¼Ÿ*/
+/*¶à´¦mallocÊ§°ÜµÄ´úÂë£¬Õâ²¿·ÖÊÇ·ñ¿ÉÒÔÓÅ»¯Ò»ÏÂ£¿*/
 
 /*
-æœ¬ç¨‹åºç›®çš„æ˜¯ä¸ºäº†å®ç°ç±»ä¼¼Pythoné‡Œçš„åˆ—è¡¨ã€å­—å…¸ã€é›†åˆï¼Œè¿™ä¸‰ç§æ•°æ®ç»“æ„ä¸­éƒ½å¯ä»¥å­˜æ”¾å„ç§ç±»å‹çš„æ•°æ®ï¼Œè€ŒSTLå®¹å™¨åªèƒ½å­˜æ”¾ç‰¹å®šç±»å‹çš„å¯¹è±¡ã€‚
-TObjectä¸ºæ‰€æœ‰ç±»çš„çˆ¶ç±»ï¼ŒTObject *æŒ‡é’ˆç±»å‹åˆ™å¯ä»¥æŒ‡å‘æ‰€æœ‰çš„è‡ªå®šä¹‰ç±»å‹å¯¹è±¡ã€‚
-ç»“åˆvectorå’Œmapï¼Œæˆ‘ä»¬å¯ä»¥å¾—åˆ°ä¸€ä¸ªä¿å­˜æ‰€æœ‰å¯¹è±¡æŒ‡é’ˆçš„vectorå’Œèƒ½ä¿å­˜ä»»æ„ç±»å‹keyå’Œvalueçš„mapã€‚
-æ¥ä¸‹æ¥ï¼Œæˆ‘ä»¬å®ç°è‡ªå·±çš„vectorå’Œmapï¼Œç»§æ‰¿è‡ªTObjectã€‚
+±¾³ÌĞòÄ¿µÄÊÇÎªÁËÊµÏÖÀàËÆPythonÀïµÄÁĞ±í¡¢×Öµä¡¢¼¯ºÏ£¬ÕâÈıÖÖÊı¾İ½á¹¹ÖĞ¶¼¿ÉÒÔ´æ·Å¸÷ÖÖÀàĞÍµÄÊı¾İ£¬¶øSTLÈİÆ÷Ö»ÄÜ´æ·ÅÌØ¶¨ÀàĞÍµÄ¶ÔÏó¡£
+TObjectÎªËùÓĞÀàµÄ¸¸Àà£¬TObject *Ö¸ÕëÀàĞÍÔò¿ÉÒÔÖ¸ÏòËùÓĞµÄ×Ô¶¨ÒåÀàĞÍ¶ÔÏó¡£
+½áºÏvectorºÍmap£¬ÎÒÃÇ¿ÉÒÔµÃµ½Ò»¸ö±£´æËùÓĞ¶ÔÏóÖ¸ÕëµÄvectorºÍÄÜ±£´æÈÎÒâÀàĞÍkeyºÍvalueµÄmap¡£
+½ÓÏÂÀ´£¬ÎÒÃÇÊµÏÖ×Ô¼ºµÄvectorºÍmap£¬¼Ì³Ğ×ÔTObject¡£
 
-æ‰€æœ‰ç±»ç»§æ‰¿è‡ªä¸€ä¸ªTObjectç±»ä¸æ˜¯æˆ‘åŸåˆ›ï¼Œè€Œæ˜¯ä»Delphiçš„VCLåº“ï¼ˆä¸€ä¸ªä¼˜ç§€çš„é¢å‘å¯¹è±¡åº“ï¼‰ä¸­å­¦åˆ°çš„ã€‚
+ËùÓĞÀà¼Ì³Ğ×ÔÒ»¸öTObjectÀà²»ÊÇÎÒÔ­´´£¬¶øÊÇ´ÓDelphiµÄVCL¿â£¨Ò»¸öÓÅĞãµÄÃæÏò¶ÔÏó¿â£©ÖĞÑ§µ½µÄ¡£
 */
 
 /*
-æœ¬ç¨‹åºè®¡åˆ’å®ç°STLä¸­çš„å„ç§å®¹å™¨ï¼ŒåŒ…æ‹¬åºåˆ—å¼å®¹å™¨vectorï¼Œlistï¼Œdequeä»¥åŠå…³è”å¼å®¹å™¨mapï¼Œsetï¼Œunordered_mapï¼Œunordered_setï¼ŒåŒºåˆ«æ˜¯è¿™äº›å®¹å™¨éƒ½ç»§æ‰¿è‡ªTObjectã€‚
+±¾³ÌĞò¼Æ»®ÊµÏÖSTLÖĞµÄ¸÷ÖÖÈİÆ÷£¬°üÀ¨ĞòÁĞÊ½ÈİÆ÷vector£¬list£¬dequeÒÔ¼°¹ØÁªÊ½ÈİÆ÷map£¬set£¬unordered_map£¬unordered_set£¬Çø±ğÊÇÕâĞ©ÈİÆ÷¶¼¼Ì³Ğ×ÔTObject¡£
 */
 class TObject {
 public:
-	//é›¶å‡½æ•°è¡¨ç¤ºè¯¥å‡½æ•°åœ¨å½“å‰ç±»ä¸­ä¸ç”¨è¢«å®ç°ï¼ŒåŒæ—¶æ„å‘³ç€è¯¥ç±»ä¸èƒ½å®ä¾‹åŒ–ï¼›è™šå‡½æ•°æ„å‘³ç€è¯¥å‡½æ•°åœ¨å­ç±»ä¸­å¯ä»¥æœ‰ä¸åŒçš„å®ç°ï¼›
+	//Áãº¯Êı±íÊ¾¸Ãº¯ÊıÔÚµ±Ç°ÀàÖĞ²»ÓÃ±»ÊµÏÖ£¬Í¬Ê±ÒâÎ¶×Å¸ÃÀà²»ÄÜÊµÀı»¯£»Ğéº¯ÊıÒâÎ¶×Å¸Ãº¯ÊıÔÚ×ÓÀàÖĞ¿ÉÒÔÓĞ²»Í¬µÄÊµÏÖ£»
 	virtual void show() = 0;
-	//å½“ä¸€ä¸ªç±»æœ‰å­ç±»æ—¶ï¼Œè¯¥ç±»çš„ææ„å‡½æ•°å¿…é¡»æ˜¯è™šå‡½æ•°ï¼Œå¦åˆ™å­ç±»å¯¹è±¡è¢«åˆ é™¤æ—¶ï¼Œå­ç±»çš„ææ„å‡½æ•°ä¸ä¼šè¢«è°ƒç”¨ã€‚
-	//æœ‰äº†è™šææ„å‡½æ•°ï¼Œå­ç±»å¯¹è±¡ææ„æ—¶ï¼Œå…ˆè°ƒç”¨å­ç±»çš„ææ„å‡½æ•°ï¼Œå†è°ƒç”¨çˆ¶ç±»çš„ææ„å‡½æ•°ã€‚
-	//ä¿é™©èµ·è§ï¼Œä¸ç®¡ä¸‰ä¸ƒäºŒåä¸€ï¼Œè§åˆ°ææ„å‡½æ•°ï¼Œå°±åŠ ä¸€ä¸ªvirtualï¼Œè‚¯å®šæ²¡é”™ã€‚
+	//µ±Ò»¸öÀàÓĞ×ÓÀàÊ±£¬¸ÃÀàµÄÎö¹¹º¯Êı±ØĞëÊÇĞéº¯Êı£¬·ñÔò×ÓÀà¶ÔÏó±»É¾³ıÊ±£¬×ÓÀàµÄÎö¹¹º¯Êı²»»á±»µ÷ÓÃ¡£
+	//ÓĞÁËĞéÎö¹¹º¯Êı£¬×ÓÀà¶ÔÏóÎö¹¹Ê±£¬ÏÈµ÷ÓÃ×ÓÀàµÄÎö¹¹º¯Êı£¬ÔÙµ÷ÓÃ¸¸ÀàµÄÎö¹¹º¯Êı¡£
+	//±£ÏÕÆğ¼û£¬²»¹ÜÈıÆß¶şÊ®Ò»£¬¼ûµ½Îö¹¹º¯Êı£¬¾Í¼ÓÒ»¸övirtual£¬¿Ï¶¨Ã»´í¡£
 	virtual ~TObject() { 
 		cout << "TObject destruct!\n";
 	}
@@ -69,14 +69,14 @@ public:
 		i = a;
 	}
 	virtual ~TInt(){
-		cout << i << "ï¼Œ TInt destruct.\n";
+		cout << i << "£¬ TInt destruct.\n";
 	}
 private:
 	int i;
 };
 
-//é•¿å­—ç¬¦ä¸²ã€‚ç”¨lenå‚¨å­˜å­—ç¬¦ä¸²é•¿åº¦ï¼Œè¿™æ ·é¿å…äº†è¯»è€…çš„ç¨‹åºä¸­å¤šæ¬¡ç”¨strlenè®¡ç®—é•¿åº¦
-//å¤§è‡´ä¸Šï¼Œå­—ç¬¦ä¸²è¶Šé•¿ï¼Œéœ€è¦ç”¨strlençš„åœ°æ–¹è¶Šå¤šï¼ŒTStringçš„å¥½å¤„è¶Šæ˜æ˜¾ã€‚
+//³¤×Ö·û´®¡£ÓÃlen´¢´æ×Ö·û´®³¤¶È£¬ÕâÑù±ÜÃâÁË¶ÁÕßµÄ³ÌĞòÖĞ¶à´ÎÓÃstrlen¼ÆËã³¤¶È
+//´óÖÂÉÏ£¬×Ö·û´®Ô½³¤£¬ĞèÒªÓÃstrlenµÄµØ·½Ô½¶à£¬TStringµÄºÃ´¦Ô½Ã÷ÏÔ¡£
 
 class TString : TObject {
 public:
@@ -98,7 +98,7 @@ public:
 		strcpy(str, p);
 		str[len] = '\0';
 	}
-	//æ³¨æ„ï¼šå¤åˆ¶æ„é€ å‡½æ•°å‚æ•°å‰è¦åŠ ä¸Šâ€œ&"
+	//×¢Òâ£º¸´ÖÆ¹¹Ôìº¯Êı²ÎÊıÇ°Òª¼ÓÉÏ¡°&"
 	TString(TString& s) {
 		str = (char *)malloc(s.GetLen() + 1);
 		if (str == NULL) {
@@ -133,8 +133,8 @@ public:
 		str = tmp;
 	}
 private:
-	char *str; //ä»¥\0ç»“å°¾ï¼Œä¸­æ–‡å­—ç¬¦ç”¨ä¸¤ä¸ªå­—èŠ‚ä¿å­˜
-	int len;	//å­—ç¬¦ä¸²é•¿åº¦ï¼Œä¸åŒ…æ‹¬\0ï¼Œ
+	char *str; //ÒÔ\0½áÎ²£¬ÖĞÎÄ×Ö·ûÓÃÁ½¸ö×Ö½Ú±£´æ
+	int len;	//×Ö·û´®³¤¶È£¬²»°üÀ¨\0£¬
 };
 
 template <class T, class U> 
@@ -150,12 +150,12 @@ private:
 };
 
 /*
-stlå®¹å™¨ä¸­end()æ€»æ˜¯è¿”å›æœ€åä¸€é¡¹çš„ä¸‹ä¸€é¡¹ã€‚
-STLé‡Œå®ç°äº†å†…å­˜æ± ï¼Œé€šè¿‡å†…å­˜æ± æ¥ç”³è¯·é‡Šæ”¾å†…å­˜ï¼Œå…¶æ€æƒ³æ˜¯ä¸€æ¬¡ç”³è¯·å¤§å—å†…å­˜ï¼Œç”±ç”¨æˆ·ç¨‹åºç®¡ç†è¿™ä¸€å¤§å—å†…å­˜ï¼Œå½“ç¨‹åºéœ€è¦å†…å­˜æ—¶ï¼Œä»ç”¨æˆ·ç¨‹åºç®¡ç†çš„å†…å­˜æ± ä¸­ç”³è¯·ï¼Œä¸éœ€è¦çš„å†…å­˜é‡Šæ”¾åˆ°å†…å­˜æ± é‡Œä¾›ä¸‹æ¬¡ä½¿ç”¨ï¼Œè€Œå¹¶æ²¡æœ‰å½’è¿˜ç»™æ“ä½œç³»ç»Ÿï¼Œä¹Ÿå°±æ˜¯è¯´å…¶ä»–ç¨‹åºå¾—ä¸åˆ°æœ¬ç¨‹åºå·²ç»é‡Šæ”¾çš„å†…å­˜ï¼Œé™¤éæœ¬è¿›ç¨‹ç»“æŸï¼Œå†…å­˜æ± å½’è¿˜ç»™æ“ä½œç³»ç»Ÿã€‚
+stlÈİÆ÷ÖĞend()×ÜÊÇ·µ»Ø×îºóÒ»ÏîµÄÏÂÒ»Ïî¡£
+STLÀïÊµÏÖÁËÄÚ´æ³Ø£¬Í¨¹ıÄÚ´æ³ØÀ´ÉêÇëÊÍ·ÅÄÚ´æ£¬ÆäË¼ÏëÊÇÒ»´ÎÉêÇë´ó¿éÄÚ´æ£¬ÓÉÓÃ»§³ÌĞò¹ÜÀíÕâÒ»´ó¿éÄÚ´æ£¬µ±³ÌĞòĞèÒªÄÚ´æÊ±£¬´ÓÓÃ»§³ÌĞò¹ÜÀíµÄÄÚ´æ³ØÖĞÉêÇë£¬²»ĞèÒªµÄÄÚ´æÊÍ·Åµ½ÄÚ´æ³ØÀï¹©ÏÂ´ÎÊ¹ÓÃ£¬¶ø²¢Ã»ÓĞ¹é»¹¸ø²Ù×÷ÏµÍ³£¬Ò²¾ÍÊÇËµÆäËû³ÌĞòµÃ²»µ½±¾³ÌĞòÒÑ¾­ÊÍ·ÅµÄÄÚ´æ£¬³ı·Ç±¾½ø³Ì½áÊø£¬ÄÚ´æ³Ø¹é»¹¸ø²Ù×÷ÏµÍ³¡£
 */
 
 /*
-åŸºæœ¬æŒ‰ç…§stl vectorå®ç°ã€‚Vectoråˆ†é…å†…å­˜æˆå€å¢é•¿ã€‚
+»ù±¾°´ÕÕstl vectorÊµÏÖ¡£Vector·ÖÅäÄÚ´æ³É±¶Ôö³¤¡£
 */
 template <class T>
 class TVector: TObject {
@@ -165,12 +165,12 @@ public:
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
 	}
 	TVector() {
-		// æ–°C++ä¸­newå¤±è´¥ä¼šæŠ›å‡ºä¸€ä¸ªå¼‚å¸¸å¯¹è±¡ï¼Œä½†æ˜¯C++ä¹Ÿæä¾›äº†è€å¼çš„é€šè¿‡è¿”å›å€¼æ˜¯å¦ä¸ºNULLæ¥åˆ¤æ–­å†…å­˜æ˜¯å¦ç”³è¯·æˆåŠŸã€‚
-		//è¿™ä¸ªå†…å­˜ç”³è¯·æ“ä½œç¬¦å‡½æ•°ä¸ºï¼šnew(std::nothrow)ï¼Œæˆ‘è¿˜æ˜¯å–œæ¬¢ä¼ ç»Ÿçš„ç©ºæŒ‡é’ˆåˆ¤æ–­æ–¹å¼ï¼Œä¸å–œæ¬¢æŠ›å‡ºå¼‚å¸¸å¯¹è±¡å¤„ç†æ–¹å¼ã€‚
+		// ĞÂC++ÖĞnewÊ§°Ü»áÅ×³öÒ»¸öÒì³£¶ÔÏó£¬µ«ÊÇC++Ò²Ìá¹©ÁËÀÏÊ½µÄÍ¨¹ı·µ»ØÖµÊÇ·ñÎªNULLÀ´ÅĞ¶ÏÄÚ´æÊÇ·ñÉêÇë³É¹¦¡£
+		//Õâ¸öÄÚ´æÉêÇë²Ù×÷·ûº¯ÊıÎª£ºnew(std::nothrow)£¬ÎÒ»¹ÊÇÏ²»¶´«Í³µÄ¿ÕÖ¸ÕëÅĞ¶Ï·½Ê½£¬²»Ï²»¶Å×³öÒì³£¶ÔÏó´¦Àí·½Ê½¡£
 		finish = start =  new(std::nothrow) T;
-		//åˆ†é…å†…å­˜å¤±è´¥,è¿™é‡Œéœ€è¦æ”¹æ­£ï¼Œnewå¤±è´¥ä¸æ˜¯è¿”å›NULLï¼Œè€Œæ˜¯æŠ›å‡ºå¼‚å¸¸ã€‚
+		//·ÖÅäÄÚ´æÊ§°Ü,ÕâÀïĞèÒª¸ÄÕı£¬newÊ§°Ü²»ÊÇ·µ»ØNULL£¬¶øÊÇÅ×³öÒì³£¡£
 		if (start == NULL) {
-			//è¿™é‡Œæœ€å¥½æ‰“å°åˆ°logæ–‡ä»¶ï¼Œå› ä¸ºæœ‰å¯èƒ½æ²¡æœ‰console
+			//ÕâÀï×îºÃ´òÓ¡µ½logÎÄ¼ş£¬ÒòÎªÓĞ¿ÉÄÜÃ»ÓĞconsole
 			cout << "new(std::nothrow) T fail, cause TVector constructor fail.\n";
 			return;
 		}
@@ -181,28 +181,28 @@ public:
 	}
 	void push_back(T t) {
 		if (finish < end_of_storage) {
-			//è¿˜æœ‰ç©ºä½™ç©ºé—´ï¼Œä¸‹é¢è¯­å¥è¦æ±‚class Tå®ç°äº†operator =
+			//»¹ÓĞ¿ÕÓà¿Õ¼ä£¬ÏÂÃæÓï¾äÒªÇóclass TÊµÏÖÁËoperator =
 			*finish = t;
 			finish++;
 		} else {
-			//æ­¤æ—¶ï¼Œfinish == end_of_storage, è¡¨ç¤ºç©ºé—´å·²æ»¡ï¼Œcapacityå’Œsizeä¸€æ ·å¤§ã€‚
+			//´ËÊ±£¬finish == end_of_storage, ±íÊ¾¿Õ¼äÒÑÂú£¬capacityºÍsizeÒ»Ñù´ó¡£
 			 int c = capacity();
 			 
-			//é‡æ–°åˆ†é…åŸæ¥2å€å¤§å°çš„å†…å­˜
+			//ÖØĞÂ·ÖÅäÔ­À´2±¶´óĞ¡µÄÄÚ´æ
 			T * nstart = new(std::nothrow) T[2 * c];
-			//åˆ†é…å†…å­˜å¤±è´¥
+			//·ÖÅäÄÚ´æÊ§°Ü
 			if (nstart == NULL) {
-				//è¿™é‡Œæœ€å¥½æ‰“å°åˆ°logæ–‡ä»¶ï¼Œå› ä¸ºæœ‰å¯èƒ½æ²¡æœ‰console
+				//ÕâÀï×îºÃ´òÓ¡µ½logÎÄ¼ş£¬ÒòÎªÓĞ¿ÉÄÜÃ»ÓĞconsole
 				cout << "new(std::nothrow) T[2*c] fail, cause push_back fail.\n";
 				return;
 			}
 			
-			//å¤åˆ¶æ—§å†…å­˜åˆ°æ–°å†…å­˜, å¯èƒ½éœ€è¦æ‹·è´æ„é€ 
+			//¸´ÖÆ¾ÉÄÚ´æµ½ĞÂÄÚ´æ, ¿ÉÄÜĞèÒª¿½±´¹¹Ôì
 			//todo
 			memcpy(nstart, start, c * sizeof(T));
 			delete [] start;
 			
-			//é‡ç½®å„é¡¹æŒ‡é’ˆå€¼
+			//ÖØÖÃ¸÷ÏîÖ¸ÕëÖµ
 			start = nstart;
 			finish = start + c;
 			*finish = t;
@@ -216,18 +216,18 @@ public:
 	T * end() {
 		return finish;
 	}
-	/*å¯åˆ†é…ç©ºé—´æ€»å®¹é‡*/
+	/*¿É·ÖÅä¿Õ¼ä×ÜÈİÁ¿*/
 	int capacity() {
 		return end_of_storage - start;
 	}
-	/**å·²å ç”¨ç©ºé—´å¤§å°*/
+	/**ÒÑÕ¼ÓÃ¿Õ¼ä´óĞ¡*/
 	int size () {
 		return finish - start;
 	}
 private:
-	Iterator start;		//ä½¿ç”¨ç©ºé—´å¤´æŒ‡é’ˆ
-	Iterator finish;		//ä½¿ç”¨ç©ºé—´å°¾æŒ‡é’ˆ
-	Iterator end_of_storage;		//æ€»ç©ºé—´å°¾æŒ‡é’ˆ
+	Iterator start;		//Ê¹ÓÃ¿Õ¼äÍ·Ö¸Õë
+	Iterator finish;		//Ê¹ÓÃ¿Õ¼äÎ²Ö¸Õë
+	Iterator end_of_storage;		//×Ü¿Õ¼äÎ²Ö¸Õë
 };
 
 
@@ -238,14 +238,14 @@ struct _list_node {
 	struct _list_node<T> *next;
 };
 
-//åŒå‘é“¾è¡¨ï¼Œèƒ½å¾ˆå¿«åœ¨ä»»æ„ä½ç½®æ’å…¥èŠ‚ç‚¹ã€‚
+//Ë«ÏòÁ´±í£¬ÄÜºÜ¿ìÔÚÈÎÒâÎ»ÖÃ²åÈë½Úµã¡£
 template <class T>
 class TList: TObject {
 public:
 	struct	Iterator {
-		struct _list_node<T> *node; //nodeæŒ‡å‘èŠ‚ç‚¹
+		struct _list_node<T> *node; //nodeÖ¸Ïò½Úµã
 		Iterator(struct _list_node<T> *x):node(x) {};
-		//æ¥ä¸‹é‡Œå®ç°è¿­ä»£å™¨çš„å„ç§operator
+		//½ÓÏÂÀïÊµÏÖµü´úÆ÷µÄ¸÷ÖÖoperator
 		T operator *() {
 			return node->t;
 		}
@@ -268,20 +268,20 @@ public:
 		}
 	}
 	TList() {
-		//nodeä¸ºç©ºèŠ‚ç‚¹ï¼Œprevå’Œnextéƒ½æŒ‡å‘è‡ªå·±
+		//nodeÎª¿Õ½Úµã£¬prevºÍnext¶¼Ö¸Ïò×Ô¼º
 		node = create_node(0);
 		node->next = node;
 		node->prev = node;
 	}
 	virtual ~TList() {
-		//tmpæŒ‡å‘å½“å‰é“¾è¡¨çš„æœ€åä¸€ä¸ªèŠ‚ç‚¹ï¼Œnodeä¸ºæœ€åä¸€ä¸ªèŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªç©ºèŠ‚ç‚¹ã€‚
+		//tmpÖ¸Ïòµ±Ç°Á´±íµÄ×îºóÒ»¸ö½Úµã£¬nodeÎª×îºóÒ»¸ö½ÚµãµÄÏÂÒ»¸ö¿Õ½Úµã¡£
 		struct _list_node<T> *tmp;
 		while (1) {
 			tmp = node->prev;	
 			
 			if (tmp == node) break;
 			
-			//å°†tmpä»é“¾è¡¨ä¸­æ–­å¼€
+			//½«tmp´ÓÁ´±íÖĞ¶Ï¿ª
 			tmp->prev->next = node;
 			node->prev = tmp->prev;
 			
@@ -289,24 +289,24 @@ public:
 		}
 		free(node);
 	}
-	//åœ¨currè¿­ä»£å™¨æŒ‡å‘çš„èŠ‚ç‚¹å‰æ’å…¥æ–°èŠ‚ç‚¹
+	//ÔÚcurrµü´úÆ÷Ö¸ÏòµÄ½ÚµãÇ°²åÈëĞÂ½Úµã
 	Iterator insert(Iterator curr, T t) {
 		struct _list_node<T> * tmp =  create_node(t);
-		//è®¾ç½®tmpçš„nextå’ŒprevåŸŸ
+		//ÉèÖÃtmpµÄnextºÍprevÓò
 		tmp->next = curr.node;
 		tmp->prev = curr.node->prev;
 		
-		//tmpå‰ä¸€ä¸ªèŠ‚ç‚¹çš„nextåŸŸè®¾ä¸ºtmp
+		//tmpÇ°Ò»¸ö½ÚµãµÄnextÓòÉèÎªtmp
 		curr.node->prev->next = tmp;
 		
-		//currèŠ‚ç‚¹çš„prevåŸŸè®¾ä¸ºtmp
+		//curr½ÚµãµÄprevÓòÉèÎªtmp
 		curr.node->prev = tmp;
 		
-		//è¿”å›æ–°æ’å…¥çš„èŠ‚ç‚¹ï¼Œå°†è°ƒç”¨Iteratorçš„æ„é€ å‡½æ•°ã€‚
+		//·µ»ØĞÂ²åÈëµÄ½Úµã£¬½«µ÷ÓÃIteratorµÄ¹¹Ôìº¯Êı¡£
 		return tmp;
 	}
 	Iterator begin() {
-		//TListå‘ˆç¯çŠ¶ï¼Œé¦–å°¾ç›¸è¿ï¼Œå°¾æŒ‡é’ˆnodeçš„nextåŸŸå³ä¸ºé¦–æŒ‡é’ˆã€‚
+		//TList³Ê»·×´£¬Ê×Î²ÏàÁ¬£¬Î²Ö¸ÕënodeµÄnextÓò¼´ÎªÊ×Ö¸Õë¡£
 		return node->next; 
 	}
 	Iterator end() {
@@ -323,7 +323,7 @@ private:
 		
 		return tmp;
 	}
-	struct _list_node<T> * node; //nodeæŒ‡å‘æœ€åä¸€ä¸ªèŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+	struct _list_node<T> * node; //nodeÖ¸Ïò×îºóÒ»¸ö½ÚµãµÄÏÂÒ»¸ö½Úµã
 };
 
 
@@ -343,19 +343,21 @@ struct  MapNode {
     struct MapNode * right;
 };
 
-/*STL mapç”¨çº¢é»‘æ ‘å®ç°ï¼Œå¤ªå¤æ‚ï¼Œæˆ‘ä»¬ç”¨Btreeã€BSTæˆ–è€…AVLtreeå®ç°ï¼Œæ’åºçš„mapå’Œset*/
+/*STL mapÓÃºìºÚÊ÷ÊµÏÖ£¬Ì«¸´ÔÓ£¬ÎÒÃÇÓÃBtree¡¢BST»òÕßAVLtreeÊµÏÖ£¬ÅÅĞòµÄmapºÍset*/
 
 template <class T, class U>
 class TMap: TObject {
 public:
-	//TMapè¿­ä»£å™¨ï¼Œè¿”å›æŒ‡å‘æŸä¸ªèŠ‚ç‚¹çš„æŒ‡é’ˆã€‚
-	//æ€è€ƒè¦å®ç°é‚£äº›æ“ä½œç¬¦
+	//TMapµü´úÆ÷£¬·µ»ØÖ¸ÏòÄ³¸ö½ÚµãµÄÖ¸Õë¡£
+	//Ë¼¿¼ÒªÊµÏÖÄÇĞ©²Ù×÷·û
 	class ITerator {
+	private:
 		struct  MapNode<T, U>* node;
-		//è¿­ä»£å™¨æ„é€ å‡½æ•°
+	public:
+		//µü´úÆ÷¹¹Ôìº¯Êı
 		ITerator(struct  MapNode<T, U> * p){node = p;}
-		struct  MapNode<T, U> operator *() {
-			return (*node);
+		struct  MapNode<T, U> * operator *(class ITerator p) {
+			return (p.node);
 		}
 	};
 	
@@ -367,11 +369,11 @@ public:
 	
     virtual ITerator Insert(T t, U u) = 0;
 	
-	virtual find(T& t);
+	virtual U find(T& t);
     virtual int Traver() = 0;	
     virtual void Delete(T t) = 0;
 	
-	//æŠŠèŠ‚ç‚¹å†™åˆ°BSPMapNodeToDiskç»“æ„ä¸­
+	//°Ñ½ÚµãĞ´µ½BSPMapNodeToDisk½á¹¹ÖĞ
     virtual void Write() = 0;
 	
 	virtual ~TMap() {
@@ -381,9 +383,9 @@ public:
 
 
 /* 
-* DiskNodeç»“æ„æ˜¯è¦å†™åˆ°ç£ç›˜ä¸Šçš„
-* äºŒå‰æœç´¢æ ‘ä¸ºä»€ä¹ˆè¦å†™åˆ°ç£ç›˜æ–‡ä»¶ï¼Ÿè¿™æ˜¯æ•°æ®åº“ç´¢å¼•çš„åŸºç¡€ï¼Œæ•°æ®åº“ç´¢å¼•å°±æ˜¯å°†å„ç§å¹³è¡¡æ ‘å†™åˆ°ç£ç›˜ä¿å­˜ä¸ºç´¢å¼•æ–‡ä»¶ï¼Œé€šè¿‡æŸ¥æ‰¾ç´¢å¼•æ–‡ä»¶æ¥åŠ å¿«çš„è¡¨çš„æŸ¥è¯¢ã€‚
-* å¯¹æ•°æ®åº“è¡¨ä¸­çš„æŸä¸ªåˆ—å»ºç«‹ç´¢å¼•ï¼Œå¯èƒ½åªéœ€è¦keyï¼Œä¸éœ€è¦valueã€‚
+* DiskNode½á¹¹ÊÇÒªĞ´µ½´ÅÅÌÉÏµÄ
+* ¶ş²æËÑË÷Ê÷ÎªÊ²Ã´ÒªĞ´µ½´ÅÅÌÎÄ¼ş£¿ÕâÊÇÊı¾İ¿âË÷ÒıµÄ»ù´¡£¬Êı¾İ¿âË÷Òı¾ÍÊÇ½«¸÷ÖÖÆ½ºâÊ÷Ğ´µ½´ÅÅÌ±£´æÎªË÷ÒıÎÄ¼ş£¬Í¨¹ı²éÕÒË÷ÒıÎÄ¼şÀ´¼Ó¿ìµÄ±íµÄ²éÑ¯¡£
+* ¶ÔÊı¾İ¿â±íÖĞµÄÄ³¸öÁĞ½¨Á¢Ë÷Òı£¬¿ÉÄÜÖ»ĞèÒªkey£¬²»ĞèÒªvalue¡£
 */
 
 template <class T, class U>
@@ -392,15 +394,14 @@ struct  MapNodeToDisk{
     U   value;
     int left;
     int right;
-	int	offset;	// è¡¨è®°å½•åç§»é‡ï¼ŒæŒ‡å‘å¯¹åº”çš„æ•°æ®åº“è¡¨ä¸­çš„è®°å½•ã€‚
+	int	offset;	// ±í¼ÇÂ¼Æ«ÒÆÁ¿£¬Ö¸Ïò¶ÔÓ¦µÄÊı¾İ¿â±íÖĞµÄ¼ÇÂ¼¡£
 };
 
 
 
-/* Binary Search Tree äºŒå‰æœç´¢æ ‘*/
-
+/* Binary Search Tree ¶ş²æËÑË÷Ê÷*/
 template <class T, class U>
-class TBSTMap:TMap<T, U>{
+class TBSTMap: TMap<T, U> {
 public:
     TBSTMap():root(NULL){}        
     ~TBSTMap() {
@@ -412,11 +413,10 @@ public:
 	ITerator Insert(T t, U u) {
 		return InsertNode(root, t, u);
 	}
-	//å…³è”å¼å®¹å™¨éœ€è¦è‡ªå·±å®ç°Findï¼Œè€Œä¸ç”¨å…¨å±€çš„TFind
-	U& Find(T& t)
-	{
+	//¹ØÁªÊ½ÈİÆ÷ĞèÒª×Ô¼ºÊµÏÖFind£¬¶ø²»ÓÃÈ«¾ÖµÄTFind
+	U& Find(T& t) {
 		return (*FindKey(root, t)).u;
-	ï½
+	£ı
 
 private:
     class MapNode<T, U> * root;
@@ -440,7 +440,7 @@ private:
 		}
 	}
 
-	//èŠ‚ç‚¹ä¸ªæ•°
+	//½Úµã¸öÊı
 	int Traver()
 	{
 		return TraverTree(root);
@@ -457,11 +457,11 @@ private:
 		return m + n + 1;
 	}
 	
-    // nodeå‰é¢çš„&ä¸èƒ½å°‘ï¼Œå¦åˆ™ç¨‹åºé”™è¯¯ã€‚
+    // nodeÇ°ÃæµÄ&²»ÄÜÉÙ£¬·ñÔò³ÌĞò´íÎó¡£
 	class MapNode<T, U> * InsertNode(class MapNode<T, U> *&node, T t, U u)
 	{
 		if (node == NULL) {
-			//çˆ¶èŠ‚ç‚¹æŒ‡å‘æ–°å»ºå­èŠ‚ç‚¹
+			//¸¸½ÚµãÖ¸ÏòĞÂ½¨×Ó½Úµã
 			node = new MapNode<T, U>();
 			node->key = t;
 			node->value = u;
@@ -482,7 +482,7 @@ private:
 		}
 	}
 
-	//åˆ é™¤ä»¥nodeèŠ‚ç‚¹ä¸ºæ ¹èŠ‚ç‚¹çš„æ ‘
+	//É¾³ıÒÔnode½ÚµãÎª¸ù½ÚµãµÄÊ÷
     void DeleteNode(class MapNode<T, U> *node)
 	{
 		if (node->left) {
@@ -496,8 +496,8 @@ private:
 		}
 	}
 	
-	//ä»nodeä¸ºæ ¹èŠ‚ç‚¹çš„æ ‘ä¸­ï¼Œåˆ é™¤keyä¸ºtçš„èŠ‚ç‚¹ã€‚
-    // nodeå‰é¢çš„&ä¸èƒ½å°‘ï¼Œå¦åˆ™ç¨‹åºé”™è¯¯ã€‚
+	//´ÓnodeÎª¸ù½ÚµãµÄÊ÷ÖĞ£¬É¾³ıkeyÎªtµÄ½Úµã¡£
+    // nodeÇ°ÃæµÄ&²»ÄÜÉÙ£¬·ñÔò³ÌĞò´íÎó¡£
 	void DeleteNode(class MapNode<T, U> *&node, T t)
 	{
 		if (node == NULL) {
@@ -539,7 +539,7 @@ private:
 	}
 
 	/*
-	* è¿”å›å€¼è¡¨ç¤ºå³å­æ ‘æœ‰nä¸ªèŠ‚ç‚¹
+	* ·µ»ØÖµ±íÊ¾ÓÒ×ÓÊ÷ÓĞn¸ö½Úµã
 	*/
 	/*
 	int WriteNode(class MapNode<T, U> *node)
@@ -565,7 +565,7 @@ private:
 	
 		WriteNode(node->right);
 	
-		// è¿”å›å³å­æ ‘æ‹¥æœ‰çš„èŠ‚ç‚¹æ•°ç›®
+		// ·µ»ØÓÒ×ÓÊ÷ÓµÓĞµÄ½ÚµãÊıÄ¿
 		return TraverTree(node->right);
 	}
 	void Write()
@@ -573,6 +573,7 @@ private:
 		WriteNode(root);
 	}
 	*/
+	}
 };
 
 
@@ -586,7 +587,7 @@ class TSet: TObject {
     virtual int Traver() = 0;
     virtual void Delete(T t) = 0;
 	
-	//æŠŠèŠ‚ç‚¹å†™åˆ°BSPMapNodeToDiskç»“æ„ä¸­
+	//°Ñ½ÚµãĞ´µ½BSPMapNodeToDisk½á¹¹ÖĞ
     virtual void Write() = 0;
 	
 	virtual ~TSet() {
@@ -633,22 +634,24 @@ class TBtreeSet: TSet<T> {
 
 */
 
-/*æœªæ’åºçš„mapå’Œset*/
+/*Î´ÅÅĞòµÄmapºÍset*/
+/*
 template <class T, class U>
-class THashMap: TMap<T, U> {
+class THashMap: TMap {
 	void show() {
 		cout << "THashMap.\n";
 	}
 };
 
 template <class T>
-class THashSet: TSet<T> {
+class THashSet: TSet {
 	void show() {
 		cout << "THashSet.\n";
 	}
 };
+*/
 
-/*å…¨å±€å‡½æ•°ï¼ŒåŒ…æ‹¬å„ç§æ³›å‹ç®—æ³•å‡½æ•°*/
+/*È«¾Öº¯Êı£¬°üÀ¨¸÷ÖÖ·ºĞÍËã·¨º¯Êı*/
 
 void TLog(char *info) {
 	TString ts(_pgmptr);
@@ -656,10 +659,10 @@ void TLog(char *info) {
 	cout << ts.GetStr() << "\n"; 
 }
 	
-/*è¿”å›æŒ‡å®šå€¼çš„è¿­ä»£å™¨ï¼Œå¦‚æœæ²¡æœ‰æŸ¥åˆ°ï¼Œè¿”å›end
-å¦‚ä¸‹ä»£ç è¯´æ˜è¿­ä»£å™¨å¿…é¡»å®ç°operator ++ï¼Œoperator *å’Œoperator ï¼=
-è€ŒCæŒ‡é’ˆæŒ‡é’ˆ++ï¼Œ*å’Œï¼=ï¼Œå¯ä»¥å½“åšè¿­ä»£å™¨ä¼ å…¥,Tvectorä¸­çš„è¿­ä»£å™¨å³ä¸ºæ™®é€šæŒ‡é’ˆã€‚
-TFindå‡½æ•°åªé€‚ç”¨äºåºåˆ—å¼å®¹å™¨
+/*·µ»ØÖ¸¶¨ÖµµÄµü´úÆ÷£¬Èç¹ûÃ»ÓĞ²éµ½£¬·µ»Øend
+ÈçÏÂ´úÂëËµÃ÷µü´úÆ÷±ØĞëÊµÏÖoperator ++£¬operator *ºÍoperator £¡=
+¶øCÖ¸ÕëÖ¸Õë++£¬*ºÍ£¡=£¬¿ÉÒÔµ±×öµü´úÆ÷´«Èë,TvectorÖĞµÄµü´úÆ÷¼´ÎªÆÕÍ¨Ö¸Õë¡£
+TFindº¯ÊıÖ»ÊÊÓÃÓÚĞòÁĞÊ½ÈİÆ÷
 */
 template<class Iter, class T>
 Iter TFind(Iter begin, Iter end, const T &value) {
@@ -668,9 +671,7 @@ Iter TFind(Iter begin, Iter end, const T &value) {
 	return begin;
 }
 
-
-/*STLä½¿ç”¨å‡½æ•°å¯¹è±¡ï¼Œå®é™…ä¸Šï¼Œç›´æ¥ç”¨å‡½æ•°æ¨¡æ¿ï¼Œå°†å‡½æ•°ä¼ å…¥æ³›å‹ç®—æ³•ä½œä¸ºå‚æ•°å³å¯ã€‚*/
-template <class T>
-bool greater(T &a, T &b) {
+template<class T>
+bool TGreat(T &a, T &b) {
 	return (a > b);
 }

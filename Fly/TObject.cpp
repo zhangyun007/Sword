@@ -39,6 +39,7 @@ int main()
 
 	
 	//使用TObject *可以让vector和map实现Python中列表和字典的功能
+	
 	std::vector <TObject *> v;
 	
 	TObject * int1 = (TObject *)new TInt(3);
@@ -77,11 +78,12 @@ int main()
 	cout << *TFind(list1.begin(), list1.end(), 4);
 	cout << "\n";
 	
-/*
+	TLog("info");
+
 	//可能需要修改TString的operator =
 	TVector<TString> Tv1;
-	Tv1.push_back(TString("hello"));
-	Tv1.push_back(TString("C++"));
+	//Tv1.push_back(TString("hello"));
+	//Tv1.push_back(TString("C++"));
 	Tv1.show();		
 
 	for (auto &iter: Tv1) {
@@ -89,9 +91,9 @@ int main()
 		//iter.show();
 		//cout << iter.GetStr() << " ";
 	}
-*/
-	TLog("info");
-	
+
+
+	/*
 	class TBSTMap<int, float> bst;
 
     bst.Insert(20, 21.1);
@@ -116,13 +118,15 @@ int main()
     bst.Delete(16);
     cout << "++++++++++++" << endl;
     bst.Traver();
-
-    /*
+*/
+  
+  /*
     class TBSTMap<string, int> bst;
     bst.Insert("hello", 12);
     bst.Insert("zhangfei", 14);
     bst.Insert("liubei", 14);
-    bst.Traver(); */
+    bst.Traver(); 
+	*/
 
 	
 	return 0;
