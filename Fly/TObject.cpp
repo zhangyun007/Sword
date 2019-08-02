@@ -106,8 +106,8 @@ int main()
     bst.Insert(10, 5.1);
 	bst.Insert(17, 6.1);
 
-    bst.Find(12);
-    bst.Find(123);
+    cout << bst.Find(12);
+    cout << bst.Find(123);
 
     bst.Write();
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * http://en.cppreference.com/w/cpp/container/vector/erase
  */
 
@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 using namespace std;
-
 
 //智能指针，自动释放ptr指向的对象
 template <class T> 
@@ -344,13 +343,15 @@ struct  MapNode {
     struct MapNode * right;
 };
 
+/*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
+
 template <class T, class U>
 class TMap: TObject {
 public:
 	//TMap迭代器，返回指向某个节点的指针。
 	//思考要实现那些操作符
-	struct ITerator {
-		struct  MapNode<T, U> * node;
+	class ITerator {
+		struct  MapNode<T, U>* node;
 		//迭代器构造函数
 		ITerator(struct  MapNode<T, U> * p):node(p) {}
 		struct  MapNode<T, U> operator *() {
@@ -365,10 +366,9 @@ public:
 	virtual U& operator [](T& t) = 0;
 	
     virtual ITerator Insert(T t, U u) = 0;
-	virtual ITerator FindKey(ITerator iter, T t);
 	
-    virtual int Traver() = 0;
-	
+	virtual find(T& t);
+    virtual int Traver() = 0;	
     virtual void Delete(T t) = 0;
 	
 	//把节点写到BSPMapNodeToDisk结构中
@@ -396,10 +396,11 @@ struct  MapNodeToDisk{
 };
 
 
+
 /* Binary Search Tree 二叉搜索树*/
 
 template <class T, class U>
-class TBSTMap : TMap<T, U> {
+class TBSTMap:TMap<T, U>{
 public:
     TBSTMap():root(NULL){}        
     ~TBSTMap() {
@@ -411,6 +412,15 @@ public:
 	ITerator Insert(T t, U u) {
 		return InsertNode(root, t, u);
 	}
+	//关联式容器需要自己实现Find，而不用全局的TFind
+	U& Find(T& t)
+	{
+		return (*FindKey(root, t)).u;
+	｝
+
+private:
+    class MapNode<T, U> * root;
+	
 	ITerator FindKey(ITerator node, T t)
 	{
 		if (node == NULL) {
@@ -430,11 +440,8 @@ public:
 		}
 	}
 
-private:
-    class MapNode<T, U> * root;
-
 	//节点个数
-	int TBSTMap<T, U>::Traver()
+	int Traver()
 	{
 		return TraverTree(root);
 	}
@@ -476,7 +483,7 @@ private:
 	}
 
 	//删除以node节点为根节点的树
-    void DeleteNode(class MapNode<T, U> *node);
+    void DeleteNode(class MapNode<T, U> *node)
 	{
 		if (node->left) {
 			DeleteNode(node->left);
@@ -534,6 +541,7 @@ private:
 	/*
 	* 返回值表示右子树有n个节点
 	*/
+	/*
 	int WriteNode(class MapNode<T, U> *node)
 	{
 		if (node == NULL)
@@ -564,17 +572,14 @@ private:
 	{
 		WriteNode(root);
 	}
-
+	*/
 };
 
 
 template <class T>
 class TSet: TObject {
-	void show() {
-		cout << "TSet.\n";
-	}
 	virtual void show() {
-		cout << "TMap.\n";
+		cout << "TSet.\n";
 	}
     virtual void Insert(T t) = 0;
     virtual void Find(T t) = 0;
@@ -597,51 +602,51 @@ struct  SetNode{
     struct SetNode * right;
 };
 
+template <class T>
+class TBSTSet: TSet<T> {
+};
+
+
+/*
 
 template <class T, class U>
-class TBSTSet: TSet {
-};
-
-
-template <class T>
-class TAVLMap: TMap {
+class TAVLMap:TMap<T, U> {
 };
 
 template <class T>
-class TAVLSet: TSet {
+class TAVLSet:TSet<T> {
 };
 
-/*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
-template <class T>
-class TBtreeMap: TMap {
+template <class T, class U>
+class TBtreeMap: TMap<T, U> {
 	void show() {
 		cout << "TBtreeMap.\n";
 	}
 };
 
 template <class T>
-class TBtreeSet: TSet {
+class TBtreeSet: TSet<T> {
 	void show() {
 		cout << "TBtreeSet.\n";
 	}
 };
 
+*/
+
 /*未排序的map和set*/
-template <class T>
-class THashMap: TMap {
+template <class T, class U>
+class THashMap: TMap<T, U> {
 	void show() {
 		cout << "THashMap.\n";
 	}
 };
 
 template <class T>
-class THashSet: TSet {
+class THashSet: TSet<T> {
 	void show() {
 		cout << "THashSet.\n";
 	}
 };
-
-
 
 /*全局函数，包括各种泛型算法函数*/
 
@@ -654,6 +659,7 @@ void TLog(char *info) {
 /*返回指定值的迭代器，如果没有查到，返回end
 如下代码说明迭代器必须实现operator ++，operator *和operator ！=
 而C指针指针++，*和！=，可以当做迭代器传入,Tvector中的迭代器即为普通指针。
+TFind函数只适用于序列式容器
 */
 template<class Iter, class T>
 Iter TFind(Iter begin, Iter end, const T &value) {
@@ -668,5 +674,3 @@ template <class T>
 bool greater(T &a, T &b) {
 	return (a > b);
 }
-
-
