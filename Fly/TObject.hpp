@@ -168,7 +168,6 @@ public:
 		// 新C++中new失败会抛出一个异常对象，但是C++也提供了老式的通过返回值是否为NULL来判断内存是否申请成功。
 		//这个内存申请操作符函数为：new(std::nothrow)，我还是喜欢传统的空指针判断方式，不喜欢抛出异常对象处理方式。
 		finish = start =  new(std::nothrow) T;
-		//分配内存失败,这里需要改正，new失败不是返回NULL，而是抛出异常。
 		if (start == NULL) {
 			//这里最好打印到log文件，因为有可能没有console
 			cout << "new(std::nothrow) T fail, cause TVector constructor fail.\n";
@@ -387,7 +386,6 @@ public:
 * 二叉搜索树为什么要写到磁盘文件？这是数据库索引的基础，数据库索引就是将各种平衡树写到磁盘保存为索引文件，通过查找索引文件来加快的表的查询。
 * 对数据库表中的某个列建立索引，可能只需要key，不需要value。
 */
-
 template <class T, class U>
 struct  MapNodeToDisk{
     T   key;
@@ -396,8 +394,6 @@ struct  MapNodeToDisk{
     int right;
 	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
 };
-
-
 
 /* Binary Search Tree 二叉搜索树*/
 template <class T, class U>
@@ -426,7 +422,7 @@ private:
 		if (node == NULL) {
 			return NULL;
 		} else {
-			if (t < (*node).key) {
+			if (t < (*node).key) 
 				cout << t << " < " << (*node).key <<'\n';
 				return FindKey((*node).left, t);
 			} else if (t > (*node).key) {
@@ -436,7 +432,7 @@ private:
 				cout << t << " == " << (*node).key <<'\n';
 				return node;
 			}
-			return NULL;
+				return NULL;
 		}
 	}
 
@@ -533,11 +529,11 @@ private:
 		}
 	}
 	
+	
 	void Delete(T t)
 	{
 		DeleteNode(root, t);
 	}
-
 	/*
 	* 返回值表示右子树有n个节点
 	*/
@@ -573,7 +569,6 @@ private:
 		WriteNode(root);
 	}
 	*/
-	}
 };
 
 
