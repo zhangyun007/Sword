@@ -353,7 +353,7 @@ public:
 	class ITerator {
 		struct  MapNode<T, U>* node;
 		//迭代器构造函数
-		ITerator(struct  MapNode<T, U> * p):node(p) {}
+		ITerator(struct  MapNode<T, U> * p){node = p;}
 		struct  MapNode<T, U> operator *() {
 			return (*node);
 		}
