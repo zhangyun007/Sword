@@ -198,12 +198,14 @@ public:
 			
 			//复制旧内存到新内存, 可能需要拷贝构造
 			//todo
-			memcpy(nstart, start, c * sizeof(T));
+			memcpy(nstart, start, size() * sizeof(T));
 			delete [] start;
 			
 			//重置各项指针值
 			start = nstart;
 			finish = start + c;
+			
+			//下面语句要求class T实现了operator =
 			*finish = t;
 			finish++;
 			end_of_storage = start + 2*c;
@@ -224,9 +226,9 @@ public:
 		return finish - start;
 	}
 private:
-	Iterator start;		//使用空间头指针
-	Iterator finish;		//使用空间尾指针
-	Iterator end_of_storage;		//总空间尾指针
+	Iterator start;		//空间头指针
+	Iterator finish;		//空间尾指针
+	Iterator end_of_storage;	//当finish等于end_of_storage时，空间完全占满。
 };
 
 
