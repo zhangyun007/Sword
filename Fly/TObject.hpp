@@ -116,6 +116,9 @@ public:
 		}
 		return *this;
 	}
+	char * operator *(TString &s) {
+		return str;
+	}
 	virtual ~TString() {
 		free(str);
 	}
@@ -370,15 +373,14 @@ public:
 	
     virtual ITerator Insert(T t, U u) = 0;
 	
-	virtual U find(T& t);
-    virtual int Traver() = 0;	
-    virtual void Delete(T t) = 0;
+	virtual U Find(T t);
+    virtual void Delete(T t);
 	
 	//把节点写到BSPMapNodeToDisk结构中
-    virtual void Write() = 0;
+    //virtual void Write() = 0;
 	
 	virtual ~TMap() {
-		cout << "TMap \n";
+		cout << "~TMap \n";
 	}
 };
 
@@ -403,18 +405,25 @@ class TBSTMap: TMap<T, U> {
 public:
     TBSTMap():root(NULL){}        
     ~TBSTMap() {
-		DeleteNode(root);
+		DeleteTree(root);
 	}
+	
 	U& operator [](T& t) {
 		return (*FindKey(root, t)).u;
 	}
+	
 	ITerator Insert(T t, U u) {
 		return InsertNode(root, t, u);
 	}
+
 	//关联式容器需要自己实现Find，而不用全局的TFind
-	U& Find(T& t) {
+	U Find(T t) {
 		return (*FindKey(root, t)).u;
-	｝
+	}
+
+	void Delete(T t) {
+		DeleteNode(root, t);
+	}
 
 private:
     class MapNode<T, U> * root;
@@ -481,7 +490,7 @@ private:
 	}
 
 	//删除以node节点为根节点的树
-    void DeleteNode(class MapNode<T, U> *node)
+    void DeleteTree(class MapNode<T, U> *node)
 	{
 		if (node->left) {
 			DeleteNode(node->left);
@@ -531,11 +540,6 @@ private:
 		}
 	}
 	
-	
-	void Delete(T t)
-	{
-		DeleteNode(root, t);
-	}
 	/*
 	* 返回值表示右子树有n个节点
 	*/

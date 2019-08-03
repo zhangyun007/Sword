@@ -82,18 +82,14 @@ int main()
 
 	//可能需要修改TString的operator =
 	TVector<TString> Tv1;
+	//这句导致段错误
 	//Tv1.push_back(TString("hello"));
-	//Tv1.push_back(TString("C++"));
-	Tv1.show();		
-
-	for (auto &iter: Tv1) {
-		//下句导致程序段错误。
-		//iter.show();
-		//cout << iter.GetStr() << " ";
-	}
+	TVector<TString>::Iterator tmp;
+	for (tmp = Tv1.begin(); tmp != Tv1.end(); tmp++) {
+		cout << tmp->GetStr();
+	}	
 
 
-	/*
 	class TBSTMap<int, float> bst;
 
     bst.Insert(20, 21.1);
@@ -111,6 +107,7 @@ int main()
     cout << bst.Find(12);
     cout << bst.Find(123);
 
+/*
     bst.Write();
 
     cout << "------------" << endl;
