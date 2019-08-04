@@ -445,24 +445,7 @@ private:
 			}
 				return NULL;
 		}
-	}
-
-	//节点个数
-	int Traver()
-	{
-		return TraverTree(root);
-	}
-
-	int TraverTree(class MapNode<T, U> *node)
-	{
-		if (node == NULL) {
-			return 0;
-		}
-		int m = TraverTree(node->left);
-		cout << "key is " << node->key << " value is " << node->value << '\n';
-		int n = TraverTree(node->right);
-		return m + n + 1;
-	}
+	};
 	
     // node前面的&不能少，否则程序错误。
 	class MapNode<T, U> * InsertNode(class MapNode<T, U> *&node, T t, U u)
@@ -540,6 +523,24 @@ private:
 		}
 	}
 	
+	/*
+	//节点个数
+	int Traver()
+	{
+		return TraverTree(root);
+	}
+
+	int TraverTree(class MapNode<T, U> *node)
+	{
+		if (node == NULL) {
+			return 0;
+		}
+		int m = TraverTree(node->left);
+		cout << "key is " << node->key << " value is " << node->value << '\n';
+		int n = TraverTree(node->right);
+		return m + n + 1;
+	}
+	*/
 	/*
 	* 返回值表示右子树有n个节点
 	*/
