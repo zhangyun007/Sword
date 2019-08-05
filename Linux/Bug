@@ -1,0 +1,40 @@
+bash-4.1$ more float_test.c
+// 应该include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+
+int main()
+{
+        float f = atof("12.4");
+
+        printf("%f\n", atof("12.4"));
+        printf("%f\n", f);
+        printf("%f\n", atof("11.3"));
+
+        return 0;
+}
+bash-4.1$ gcc -O3 -g -o float_test float_test.c
+bash-4.1$ ./float_test
+0.000000
+0.000000
+0.000000
+
+另一台机器上:
+
+[linux@linuxlearn:linux_test]$ more float_test.c
+#include <math.h>
+#include <stdio.h>
+
+int main()
+{
+        float f = atof("12.4");
+        printf("%f\n", atof("12.4"));
+        printf("%f\n", f);
+        printf("%f\n", atof("12.4"));
+        return 0;
+}
+[linux@linuxlearn:linux_test]$ gcc -O3 -g -o float_test float_test.c
+[linux@linuxlearn:linux_test]$ ./float_test
+-0.016656
+576716.000000
+576716.000067
