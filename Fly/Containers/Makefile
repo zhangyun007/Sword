@@ -19,9 +19,6 @@ map1: map1.cpp
 map2: map2.cpp
 	$(CC) $(CFLAGS) -o $@ $+
 
-thread: thread.cpp
-	$(CC) $(CFLAGS) -o $@ $+  -lpthread
-
 clean:
 	rm -f a.out
-	rm -f set1 set2 map1 map2 thread
+	rm -f set1 set2 map1 map2
