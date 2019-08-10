@@ -6,10 +6,11 @@
 
 int main () {
   std::vector<int> myvector;
-  for (int i=1; i<10; ++i) myvector.push_back(i*10);
+  for (int i = 1; i < 10; ++i)
+	  myvector.push_back(i*10);
 
-  //为什么不和容器迭代器一样写成vector1<int>::Iterator iter呢？
+  // ostream_iterator是STL预定义的输出迭代器
   std::ostream_iterator<int> out_it (std::cout,", ");
-  std::copy ( myvector.begin(), myvector.end(), out_it );
+  std::copy (myvector.begin(), myvector.end(), out_it);
   return 0;
 }
