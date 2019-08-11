@@ -35,16 +35,16 @@ int main()
 	class Desk d;
 	class MyDesk m;
 
-	vector<class Desk> dv;
+	vector<class Desk *> dv;
 
 	d.desk();
 	m.desk();
 
-	dv.push_back(d);
-	dv.push_back(m);
+	dv.push_back(&d);
+	dv.push_back(&m);
 
 	for (unsigned int i=0; i < dv.size(); ++i) {
-		cout << "This is my first cpp " << dv[i].GetLen() << endl;
+		cout << "This is my first cpp " << dv[i]->GetLen() << endl;
 	}
 
 	return 0;
