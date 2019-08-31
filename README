@@ -15,9 +15,9 @@ test3ds123
 
 目录结构
 
-Python3		软件测试
+Python3		软件测试、数据可视化
 Php			网站建设
-Node/		Node.js，服务端程序 （基于node.js的http服务端web程序与Ngnix1/Apache + PhP做对比，）
+Node/		Node.js，服务端程序 （基于node.js的http服务端web程序与Ngnix/Apache + PhP做对比，）
 Fly/		C++/STL程序，用visual studio c++(cl.exe)编译。
 Linux
 	
