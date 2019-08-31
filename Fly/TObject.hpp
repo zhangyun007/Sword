@@ -40,8 +40,6 @@ private:
 TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
 结合vector和map，我们可以得到一个保存所有对象指针的vector和能保存任意类型key和value的map。
 接下来，我们实现自己的vector和map，继承自TObject。
-
-所有类继承自一个TObject类不是我原创，而是从Delphi的VCL库（一个优秀的面向对象库）中学到的。
 */
 
 /*
@@ -677,3 +675,7 @@ template<class T>
 bool TGreat(T &a, T &b) {
 	return (a > b);
 }
+template<class Iter, class T>
+void TSort(Iter begin, Iter end) {
+	
+｝
