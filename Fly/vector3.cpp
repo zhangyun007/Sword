@@ -22,11 +22,11 @@ int main ()
     it = vec.insert(it, 200);
     print_vec(vec);
  
-    vec.insert(it,2,300);
+    it = vec.insert(it,2,300);
     print_vec(vec);
  
     // "it" no longer valid, get a new one:
-    it = vec.begin();
+    //it = vec.begin();
  
     std::vector<int> vec2(2,400);
     vec.insert(it+2, vec2.begin(), vec2.end());

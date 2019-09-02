@@ -1,4 +1,4 @@
-#include <vector>
+﻿#include <vector>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -8,12 +8,22 @@ using namespace std;
 
 int main()
 {
-	vector<string> v;
+	vector<string> v = {"sort", "test", "command", "java"};
+	
 	string tmp;
-
-	while (getline(cin, tmp))
+	
+	//ctrl + Z结束输入
+	while (getline(cin, tmp)) {
 		v.push_back(tmp);
+	}
 
+/*
+	greater<string> test;
+	sort(v.begin(), v.end(), test);
+*/
+
+	//这里，greater<string>()是一个对象，()是构造函数。
 	sort(v.begin(), v.end(), greater<string>());
+	
 	copy(v.begin(), v.end(), ostream_iterator<string>(cout, "\n"));
 }
