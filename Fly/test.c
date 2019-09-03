@@ -6,11 +6,11 @@ int main()
 	int a;
 	float b;
 	
-	scanf("%s", &ch);
+	scanf("%c", &ch);
 	scanf("%d", &a);
 	scanf("%f", &b);
 	
-	printf("%s\n", ch);
+	printf("%c\n", ch);
 	printf("%d\n", a);
 	printf("%f\n", b);
 }
