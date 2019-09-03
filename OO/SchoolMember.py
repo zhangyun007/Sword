@@ -43,4 +43,4 @@ s = Student('Swaroop', 22, 75)
 members = [t, s]
 for member in members:
 	# 先调用父类成员函数，再调用子类成员函数
-	member.tell() # works for both Teachers and Students
+	member.tell()
