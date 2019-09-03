@@ -5,8 +5,6 @@
 //#include <unistd.h>
 #include <windows.h>
 
-
-
 //std::atomic_long total(0);
 //std::atomic<long> total(0);
 long total = 0;
