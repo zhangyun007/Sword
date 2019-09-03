@@ -1,7 +1,10 @@
 #include <iostream>
 #include <thread>
 #include <atomic>
-#include <unistd.h>
+
+//#include <unistd.h>
+#include <windows.h>
+
 
 
 //std::atomic_long total(0);
@@ -13,7 +16,8 @@ void thread_task()
 {
 	for (int i = 0; i < 100; i++) {
 		total +=1;
-		sleep(0.3);
+		//sleep(0.3);
+		Sleep(0.3);
 	}
 }
 
