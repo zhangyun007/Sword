@@ -28,14 +28,19 @@ class Student(SchoolMember):
 		SchoolMember.tell(self)
 		print("Marks: ", self.marks)
 
-# 打印SchollMember的父类，我们知道其父类为object，Python里所有的类都自动继承自object
+
+# 打印SchoolMember的父类，我们知道其父类为object，Python里所有的类都自动继承自object
 print(SchoolMember.__bases__) 
 print(Teacher.__bases__) 
 print(Student.__bases__) 
 
+
+# 先调用父类构造函数，再调用子类构造函数
 t = Teacher('Mrs. Shrividya', 40, 30000)
 s = Student('Swaroop', 22, 75)
-print # prints a blank line
+
+
 members = [t, s]
 for member in members:
+	# 先调用父类成员函数，再调用子类成员函数
 	member.tell() # works for both Teachers and Students

@@ -26,4 +26,7 @@ int main()
 	sort(v.begin(), v.end(), greater<string>());
 	
 	copy(v.begin(), v.end(), ostream_iterator<string>(cout, "\n"));
+	
+	auto p = find(v.begin(), v.end(), "test");
+	cout << *p << "\n";
 }
