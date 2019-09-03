@@ -1,4 +1,4 @@
-// ostream_iterator example
+﻿// ostream_iterator example
 #include <iostream>     // std::cout
 #include <iterator>     // std::ostream_iterator
 #include <vector>       // std::vector

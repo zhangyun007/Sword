@@ -1,5 +1,6 @@
 import threading
 
+# 线程数量
 cnt = 0
 mutex = threading.Lock()
 
@@ -14,10 +15,14 @@ l = []
 for i in range(100):
     l.append(threading.Thread(target=worker))
 
+print(cnt)
+
 for t in l:
     t.start()
+
+print(cnt)
 
 for t in l:
     t.join() 
 
-print(cnt)
+

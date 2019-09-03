@@ -1,3 +1,4 @@
+# 比arg[0]小的放左边，大的放右边。
 def qsort(arg):
     if(arg==[]): return []
     return qsort([i for i in arg[1:] if i<=arg[0]]) \
