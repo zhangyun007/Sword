@@ -1,4 +1,3 @@
-# Filename: inherit.py
 class SchoolMember:
 	'''Represents any school member.'''
 	def __init__(self, name, age):
@@ -28,6 +27,11 @@ class Student(SchoolMember):
 	def tell(self):
 		SchoolMember.tell(self)
 		print("Marks: ", self.marks)
+
+# 打印SchollMember的父类，我们知道其父类为object，Python里所有的类都自动继承自object
+print(SchoolMember.__bases__) 
+print(Teacher.__bases__) 
+print(Student.__bases__) 
 
 t = Teacher('Mrs. Shrividya', 40, 30000)
 s = Student('Swaroop', 22, 75)
