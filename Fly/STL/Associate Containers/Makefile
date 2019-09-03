@@ -5,7 +5,7 @@ CFLAGS:= -ofast -g -Wall -Werror --std=c++11
 CC = g++
 #CC = clang
 
-all: set1 set2 map1 map2 thread
+all: set1 set2 map1 map2 
 
 set1: set1.cpp
 	$(CC) $(CFLAGS) -o $@ $+
