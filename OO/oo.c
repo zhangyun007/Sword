@@ -17,10 +17,12 @@ typedef struct key_info
 	int (*init)(struct key_info *info);
 	int (*set_name)(struct key_info *info, const char *name);
 	int (*get_name)(struct key_info *info, char name[], int size);
+	
 	pthread_mutex_t lock;	
 	char name[128];
+	
 	int (*fun)(struct key_info *info, int x, int y);
-}KeyInfo;
+} KeyInfo;
  
 static int init(KeyInfo *info);
 static int set_name(KeyInfo *info, const char *name);
@@ -31,6 +33,7 @@ static int add(KeyInfo *info, int x, int y)
 {
 	return x + y;	
 }
+
 static int init(KeyInfo *info)
 {
 	assert(info != NULL);
@@ -38,6 +41,7 @@ static int init(KeyInfo *info)
 	info->init = init;
 	info->set_name = set_name;
 	info->get_name = get_name;
+	info->fun = add;
 	return pthread_mutex_init(&info->lock, NULL);
 }
  
@@ -63,21 +67,24 @@ int main()
 {
 /**	KeyInfo info;
 	info.fun = add;
-	printf("add(1 + 8) is %d\n", info.fun(&info, 1, 8));
 	info.set_name = set_name;
 	info.get_name = get_name;
 	info.set_name(&info, "chenyu");
 	char name[100];
 	info.get_name(&info, name, sizeof(name));
 	printf("info.get_name is %s\n", name);
+	printf("add(1 + 8) is %d\n", info.fun(&info, 1, 8));
 **/
 	KeyInfo info = {init};
 	info.init(&info);
+	
 	const char *name = "chenyu";
 	info.set_name(&info, name);
+	
 	char name_buf[100];
-	printf("sizeof(name_buf[100]) is %d\n", sizeof(name_buf));
 	info.get_name(&info, name_buf, sizeof(name_buf));
+	
 	printf("info.get_name is %s\n", name_buf);
+	
 	return 0;
 }
