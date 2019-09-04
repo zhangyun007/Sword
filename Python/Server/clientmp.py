@@ -32,8 +32,10 @@ def long_time_task(name):
 
 if __name__=='__main__':
     print('Parent process %s.' % os.getpid())
+	
     # 同时最多10个进程
     p = Pool(10)
+	
     # 产生500个进程
     for i in range(500):
         p.apply_async(long_time_task, args=(i,))
