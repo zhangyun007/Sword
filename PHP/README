@@ -1,6 +1,3 @@
-数学物理项目与网店项目公用用户名、密码，每个用户有自己的用户目录，目录下有math-physics目录，存放用户作图的文件。
-
-
 服务器端: nginx-1.14.2 + php-7.2.15-Win32-VC15-x64 + SQLite3
 
 
@@ -10,14 +7,14 @@
         # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
         #
         location ~ \.php$ {
-            root           E:\Project\Xianyue;
+            root           E:\Project\Sword\PHP;
             fastcgi_pass   127.0.0.1:9000;
             fastcgi_index  index.php;
             fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
             include        fastcgi_params;
         }
 
-即可解析E:\Project\Xianyue下的php文件
+即可解析E:\Project\Sword\PHP下的php文件
 
 
 

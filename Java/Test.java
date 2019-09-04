@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Test {
 	public static void main(String[] args) {
 		
+		//Pair<int> p = new Pair<>(1, 2); // compile error!
+
 		Collection<String> col=new ArrayList<String>();
 		col.add("abc");
 		col.add("bcd");
