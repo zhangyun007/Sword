@@ -4,4 +4,3 @@ test.exe:
 Clean: 
 	del *.obj 
 	del *.exe
-	del test.bmp
