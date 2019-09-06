@@ -4,9 +4,9 @@ bigmuls=[]
 x = (1, 2, 3, 4)
 y = (10, 15, 3, 22)
 for a in x:
-    for b in y:
-            if a * b > 25:
-                    bigmuls.append((a, b))
+	for b in y:
+		if a * b > 25:
+			bigmuls.append((a, b))
 print(bigmuls)
 
 print([(x,y) for x in (1,2,3,4) for y in (10,15,3,22) if x*y > 25]) 
