@@ -1,4 +1,5 @@
-package org.crazyit.app.service.personService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
   
 class PersonService {
 		private String name;
