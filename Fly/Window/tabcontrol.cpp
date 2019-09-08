@@ -33,7 +33,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
    hWnd = CreateWindowW(wc.lpszClassName, L"Tab control",
                   //WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
 				  WS_POPUP | WS_DLGFRAME | WS_VISIBLE,
-                  CW_USEDEFAULT, CW_USEDEFAULT, 380, 230, 0, 0, hInstance, 0);  
+                  CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, 0, 0, hInstance, 0);  
 	
 
 	//SW_MAXIMIZE，全屏幕显示（看不见底层的任务栏），不等于窗口最大化。
@@ -67,7 +67,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg,
             InitCommonControlsEx(&icex);
 
             hTab = CreateWindowW(WC_TABCONTROLW, NULL, WS_CHILD | WS_VISIBLE,
-                0, 0, 200, 150, hwnd,(HMENU) ID_TABCTRL, NULL, NULL);
+                0, 0, 1024, 768, hwnd,(HMENU) ID_TABCTRL, NULL, NULL);
 
             hEdit = CreateWindowW(WC_EDITW, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
                 250, 20, 100, 25, hwnd, (HMENU) ID_EDIT, NULL, NULL);
