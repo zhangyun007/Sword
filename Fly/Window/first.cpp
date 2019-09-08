@@ -50,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
         return -1;
     }
           
-    ShowWindow(hwnd, nShow);  
+	ShowWindow(hwnd, nShow);  
     UpdateWindow(hwnd);  
  
     MSG msg;  

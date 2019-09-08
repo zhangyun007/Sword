@@ -17,7 +17,8 @@ HWND hTab, hEdit;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, 
     PWSTR pCmdLine, int nCmdShow) {
-
+		
+	HWND                hWnd;
     MSG  msg ;    
     WNDCLASSW wc = {0};
     wc.lpszClassName = L"Tab control";
@@ -29,19 +30,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     RegisterClassW(&wc);
 	
 	// WS_DLGFRAME表示窗口不带标题栏
-    CreateWindowW(wc.lpszClassName, L"Tab control",
+   hWnd = CreateWindowW(wc.lpszClassName, L"Tab control",
                   //WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
 				  WS_POPUP | WS_DLGFRAME | WS_VISIBLE,
-                  100, 100, 380, 230, 0, 0, hInstance, 0);  
+                  CW_USEDEFAULT, CW_USEDEFAULT, 380, 230, 0, 0, hInstance, 0);  
 	
 
-    while (GetMessage(&msg, NULL, 0, 0)) {
-  
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
-    return (int) msg.wParam;
+	//SW_MAXIMIZE，全屏幕显示（看不见底层的任务栏），不等于窗口最大化。
+   ShowWindow(hWnd, SW_MAXIMIZE);
+   UpdateWindow(hWnd);
+   
+   while(GetMessage(&msg, NULL, 0, 0))
+   {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+   }
+   
+   return (int) msg.wParam;
 }
 
 
