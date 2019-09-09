@@ -1,4 +1,4 @@
-/*
+﻿/*
  * http://en.cppreference.com/w/cpp/container/vector/erase
  */
 
@@ -14,6 +14,7 @@ int main( )
     }
     std::cout << '\n';
 
+	//删除第一个元素，将后面所有的元素往前移动一位。
     c.erase(c.begin());
 
     for (auto &i : c) {
@@ -28,7 +29,7 @@ int main( )
     }
     std::cout << '\n';
 	
-	// 在堆内存里用vector
+	// 在Heap内存里用vector
 	std::vector<float> *v = new std::vector<float>;
 	v->push_back(2.4);
 	v->push_back(4.5);

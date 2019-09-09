@@ -4,6 +4,8 @@ using namespace std;
 
 int main()
 {
+	cout << sizeof(int *);
+	
 	list<char> coll;      // list container for character elements
 
 	// append elements from 'a' to 'z'

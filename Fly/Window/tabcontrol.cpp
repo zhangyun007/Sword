@@ -4,6 +4,8 @@
 
 #pragma comment(lib,"User32.lib")
 #pragma comment(lib,"ComCtl32.lib") 
+#pragma comment(lib, "gdiplus.lib") 
+#pragma comment(lib, "gdi32.lib")
 
 #define ID_TABCTRL 1
 #define ID_EDIT 2
@@ -23,7 +25,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     WNDCLASSW wc = {0};
     wc.lpszClassName = L"Tab control";
     wc.hInstance     = hInstance;
-    wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
+    //wc.hbrBackground = GetSysColorBrush(RGB(255, 0, 0));
+	//wc.hbrBackground = CreateSolidBrush(RGB(255, 0, 0));
+	wc.hbrBackground = CreateSolidBrush(RGB(0xff,0x0,0x0));
     wc.lpfnWndProc   = WindowProc;
     wc.hCursor       = LoadCursor(0, IDC_ARROW);
   
@@ -31,10 +35,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	
 	// WS_DLGFRAME表示窗口不带标题栏
    hWnd = CreateWindowW(wc.lpszClassName, L"Tab control",
-                  //WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
 				  WS_POPUP | WS_DLGFRAME | WS_VISIBLE,
                   CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, 0, 0, hInstance, 0);  
-	
+
 
 	//SW_MAXIMIZE，全屏幕显示（看不见底层的任务栏），不等于窗口最大化。
    ShowWindow(hWnd, SW_MAXIMIZE);
