@@ -4,50 +4,22 @@ Canvas和SVG的区别：
 http://www.cnblogs.com/best/p/6107565.html
 
 
-参考作图软件：
 
-绘制函数图像：https://www.desmos.com/
-
-在线作图工具： https://www.geogebra.org/
-
-http://www.peda.com/grafeq/
 软件介绍：http://www.matrix67.com/blog/archives/4447
+http://www.peda.com/grafeq/
 
 用Lua做了个绘制二元等式或不等式的图像的软件：
 http://www.cnblogs.com/rufi/archive/2011/06/28/GraphPlot.html
 
 
 
+数学作图软件：
 
-编程相关软件：
+绘制函数图像：https://www.desmos.com/
 
-Visual Studio C++ Community 2019:
-https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/
-下载安装C++相关的开发软件，进入Developer Command Prompt for VS 2019命令行下，进入Math-physics目录下，运行nmake生成可执行文件test.exe，运行nmake clean清除生成的文件。
-
-notepad++编辑器：https://notepad-plus-plus.org/
-默认的风格可能不是很喜欢，点击“设置/语言格式设置”，然后在”选择主题“选项里选择自己喜爱的主题；点击视图/自动换行。
-
-用git管理代码：
-
-git for windows镜像下载：
-https://github.com/waylau/git-for-win
-
-进入cmd中，运行：
-git clone https://github.com/zhangyun007/Math-Physics.git
-git config --global user.email "zhangxp147@qq.com"
-git config --global user.name "zhangyun007"
-  
-修改（增、删、改）文件后，进入项目根目录下运行：
-git add *
-git commit -a
-git push
-提交您的修改。
+在线作图工具： https://www.geogebra.org/
 
 
-C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
-https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
-hosts文件末尾添加：
-151.101.185.194 http://github.global.ssl.fastly.net 
-192.30.253.112 http://github.com
+
+

@@ -2,9 +2,6 @@ git for windows镜像下载：
 https://github.com/waylau/git-for-win
 
 git clone https://github.com/zhangyun007/Sword.git
-
-
-
 git config --global user.email "zhangxp147@qq.com"
 git config --global user.name "zhangyun007"
   
@@ -13,6 +10,17 @@ git add *
 git commit -a
 git push
 
+
+编程相关软件：
+
+Visual Studio C++ Community 2019:
+https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/
+下载安装C++相关的开发软件，进入Developer Command Prompt for VS 2019命令行下，进入Math-physics目录下，运行nmake生成可执行文件test.exe，运行nmake clean清除生成的文件。
+
+notepad++编辑器：https://notepad-plus-plus.org/
+默认的风格可能不是很喜欢，点击“设置/语言格式设置”，然后在”选择主题“选项里选择自己喜爱的主题；点击视图/自动换行。
+
+Visual Studio Code
 
 
 目录结构
@@ -23,10 +31,14 @@ Python3		软件测试、数据可视化、网站框架(Tornado, Django)
 Php			网站
 Fly/		C++/STL程序，用visual studio c++(cl.exe)编译
 Java		Java Swing, Spring框架。
-	
+
+
 C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
 https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
+hosts文件末尾添加：
+151.101.185.194 http://github.global.ssl.fastly.net 
+192.30.253.112 http://github.com
 
 
 程序设计语言的几个重要元素：
@@ -60,7 +72,6 @@ https://raw.githubusercontent.com/racaljk/hosts/master/hosts
 
 	C++这类静态类型语言，应当有泛型编程元素，在C++里表现为模板template，有模板函数和类模板。
 	
-
 	
 
 程序设计语言的抽象语法树(AST)，在Python语言中，似乎可以用一个dict字典数据结构表示，我们需要为树的每一个节点取一个名字（key），比如整个程序的key定为"program"，那么该字典即{"program":{...}}，这样，我们能写出一个解释器，读入程序源文件后，得到抽象语法树，也就是得到该字典数据结构，以后的一切优化，就在该字典数据结构上进行。
