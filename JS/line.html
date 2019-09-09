@@ -4,7 +4,9 @@
 		<meta charset="utf-8">
 		<title>Draw</title>
 		<style type="text/css">
-			body {
+			#btn {width: 50px;height: 50px;border-radius: 50%;border: none }
+			#eraseAllButton {width: 50px;height: 50px;border-radius: 50%;border: none }	
+			#body {
 				background: #eeeeee;
 			}
 			#controls {
@@ -43,6 +45,7 @@
 			<!-- 矢量箭头 -->
 			
 			<input type="button" name="eraseAllButton" id="eraseAllButton" value="清空画布" />
+			<br><br>
 			<p style="color: red;" id="message"></p>
 		</div>
 		<br><br>
@@ -55,6 +58,7 @@
 			<br><br>
 			点：  <p id="ptext" value=""></p>
 		</div>
+		<input type="button" value="按钮" id="btn">
 	</body>
 	<script type="text/javascript">
 	
