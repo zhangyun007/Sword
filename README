@@ -17,10 +17,12 @@ git push
 
 目录结构
 
-Python3		软件测试、数据可视化
-Php			网站建设
-Node/		Node.js，服务端程序 （基于node.js的http服务端web程序与Ngnix/Apache + PhP做对比，）
-Fly/		C++/STL程序，用visual studio c++(cl.exe)编译。
+Delphi		重点用于Windows桌面程序、数据库程序
+JS			重点用于Canvas画图，我们尝试使用JavaScript建立各种作图工具。
+Python3		软件测试、数据可视化、网站框架(Tornado, Django)
+Php			网站
+Fly/		C++/STL程序，用visual studio c++(cl.exe)编译
+Java		Java Swing, Spring框架。
 	
 C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
 https://raw.githubusercontent.com/racaljk/hosts/master/hosts
