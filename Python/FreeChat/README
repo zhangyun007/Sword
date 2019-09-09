@@ -1,0 +1,18 @@
+必须在Freebsd、Linux下运行chat.py，windows下tornado.listen引发NotImplementedError异常，意思是windows上listen函数未实现。
+
+Freebsd上运行python3.4 -m ensurepip安装pip(注意，运行pkg install py36-pip会出错)，然后运行pip3 install tornado
+
+安装pypy pip:
+wget https://bootstrap.pypa.io/get-pip.py
+pypy get-pip.py
+pypy pip install tornado
+
+注意，运行前需要修改chat.html里的服务器IP地址，修改chattest.py里的服务器IP地址。
+
+        FETCH_CMD=axel -n 30      //  -n 30 代表你使用多少个线程下载
+        DISABLE_SIZE=yes             //  建议设置为yes
+        MASTER_SIDE_OVERRIDE=
+        ftp://ftp2.tsinghua.edu.cn/mirror/FreeBSD/ports/distfiles /
+        ftp://freebsd.csie.nctu.edu.tw/pub/FreeBSD/ports/distfiles /
+        ftp://ftp.hk.freebsd.org/pub/FreeBSD/ports/distfiles /
+        ftp://ftp.freebsdchina.org/pub/FreeBSD/ports/distfiles /

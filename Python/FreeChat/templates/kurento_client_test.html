@@ -1,0 +1,292 @@
+<!-- http://doc-kurento.readthedocs.io/en/stable/mastering/kurento_protocol.html -->
+
+<html>
+
+<script>
+
+	// 服务器SessionID
+	var sessiodId = '';
+	// 服务器MediaPipeline对象
+	var mediapipeline = '';
+	// 服务器端WebRtcEndpoint对象
+	var webrtcendpoint = '';
+	// 服务器GstreamerFilter对象
+	var gstreamerfilter = '';
+	// 服务器RecoderEndpoint对象
+	var recoderendpoint = '';
+
+	// 必须先在浏览器中访问https://deque.me:8433/kurento，然后才能创建WebSocket链接。
+	//var socket = new WebSocket("wss://deque.me:8433/kurento");
+	//var socket = new WebSocket("ws://deque.me:8888/kurento");
+	var socket = new WebSocket("ws://video.callcall.cc:8888/kurento");
+
+        // stun和turn服务器
+        var iceServer = {
+            "iceServers": [{
+                "url": "stun:stun.l.google.com:19302"
+            }, {
+                "url": "turn:numb.viagenie.ca:3478",
+                "username": "webrtc@live.com",
+                "credential": "muazkh"
+            }]
+        };
+
+        //兼容浏览器的PeerConnection写法
+        var PeerConnection = (window.PeerConnection ||
+                            window.webkitPeerConnection00 || 
+                            window.webkitRTCPeerConnection || 
+                            window.mozRTCPeerConnection);
+        //创建PeerConnection实例
+        var pc = new PeerConnection(iceServer);
+
+        // webrtcendpoint.addIceCandidate
+        pc.onicecandidate = function(event){
+		if (event.candidate) {
+			console.log(event.candidate.candidate);
+			if ((webrtcendpoint != '') && (sessionId != '')) {
+				socket.send(JSON.stringify({
+					  "id":12,
+					  "method":"invoke",
+					  "params":{
+						"object":webrtcendpoint,
+						"operation":"addIceCandidate",
+						"operationParams":{
+							candidate: event.candidate
+						},
+						"sessionId":sessionId
+					  },
+					  "jsonrpc":"2.0"
+				}));
+			}
+		}
+        };
+
+        // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
+        pc.onaddstream = function(event){
+	    var newVideo = document.createElement("video"),
+		id = webrtcendpoint;
+	    newVideo.setAttribute("class", "other");
+	    newVideo.setAttribute("autoplay", "autoplay");
+	    newVideo.setAttribute("id", id);
+	    newVideo.setAttribute("width", "320");
+	    newVideo.setAttribute("height", "240");
+	    videos.appendChild(newVideo);
+            document.getElementById(id).src = URL.createObjectURL(event.stream);
+        };
+
+        var getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+        getUserMedia.call(navigator, {
+            video: true,
+            audio: true
+        }, function(localMediaStream) {
+            var video = document.getElementById('localVideo');
+            video.src = window.URL.createObjectURL(localMediaStream);
+            video.onloadedmetadata = function(e) {
+                console.log("Label: " + localMediaStream.label);
+                console.log("AudioTracks" , localMediaStream.getAudioTracks());
+                console.log("VideoTracks" , localMediaStream.getVideoTracks());
+            };
+            //向PeerConnection中加入需要发送的流
+            pc.addStream(localMediaStream);
+        }, function(e) {
+            console.log('Reeeejected!', e);
+        });
+
+        socket.onmessage = function(event) {
+		var json = JSON.parse(event.data);
+            	console.log('Received: ', json);
+		if (json.id == 1) {
+			mediapipeline = json.result.value;
+			socket.send(JSON.stringify({
+				"id":2,
+				"method":"create",
+				"params":{
+					"type":"WebRtcEndpoint",
+					"constructorParams":{
+						"mediaPipeline":mediapipeline
+					},
+					"properties": {},
+					"sessionId":json.result.sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 2) {
+			sessionId = json.result.sessionId;
+			webrtcendpoint = json.result.value;
+			/*
+			socket.send(JSON.stringify({
+				"id":3,
+				"method":"create",
+				"params":{
+					"type":"GStreamerFilter",
+					"constructorParams":{
+						"mediaPipeline":mediapipeline,
+						// 画面旋转90度
+						"command":"videoflip method=clockwise"
+						// 画面左右对称显示
+						//"command":"videoflip method=horizontal-flip"
+						// 不支持，返回错误。
+						//"command":"rtmpsink location=rtmp://deque.me/live/test01"
+					},
+					"properties": {},
+					"sessionId":sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 3) {
+			console.log(json.error.message);
+			gstreamerfilter = json.result.value;
+			socket.send(JSON.stringify({
+				"id":4,
+				"method":"invoke",
+				"params":{
+					"object":webrtcendpoint,
+					"operation":"connect",
+					"operationParams":{
+						"sink":gstreamerfilter
+					},
+					"sessionId":json.result.sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 4) {
+			socket.send(JSON.stringify({
+				"id":5,
+				"method":"invoke",
+				"params":{
+					"object":gstreamerfilter,
+					"operation":"connect",
+					"operationParams":{
+						"sink":webrtcendpoint
+					},
+					"sessionId":json.result.sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 5) {
+			*/
+			socket.send(JSON.stringify({
+				"id":6,
+				"method":"create",
+				"params":{
+					"type":"RecorderEndpoint",
+					"constructorParams":{
+						"mediaPipeline":mediapipeline,
+						"uri":"file:///tmp/test1.webm"
+					},
+					"properties": {},
+					"sessionId":sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 6) {
+			recoderendpoint = json.result.value;
+			socket.send(JSON.stringify({
+				"id":7,
+				"method":"invoke",
+				"params":{
+					"object":webrtcendpoint,
+					"operation":"connect",
+					"operationParams":{
+						"sink":recoderendpoint
+					},
+					"sessionId":sessionId
+				},
+				"jsonrpc":"2.0"
+			}));
+		} else if (json.id == 7) {
+			socket.send(JSON.stringify({
+				"id":8,
+				"method":"invoke",
+				"params":{
+					"object":recoderendpoint,
+					"operation":"record",
+					"operationParams":{
+					},
+					"sessionId":sessionId
+				},
+				"jsonrpc":"2.0"
+			})); 
+		} else if (json.id == 8) {
+        		// 发送offer的函数，发送本地session描述
+			pc.createOffer(function(desc) {
+				console.log(desc.sdp);
+				pc.setLocalDescription(desc);
+				socket.send(JSON.stringify({
+					  "id":9,
+					  "method":"invoke",
+					  "params":{
+						"object":webrtcendpoint,
+						"operation":"processOffer",
+						"operationParams":{
+							"offer":desc.sdp
+						},
+						"sessionId":json.result.sessionId
+					  },
+					  "jsonrpc":"2.0"
+				}));
+			}, function (error) {
+				console.log('Failure callback: ' + error);
+			}, {"offerToReceiveAudio":true,"offerToReceiveVideo":true});
+		} else if (json.id == 9) {
+			remote_descr = new RTCSessionDescription();
+			remote_descr.type = "answer";
+			remote_descr.sdp  = json.result.value;
+                	pc.setRemoteDescription(remote_descr);
+			socket.send(JSON.stringify({
+				"id": 10,
+				"method": "subscribe",
+				"params": {
+				"type": "OnIceCandidate",
+				"object": webrtcendpoint,
+				"sessionId": sessionId
+				},
+				"jsonrpc": "2.0"
+			}));
+		} else if (json.id == 10) {
+			socket.send(JSON.stringify({
+				  "id":11,
+				  "method":"invoke",
+				  "params":{
+					"object":webrtcendpoint,
+					"operation":"gatherCandidates",
+					"operationParams":{
+					},
+					"sessionId":sessionId
+				  },
+				  "jsonrpc":"2.0"
+			}));
+		}
+		if (json.method == "onEvent") {
+			console.log(json.params.value.data.candidate.__module__);
+			console.log(json.params.value.data.candidate.candidate);
+                	pc.addIceCandidate(new RTCIceCandidate(json.params.value.data.candidate));
+		}
+        };
+
+	function send() {
+		socket.send(JSON.stringify({
+				"id":1,
+				"method":"create",
+				"params":{
+					"type":"MediaPipeline",
+					"constructorParams":{},
+					"properties":{}
+				},
+				"jsonrpc":"2.0"
+			}
+		));
+	}
+
+</script>
+
+<body>
+<!-- 实际测试中发现，new WebSocket()后直接发送会失败，提示WebSocket仍在连接中，所以页面打开后，等一段时间点击按钮发送request，才能得到response。-->
+<input type="button" onclick="send()" value="发送数据"> </input>
+  <div id="videos">
+    <video width="320" height="240" id="localVideo" autoplay></video><br>
+  </div>
+</body>
+
+</html>
