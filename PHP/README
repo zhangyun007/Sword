@@ -17,6 +17,14 @@
 即可解析E:\Project\Sword\PHP下的php文件
 
 
+我们还要修改php-fpm/www.conf文件，添加下面三行：
+
+listen.owner = nginx
+listen.group = nginx
+listen.mode = 0660
+
+重启php-fpm
+
 
 二、PHP配置
 解压php，进入php目录，复制一份php.ini-development，改名为php.ini，按下面改：
