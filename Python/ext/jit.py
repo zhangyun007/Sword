@@ -1,6 +1,14 @@
 from numba import jit
 import time
 
+# 计算某个函数的运行时间
+def timeit(func, *args):
+	start = time.time()
+	s = func(*args)
+	end = time.time()
+	print('Time used: {} sec', end - start)
+	return s;
+
 #添加@jit，程序运行时间从5秒降低到0，07秒，降低了70倍。
 @jit
 def foo(x,y):	
@@ -9,6 +17,4 @@ def foo(x,y):
 		s += i
 	return s
 	
-tt = time.time()
-print(foo(1,100000000))
-print('Time used: {} sec'.format(time.time()-tt))
+print(timeit(foo, 1, 100000000));
