@@ -8,7 +8,7 @@ import time
 
 from numba import jit
 
-
+#开启jit后，运行时间从18秒降到0，34秒，提升了将近50倍。
 @jit
 def calc(n, i=0, cols=0, diags=0, trans=0):
     if i == n:

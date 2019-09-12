@@ -1,6 +1,6 @@
 from time import clock
 
-# 给numpy其一个别名叫np
+# 给numpy取一个别名叫np
 import numpy as np
 from math import sin
 
