@@ -2,8 +2,13 @@
 #include <thread>
 #include <atomic>
 
-//#include <unistd.h>
-#include <windows.h>
+//#define OS Windows
+
+#if (OS == Windows)
+	#include <windows.h>
+#else
+	#include <unistd.h>
+#endif
 
 //std::atomic_long total(0);
 //std::atomic<long> total(0);
