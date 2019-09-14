@@ -4,14 +4,12 @@ using namespace std;
 
 int main()
 {
-	deque<float> coll;    // deque container for floating-point elements
-
-	// insert elements from 1.1 to 6.6 each at the front
+	deque<float> coll;
+	
 	for (int i=1; i<=6; ++i) {
-		coll.push_front(i*1.1);      // insert at the front
+		coll.push_front(i*1.1);      
 	}
 
-	// print all elements followed by a space
 	for (unsigned int i=0; i<coll.size(); ++i) {
 		cout << coll[i] << ' ';
 	}
