@@ -88,43 +88,6 @@ int main()
 	for (tmp = Tv1.begin(); tmp != Tv1.end(); tmp++) {
 		cout << tmp->GetStr();
 	}	
-
-
-	class TBSTMap<int, float> bst;
-
-    bst.Insert(20, 21.1);
-    bst.Insert(13, 32.1);
-    bst.Insert(16, 12.1);
-    bst.Insert(12, 2.1);
-    bst.Insert(14, 12.1);
-    bst.Insert(16, 13.1);
-    bst.Insert(15, 15.1);
-    bst.Insert(11, 15.1);
-    bst.Insert(9, 15.1);
-    bst.Insert(10, 5.1);
-	bst.Insert(17, 6.1);
-
-    cout << bst.Find(12);
-    cout << bst.Find(123);
-
-/*
-    bst.Write();
-
-    cout << "------------" << endl;
-    bst.Traver();
-    bst.Delete(16);
-    cout << "++++++++++++" << endl;
-    bst.Traver();
-*/
-  
-  /*
-    class TBSTMap<string, int> bst;
-    bst.Insert("hello", 12);
-    bst.Insert("zhangfei", 14);
-    bst.Insert("liubei", 14);
-    bst.Traver(); 
-	*/
-
 	
 	return 0;
 }

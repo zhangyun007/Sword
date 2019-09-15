@@ -19,10 +19,6 @@ public:
 	~ AutoPtr() {
 		delete ptr;
 	}
-	/*
-	void * operator =(const T *t) const{
-		ptr = t;
-	}*/
 	T * GetObjectPtr() {
 		return ptr;
 	}
@@ -36,10 +32,8 @@ private:
 /*多处malloc失败的代码，这部分是否可以优化一下？*/
 
 /*
-本程序目的是为了实现类似Python里的列表、字典、集合，这三种数据结构中都可以存放各种类型的数据，而STL容器只能存放特定类型的对象。
-TObject为所有类的父类，TObject *指针类型则可以指向所有的自定义类型对象。
-结合vector和map，我们可以得到一个保存所有对象指针的vector和能保存任意类型key和value的map。
-接下来，我们实现自己的vector和map，继承自TObject。
+Python里的列表、字典、集合，这三种数据结构中都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象。
+TObject为所有类的父类，TObject *指针类型则可以指向所有的子类对象。结合vector和map，我们可以得到一个保存TObject *的vector和能保存key和value都是TObject *的map。
 */
 
 /*
@@ -56,7 +50,6 @@ public:
 		cout << "TObject destruct!\n";
 	}
 };
-
 
 class TInt : TObject {
 public:
@@ -75,7 +68,6 @@ private:
 
 //长字符串。用len储存字符串长度，这样避免了读者的程序中多次用strlen计算长度
 //大致上，字符串越长，需要用strlen的地方越多，TString的好处越明显。
-
 class TString : TObject {
 public:
 	void show() {
@@ -151,12 +143,7 @@ private:
 };
 
 /*
-stl容器中end()总是返回最后一项的下一项。
 STL里实现了内存池，通过内存池来申请释放内存，其思想是一次申请大块内存，由用户程序管理这一大块内存，当程序需要内存时，从用户程序管理的内存池中申请，不需要的内存释放到内存池里供下次使用，而并没有归还给操作系统，也就是说其他程序得不到本程序已经释放的内存，除非本进程结束，内存池归还给操作系统。
-*/
-
-/*
-基本按照stl vector实现。Vector分配内存成倍增长。
 */
 template <class T>
 class TVector: TObject {
@@ -181,7 +168,7 @@ public:
 	}
 	void push_back(T t) {
 		if (finish < end_of_storage) {
-			//还有空余空间，下面语句要求class T实现了operator =
+			//还有空余空间，下面语句要求class T实现了operator = 和 operator ++
 			*finish = t;
 			finish++;
 		} else {
@@ -206,7 +193,6 @@ public:
 			start = nstart;
 			finish = start + c;
 			
-			//下面语句要求class T实现了operator =
 			*finish = t;
 			finish++;
 			end_of_storage = start + 2*c;
@@ -215,6 +201,7 @@ public:
 	T * begin() {
 		return start;
 	}
+	//stl容器中end()总是返回最后一项元素的下一项，其实是个无效指针。
 	T * end() {
 		return finish;
 	}
@@ -227,7 +214,7 @@ public:
 		return finish - start;
 	}
 private:
-	Iterator start;		//空间头指针
+	Iterator start;			//空间头指针
 	Iterator finish;		//空间尾指针
 	Iterator end_of_storage;	//当finish等于end_of_storage时，空间完全占满。
 };
@@ -247,7 +234,7 @@ public:
 	struct	Iterator {
 		struct _list_node<T> *node; //node指向节点
 		Iterator(struct _list_node<T> *x):node(x) {};
-		//接下里实现迭代器的各种operator
+		//实现迭代器的各种operator
 		T operator *() {
 			return node->t;
 		}
@@ -336,246 +323,24 @@ class TDeque: TObject {
 	}
 };
 
-
 template <class T, class U>
 struct  MapNode {
     T   key;
     U   value;
-    struct MapNode * left;
-    struct MapNode * right;
+    struct MapNode<T, U> * left;
+    struct MapNode<T, U> * right;
 };
-
-/*STL map用红黑树实现，太复杂，我们用Btree、BST或者AVLtree实现，排序的map和set*/
 
 template <class T, class U>
 class TMap: TObject {
-public:
-	//TMap迭代器，返回指向某个节点的指针。
-	//思考要实现那些操作符
-	class ITerator {
-	private:
-		struct  MapNode<T, U>* node;
-	public:
-		//迭代器构造函数
-		ITerator(struct  MapNode<T, U> * p){node = p;}
-		struct  MapNode<T, U> * operator *(class ITerator p) {
-			return (p.node);
-		}
-	};
-	
-	virtual void show() {
-		cout << "TMap.\n";
-	}
-	
-	virtual U& operator [](T& t) = 0;
-	
-    virtual ITerator Insert(T t, U u) = 0;
-	
-	virtual U Find(T t);
-    virtual void Delete(T t);
-	
-	//把节点写到BSPMapNodeToDisk结构中
-    //virtual void Write() = 0;
-	
-	virtual ~TMap() {
-		cout << "~TMap \n";
-	}
 };
 
-
-/* 
-* DiskNode结构是要写到磁盘上的
-* 二叉搜索树为什么要写到磁盘文件？这是数据库索引的基础，数据库索引就是将各种平衡树写到磁盘保存为索引文件，通过查找索引文件来加快的表的查询。
-* 对数据库表中的某个列建立索引，可能只需要key，不需要value。
-*/
-template <class T, class U>
-struct  MapNodeToDisk{
+template <class T>
+struct  SetNode{
     T   key;
-    U   value;
-    int left;
-    int right;
-	int	offset;	// 表记录偏移量，指向对应的数据库表中的记录。
+    struct SetNode * left;
+    struct SetNode * right;
 };
-
-/* Binary Search Tree 二叉搜索树*/
-template <class T, class U>
-class TBSTMap: TMap<T, U> {
-public:
-    TBSTMap():root(NULL){}        
-    ~TBSTMap() {
-		DeleteTree(root);
-	}
-	
-	U& operator [](T& t) {
-		return (*FindKey(root, t)).u;
-	}
-	
-	ITerator Insert(T t, U u) {
-		return InsertNode(root, t, u);
-	}
-
-	//关联式容器需要自己实现Find，而不用全局的TFind
-	U Find(T t) {
-		return (*FindKey(root, t)).u;
-	}
-
-	void Delete(T t) {
-		DeleteNode(root, t);
-	}
-
-private:
-    class MapNode<T, U> * root;
-	
-	ITerator FindKey(ITerator node, T t)
-	{
-		if (node == NULL) {
-			return NULL;
-		} else {
-			if (t < (*node).key) 
-				cout << t << " < " << (*node).key <<'\n';
-				return FindKey((*node).left, t);
-			} else if (t > (*node).key) {
-				cout << t << " > " << (*node).key <<'\n';
-				return FindKey((*node).right, t);
-			} else if (t == (*node).key) {
-				cout << t << " == " << (*node).key <<'\n';
-				return node;
-			}
-				return NULL;
-		}
-	};
-	
-    // node前面的&不能少，否则程序错误。
-	class MapNode<T, U> * InsertNode(class MapNode<T, U> *&node, T t, U u)
-	{
-		if (node == NULL) {
-			//父节点指向新建子节点
-			node = new MapNode<T, U>();
-			node->key = t;
-			node->value = u;
-			return node;
-		}
-	
-		if (node->key > t) {
-			return InsertNode(node->left, t, u);
-		}
-	
-		if (node->key < t) {
-			return InsertNode(node->right, t, u);
-		}
-	
-		if (node->key == t) {
-			node->value = u;
-			cout << "key " << t << " modified to " << u << '\n';
-		}
-	}
-
-	//删除以node节点为根节点的树
-    void DeleteTree(class MapNode<T, U> *node)
-	{
-		if (node->left) {
-			DeleteNode(node->left);
-		}
-		if (node->right) {
-			DeleteNode(node->right);
-		}
-		if (node) {
-			delete node;
-		}
-	}
-	
-	//从node为根节点的树中，删除key为t的节点。
-    // node前面的&不能少，否则程序错误。
-	void DeleteNode(class MapNode<T, U> *&node, T t)
-	{
-		if (node == NULL) {
-			return;
-		}
-	
-		if (node->key > t) {
-			DeleteNode(node->left, t);
-		}
-	
-		if (node->key < t ) {
-			DeleteNode(node->right, t);
-		}
-	
-		if (node->key == t) {
-			if (node->left && node->right) {
-				class MapNode<T, U> * temp = node->right;
-				while (temp->left != NULL) {
-					temp = temp->left;
-				}
-				node->key = temp->key;
-				node->value = temp->value;
-				DeleteNode(node->right, temp->key);
-			} else {
-				class MapNode<T, U> * temp = node;
-				if (node->left == NULL) {
-					node = node->right;
-				} else if (node->right == NULL) {
-					node = node->left;
-				}
-				delete(temp);
-			}
-		}
-	}
-	
-	/*
-	//节点个数
-	int Traver()
-	{
-		return TraverTree(root);
-	}
-
-	int TraverTree(class MapNode<T, U> *node)
-	{
-		if (node == NULL) {
-			return 0;
-		}
-		int m = TraverTree(node->left);
-		cout << "key is " << node->key << " value is " << node->value << '\n';
-		int n = TraverTree(node->right);
-		return m + n + 1;
-	}
-	*/
-	/*
-	* 返回值表示右子树有n个节点
-	*/
-	/*
-	int WriteNode(class MapNode<T, U> *node)
-	{
-		if (node == NULL)
-			return 0;
-	
-		int m = WriteNode(node->left);
-	
-		struct MapNodeToDisk<T, U> dnode;
-		dnode.key = node->key;
-		dnode.value = node->value;
-		if (node->left == NULL)
-			dnode.left = 0;
-		else
-			dnode.left = -m - 1;
-		if (node->right ==NULL)
-			dnode.right = 0;
-		else
-			dnode.right = TraverTree(node->right->left) + 1;
-	
-		cout << "key " << dnode.key << " value " << dnode.value << " left " << dnode.left << " right " << dnode.right << '\n';
-	
-		WriteNode(node->right);
-	
-		// 返回右子树拥有的节点数目
-		return TraverTree(node->right);
-	}
-	void Write()
-	{
-		WriteNode(root);
-	}
-	*/
-};
-
 
 template <class T>
 class TSet: TObject {
@@ -595,20 +360,13 @@ class TSet: TObject {
 	}
 };
 
-
 template <class T, class U>
-struct  SetNode{
-    T   key;
-    struct SetNode * left;
-    struct SetNode * right;
+class TBSTMap: TMap<T, U> {
 };
 
 template <class T>
 class TBSTSet: TSet<T> {
 };
-
-
-/*
 
 template <class T, class U>
 class TAVLMap:TMap<T, U> {
@@ -632,27 +390,38 @@ class TBtreeSet: TSet<T> {
 	}
 };
 
-*/
+template <class T, class U>
+class TRBtreeMap: TMap<T, U> {
+	void show() {
+		cout << "TBtreeMap.\n";
+	}
+};
+
+template <class T>
+class TRBtreeSet: TSet<T> {
+	void show() {
+		cout << "TBtreeSet.\n";
+	}
+};
+
 
 /*未排序的map和set*/
-/*
 template <class T, class U>
-class THashMap: TMap {
+class THashMap: TMap<T, U> {
 	void show() {
 		cout << "THashMap.\n";
 	}
 };
 
 template <class T>
-class THashSet: TSet {
+class THashSet: TSet<T> {
 	void show() {
 		cout << "THashSet.\n";
 	}
 };
-*/
+
 
 /*全局函数，包括各种泛型算法函数*/
-
 void TLog(char *info) {
 	TString ts(_pgmptr);
 	ts.StrCat(".log");
@@ -675,7 +444,8 @@ template<class T>
 bool TGreat(T &a, T &b) {
 	return (a > b);
 }
+
 template<class Iter, class T>
-void TSort(Iter begin, Iter end) {
-	
-｝
+void TSort(Iter first, Iter last) {
+	return;
+}
