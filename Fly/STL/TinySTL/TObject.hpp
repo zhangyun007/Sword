@@ -337,7 +337,7 @@ class TMap: TObject {
 
 template <class T>
 struct  SetNode{
-    T   key;
+    T   kv;		//key和value相同
     struct SetNode * left;
     struct SetNode * right;
 };
@@ -360,6 +360,21 @@ class TSet: TObject {
 	}
 };
 
+/*未排序的map和set*/
+template <class T, class U>
+class THashMap: TMap<T, U> {
+	void show() {
+		cout << "THashMap.\n";
+	}
+};
+
+template <class T>
+class THashSet: TSet<T> {
+	void show() {
+		cout << "THashSet.\n";
+	}
+};
+
 template <class T, class U>
 class TBSTMap: TMap<T, U> {
 };
@@ -377,20 +392,6 @@ class TAVLSet:TSet<T> {
 };
 
 template <class T, class U>
-class TBtreeMap: TMap<T, U> {
-	void show() {
-		cout << "TBtreeMap.\n";
-	}
-};
-
-template <class T>
-class TBtreeSet: TSet<T> {
-	void show() {
-		cout << "TBtreeSet.\n";
-	}
-};
-
-template <class T, class U>
 class TRBtreeMap: TMap<T, U> {
 	void show() {
 		cout << "TBtreeMap.\n";
@@ -404,18 +405,34 @@ class TRBtreeSet: TSet<T> {
 	}
 };
 
-/*未排序的map和set*/
+
 template <class T, class U>
-class THashMap: TMap<T, U> {
+class T234treeMap: TMap<T, U> {
 	void show() {
-		cout << "THashMap.\n";
+		cout << "TBtreeMap.\n";
 	}
 };
 
 template <class T>
-class THashSet: TSet<T> {
+class T234treeSet: TSet<T> {
 	void show() {
-		cout << "THashSet.\n";
+		cout << "TBtreeSet.\n";
+	}
+};
+
+
+//B-Tree是为磁盘等外存储设备设计的一种平衡查找树。
+template <class T, class U>
+class TBtreeMap: TMap<T, U> {
+	void show() {
+		cout << "TBtreeMap.\n";
+	}
+};
+
+template <class T>
+class TBtreeSet: TSet<T> {
+	void show() {
+		cout << "TBtreeSet.\n";
 	}
 };
 
