@@ -404,7 +404,6 @@ class TRBtreeSet: TSet<T> {
 	}
 };
 
-
 /*Î´ÅÅÐòµÄmapºÍset*/
 template <class T, class U>
 class THashMap: TMap<T, U> {

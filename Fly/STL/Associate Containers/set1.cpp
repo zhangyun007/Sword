@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <set>
 
 using namespace std;
@@ -16,12 +16,10 @@ int main(int argc, char *argv[])
     s.insert(16);
     s.insert(4);
 
-    for (it = s.begin(); it != s.end(); ) {
+    for (it = s.begin(); it != s.end(); ++it;) {
         if (*it == 16) {
-        	// erase返回被删除节点的下一个节点
-            it = s.erase(it);
-        } else {         
-            ++it;
+        	// erase返回的迭代器指向被删除节点的下一个节点
+            s.erase(it);
         }
     }
 
