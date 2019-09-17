@@ -3,7 +3,7 @@ import time
 
 d = {}
 
-f = open('d:\server_access.log') 
+f = open('/var/log/nginx/access.log') 
 try: 
     while True: 
         line = f.readline() 
