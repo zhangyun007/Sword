@@ -1,5 +1,10 @@
 #!/usr/bin/python 
+#coding:UTF-8
+
 import time
+import os, sys, io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 d = {}
 
@@ -11,8 +16,8 @@ try:
             break 
         print(line) 
         a = line.split(' ')
-        # a[0]为时间  a[1]为接口 a[2]为响应时间
-        if a[1] in d.keys():
+	# a[0]为时间  a[1]为接口 a[2]为响应时间
+	if a[1] in d.keys():
             d[a[1]][0] += 1
             d[a[1]][1] += float(a[2])
             if float(a[2]) >= 0.1:
