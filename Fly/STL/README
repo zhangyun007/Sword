@@ -1,3 +1,9 @@
+STL分序列式容器和辅助容器，前者是呈线性结构；后者包括hash表和各种树形结构。
+
+单向链表中所包含数据的长度，我们可以对应于树形容器的深度。同样数量的数据，存在树结构中显然要比存在链表中的深度要小，对树搜索的最坏情况要比链表好，但是建树比建链表需要更多的时间。
+
+
+
 谷歌开源团队近日发布了C++ B-Tree，这是一个C++模板库，实现了基于B-tree数据结构的有序内存容器。类似于STL的map、set、multimap和multiset模板，C++ B-tree也提供了btree_map、btree_set、btree_multimap和btree_multiset等模板。 
 
 
@@ -11,9 +17,4 @@ B-tree（多路搜索树，并不是二叉的）是一种常见的数据结构�
 
 项目地址：https://code.google.com/p/cpp-btree/
 
-
 https://github.com/CalebLBaker/b-tree/blob/master/bTree.cpp
-
-
-
-STL中较难的部分有：空间配置器，红黑树，
