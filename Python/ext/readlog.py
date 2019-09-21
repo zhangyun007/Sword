@@ -33,6 +33,8 @@ try:
 finally: 
 	f.close()
 
+print(d)
+
 #计算接口的平均相应时间
 for x in d.keys():
 	d[x][1] = d[x][1] / d[x][0]
