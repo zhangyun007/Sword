@@ -4,7 +4,7 @@
 import time
 import os, sys, io
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 d = {}
 
