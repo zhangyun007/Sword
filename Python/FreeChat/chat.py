@@ -149,7 +149,7 @@ class Index(tornado.web.RequestHandler):
 			# self.write('房间名称和用户名不能超过过20个字符，请重新<a href="">登录</a>。')
 			self.render('templates/toomuchchar.html')
 		else:
-			self.render('templates/chat.html', room=self.get_argument("room"),nick=self.get_argument("nick"))
+			self.render('templates/chat.html', room=self.get_argument("room"), nick=self.get_argument("nick"))
 
 if __name__ == '__main__':
 	t1 = time.time()

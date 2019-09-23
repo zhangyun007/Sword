@@ -37,7 +37,7 @@ WebSocket实战之——JavaScript例子: http://www.cnblogs.com/tinywan/p/58944
 <script type="text/javascript">
 
 // 文字信息
-var ws = new WebSocket("ws://192.168.42.128:8000/websocket?room={{room}}&nick={{nick}}");
+var ws = new WebSocket("ws://127.0.0.1:8000/websocket?room={{room}}&nick={{nick}}");
 
 ws.onopen = function() {
 	//alert('Web socket open');
@@ -72,7 +72,7 @@ function send() {
 <script type="text/javascript">
 
 //图片信息
-var imgs = new WebSocket("ws://192.168.42.128:8000/imagesocket?room={{room}}&nick={{nick}}");
+var imgs = new WebSocket("ws://127.0.0.1:8000/imagesocket?room={{room}}&nick={{nick}}");
 
 imgs.onopen = function() {
 	//alert('Image socket open');
