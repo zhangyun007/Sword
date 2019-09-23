@@ -147,6 +147,7 @@ class Index(tornado.web.RequestHandler):
 			self.render('templates/notnull.html')
 		elif len(self.get_argument("room")) > 20 or len(self.get_argument("nick")) > 20:
 			# self.write('房间名称和用户名不能超过过20个字符，请重新<a href="">登录</a>。')
+			# 这部分最好在JS里实现
 			self.render('templates/toomuchchar.html')
 		else:
 			self.render('templates/chat.html', room=self.get_argument("room"), nick=self.get_argument("nick"))
