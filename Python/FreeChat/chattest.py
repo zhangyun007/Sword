@@ -22,7 +22,7 @@ def on_open(ws):
 
 def worker():
     ws = websocket.WebSocketApp(
-        "ws://192.168.42.128:8000/websocket?room=test&nick=" + str(uuid.uuid1()),
+        "ws://127.0.0.1:8000/websocket?room=test&nick=" + str(uuid.uuid1()),
         on_message=on_message,
         on_error=on_error,
         on_close=on_close,
