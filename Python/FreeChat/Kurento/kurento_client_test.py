@@ -16,7 +16,7 @@ if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[(r'/', IndexHandler)],
-        template_path=os.path.join(os.path.dirname(__file__), "templates")
+        template_path=os.path.join(os.path.dirname(__file__), "")
     )
     '''
     SSL_OPTIONS = {

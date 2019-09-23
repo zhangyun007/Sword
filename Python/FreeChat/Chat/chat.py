@@ -136,20 +136,19 @@ class Index(tornado.web.RequestHandler):
 	global room
 
 	def get(self):
-		self.render('templates/main.html')
+		self.render('main.html')
 	def post(self):
-		# 这里应该将write的内容写到模板里。
 		if self.get_argument("room") in room.keys() and self.get_argument("nick") in room[self.get_argument("room")].keys():
 			# nick已经被使用
-			self.render('templates/nickused.html')
+			self.render('nickused.html')
 		elif self.get_argument("nick")=="" or self.get_argument("room")=="":
 			# 房间名和昵称不能为空
-			self.render('templates/notnull.html')
+			self.render('notnull.html')
 		elif len(self.get_argument("room")) > 20 or len(self.get_argument("nick")) > 20:
 			# 房间名称和用户名不能超过过20个字符, 这部分最好在JS里实现
-			self.render('templates/toomuchchar.html')
+			self.render('toomuchchar.html')
 		else:
-			self.render('templates/chat.html', room=self.get_argument("room"), nick=self.get_argument("nick"))
+			self.render('chat.html', room=self.get_argument("room"), nick=self.get_argument("nick"))
 
 if __name__ == '__main__':
 	t1 = time.time()
