@@ -12,15 +12,16 @@ console.log(os.type());
 console.log(os.arch());
 
 a = [1, 2, 3, 4, 5, 6];
+for (var i = 0; i < a.length; i++)
+	console.log(a[i]);
 
+//从a[2]开始删除，删除1个元素
 a.splice(2, 1);
 console.log(a);
 
+//添加元素10到a[2]
 a.splice(2, 0, 10);
 console.log(a);
-
-for (var i = 0; i < a.length; i++)
-	console.log(a[i]);
 
 b = {"1":[1, 2, 3], "2":[2, 3, 4]};
 b["3"] = [3, 4, 5];
