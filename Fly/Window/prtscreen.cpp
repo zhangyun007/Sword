@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <atlimage.h>
 
-int main()
+#include <windows.h>
+
+void save_bmp(const char *filename)
 {
 	int width = 1024;	// 图片宽度
 	int heigth = 768;	// 图片高度
@@ -13,6 +15,7 @@ int main()
 	HDC hdcWindow = GetDC(NULL); // 要截图的窗口句柄，为空则全屏
 	// 获取设备相关信息的尺寸大小
 	int nBitPerPixel = GetDeviceCaps(hdcWindow, BITSPIXEL);
+	
 	CImage image;
 	// 创建图像，设置宽高，像素
 	image.Create(width, heigth, nBitPerPixel);
@@ -29,10 +32,19 @@ int main()
 	ReleaseDC(NULL, hdcWindow);
 	// 释放图片上下文
 	image.ReleaseDC();
+	
 	// 将图片以 BMP 的格式保存到 F:\ScreenShot.bmp
-	image.Save("ScreenShot.bmp", Gdiplus::ImageFormatBMP);
+	image.Save(filename, Gdiplus::ImageFormatBMP);
 
 	printf("截图已保存\n");
-	
+}
+
+int main() {
+	for (int i = 0 ; i < 100; i++) {
+		char file[16];
+		sprintf(file, "ScreenShot%d.bmp", i);
+		save_bmp(file);
+		Sleep(0.3);
+	}
 	return 0;
 }

@@ -153,7 +153,6 @@ if __name__=='__main__':
         (r'/login', LoginHandler)],
         debug = True,
         cookie_secret="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
-        template_path = os.path.join(os.path.dirname(__file__), "templates"),
         static_path = os.path.join(os.path.dirname(__file__), "static") 
         )
     if os.path.exists(BaseDir) == False:
