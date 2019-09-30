@@ -6,7 +6,12 @@ npm config set cache "C:\Program Files\nodejs\node_cache"
 
 设置环境变量NODE_PATH为"C:\Program Files\nodejs\node_global"
 
-安装node软件包：npm install express -g
+安装node软件包：
 
+npm install express -g
+
+npm install bower -g
 
 npm是专门管理node模块的管理工具，而bower是node的模块，因为bower是依赖node，npm和git。正如前面所言，npm是擅长的是管理node模块，而bower管理的范围更大，涉及html,css,js和图片等媒体资源。服务器端使用npm,而在客户端使用bower。
+
+bower install bower.json
