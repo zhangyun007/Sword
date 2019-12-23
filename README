@@ -30,7 +30,7 @@ JS			重点用于Canvas画图，我们尝试使用JavaScript建立各种作图�
 Python3		数据可视化、网站框架(Tornado, Django)，使用stable版本：Python3.6.8。
 Php			Wordpress，Drupal
 Fly/		C++/STL程序，用visual studio c++(cl.exe)编译
-Java		Java Swing, Spring框架。
+Java		Java Swing。
 
 
 C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：

@@ -1,6 +1,6 @@
 #注意，pip安装PyOpenGL，glut打头的函数无法使用，要手工下载whl安装文件安装。
 #Python3.6.8下载这个文件：
-#https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyOpenGL-3.1.3b2-cp36-cp36m-win_amd64.whl
+#https://www.lfd.uci.edu/~gohlke/pythonlibs/PyOpenGL-3.1.3b2-cp36-cp36m-win_amd64.whl
 
 import math
 from OpenGL.GL import *
@@ -152,7 +152,17 @@ class camera:
         ve,vt = this.eye(),this.target()
         #print ve,vt
         glLoadIdentity()
-        gluLookAt(ve[0],ve[1],ve[2],vt[0],vt[1],vt[2],0.0,1.0,0.0)        
+        print("This Debug")
+        print(ve)
+        print(vt)
+        print("\n")
+        ve = [100, 100, 100]
+        vt = [0, 0, 0]
+        print("New Debug")
+        print(ve)
+        print(vt)
+        print("\n")
+        gluLookAt(ve[0],ve[1],ve[2], vt[0],vt[1],vt[2],0.0,1.0,0.0)        
     def keypress(this,key, x, y):
         if key in ('e', 'E'):
             this.move(0.,0.,1 * this.offest)
@@ -191,7 +201,7 @@ def InitGL(width,height):
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0,float(width)/float(height),0.1,100.0)    
-    camera.move(0.0,3.0,-5)    
+    camera.move(0.0,3.0,  -5)    
     
 def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -199,14 +209,28 @@ def DrawGLScene():
     camera.setLookat()
     plane.draw() 
     glTranslatef(-1.5,0.0,0.0)
-    glBegin(GL_QUADS)                  
-    glVertex3f(-1.0, 1.0, 0.0)          
-    glVertex3f(1.0, 1.0, 0.0)           
-    glVertex3f(1.0, -1.0, 0.0)          
-    glVertex3f(-1.0, -1.0, 0.0)        
-    glEnd()    
+	
+    # 画x、y、z轴
+    glColor3f(1.0, 0.0, 0.0)     
+    glBegin(GL_LINES)         	
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(1000, 0.0, 0.0)
+    glEnd()
+	
+    glColor3f(0.0, 1.0, 0.0)     
+    glBegin(GL_LINES)         	
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(0.0, 1000, 0.0)
+    glEnd()
+	
+    glColor3f(0.0, 0.0, 1.0)     
+    glBegin(GL_LINES)         	
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(0.0, 0.0, 1000)
+    glEnd()
+	
     glTranslatef(3.0, 0.0, 0.0)
-    sph.draw()                         
+    #sph.draw()                         
     glutSwapBuffers()
 
 def mouseButton( button, mode, x, y ):    
@@ -219,7 +243,7 @@ def ReSizeGLScene(Width, Height):
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
-    
+	
 def main():
     global window
     glutInit(sys.argv)

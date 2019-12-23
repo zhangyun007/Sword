@@ -68,8 +68,8 @@
                     createNode([-1, 50, 0], [10, 10, 10], true);
                 }                
                 world.Step(1 / 60, 10, 10);
-		var list = world.GetBodyList();
-		while (list) {                                              
+				var list = world.GetBodyList();
+				while (list) {                                              
                     var node = list.m_userData;
                     if(node){
                         var position = list.GetPosition();
