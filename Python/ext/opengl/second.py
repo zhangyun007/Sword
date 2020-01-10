@@ -1,7 +1,7 @@
 #注意，pip安装PyOpenGL，glut打头的函数无法使用，要手工下载whl安装文件安装。
 #Python3.6.8下载这个文件：
 #https://www.lfd.uci.edu/~gohlke/pythonlibs/PyOpenGL-3.1.3b2-cp36-cp36m-win_amd64.whl
-
+# https://www.lfd.uci.edu/~gohlke/pythonlibs/
 import math
 from OpenGL.GL import *
 from OpenGL.arrays import vbo
