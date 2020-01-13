@@ -136,7 +136,7 @@ public class Draw {
             // drawImage(g);
 
             // 6. 文本
-            // drawString(g);
+            drawString(g);
         }
 
         /**
@@ -300,7 +300,6 @@ public class Draw {
         }
 
     }
-
 }
 
 //原文链接：https://blog.csdn.net/xietansheng/article/details/55669157
