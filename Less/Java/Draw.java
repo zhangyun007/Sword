@@ -1,6 +1,11 @@
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.*;
 import java.awt.*;
 
+import java.io.*; 
+ 
 public class Draw {
 
     public static void main(String[] args) {
@@ -44,7 +49,44 @@ public class Draw {
 
             // 把窗口位置设置到屏幕的中心
             setLocationRelativeTo(null);
-
+	  
+			// 监听鼠标事件
+			addMouseListener(new MouseListener() {   //为窗口添加鼠标事件监听器
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getButton()==e.BUTTON3){    // 判断获取的按钮是否为鼠标的右击     
+					System.out.println(e.getX());
+					System.out.println(e.getY());
+				}
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				}
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				}
+				});
+			
             // 设置窗口的内容面板
             MyPanel panel = new MyPanel(this);
             setContentPane(panel);
@@ -58,6 +100,7 @@ public class Draw {
     public static class MyPanel extends JPanel {
 
         private MyFrame frame;
+		
 
         public MyPanel(MyFrame frame) {
             super();
