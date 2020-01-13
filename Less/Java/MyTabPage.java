@@ -28,6 +28,13 @@ static final int WIDTH=600;
          setLayout(new BorderLayout());
 
          JPanel panel1 = new JPanel ();
+		 
+		 JTextField name = new JTextField(30);
+		 
+		 panel1.add(name);
+		 
+		 panel1.setVisible(true);
+		 
 
          JPanel panel2 = new JPanel ();
 
@@ -69,7 +76,7 @@ static final int WIDTH=600;
 
          setTitleAt(4,"JTabbedPane5 ccc");
 
-         setPreferredSize (new Dimension (500,200));
+         setPreferredSize (new Dimension (800,600));
 
          setTabPlacement (JTabbedPane.TOP);
 
