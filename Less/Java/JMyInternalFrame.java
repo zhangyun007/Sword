@@ -40,6 +40,8 @@ public class JMyInternalFrame extends JFrame implements ActionListener{
         internalFrame.setVisible(true);
         //取得JInternalFrame的Content Pane,用以加入新的组件。
         Container icontentPane = internalFrame.getContentPane();
+		
+		//??
         JTextArea textArea = new JTextArea();
         JButton b = new JButton("Internal Frame Button");
         /*将JTextArea与JButton对象加入JInternalFrame中。由此呆知，JInteranlFrame加入组件
