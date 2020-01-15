@@ -1,7 +1,7 @@
 ﻿#include <windows.h>
 
 //使用CString
-#include <atlstr.h>
+//#include <atlstr.h>
 
 #pragma comment(lib,"User32.lib")
 
@@ -16,14 +16,16 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LPCSTR WINDOWS_CLASS = "MyWindowClass";    //类名  
 LPCSTR WINDOWS_TITLE = "测试按钮";   //窗口标题  
 
-CString str("abcd");
+//CString str("abcd");
+
+WNDCLASSEX wc = { };  
+
  
 int WINAPI wWinMain(HINSTANCE hThisApp,  
     HINSTANCE hPrevApp,  
     LPWSTR lpCmd,  
     int nShow)  
 {  
-    WNDCLASSEX wc = { };  
     wc.cbSize = sizeof(WNDCLASSEX);  
     wc.hbrBackground = (HBRUSH)COLOR_WINDOW;  
     wc.hInstance = hThisApp;  
@@ -73,17 +75,38 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
  
     case WM_CREATE: 
 		{  
-			MessageBox(hwnd, "ФЫВФЫ", "提示", MB_OK | MB_ICONINFORMATION);  
+			//MessageBox(hwnd, "ФЫВФЫ", "提示", MB_OK | MB_ICONINFORMATION);  
 			
             //创建三个按钮  
-            CreateWindow("MDICLIENT", "按钮一", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
-                35, 10, 160, 60, hwnd, (HMENU)IDB_ONE, NULL, NULL);  
+            HWND mymdiwnd = CreateWindow("MDICLIENT", "MDICLIENT", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+                35, 10, 200, 100, hwnd, (HMENU)IDB_ONE, NULL, NULL);  
                 
-            CreateWindow("LISTBOX", "按钮二", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
-                35, 80, 160, 60, hwnd, (HMENU)IDB_TWO, NULL, NULL); 
+            CreateWindow("LISTBOX", "LISTBOX", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+                35, 150, 160, 60, hwnd, (HMENU)IDB_TWO, NULL, NULL); 
                  
-            CreateWindow("Button", "按钮三", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
-                35, 150, 160, 60, hwnd, (HMENU)IDB_THREE, NULL, NULL);  
+            CreateWindow("Button", "Button", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+                35, 250, 160, 60, hwnd, (HMENU)IDB_THREE, NULL, NULL);  
+				
+				
+				    HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE,  
+                    WINDOWS_CLASS,  
+                    WINDOWS_TITLE,  
+                    WS_OVERLAPPEDWINDOW,  
+                    0,  
+                    0,  
+                    100,  
+                    50,  
+                    mymdiwnd,  
+                    NULL,  
+                    wc.hInstance,  
+                    NULL);  
+					
+					if (hwnd == NULL)  
+					{
+						return -1;
+					}
+					
+	
 		}  
 		return 0; 
          

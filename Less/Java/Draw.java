@@ -57,8 +57,12 @@ public class Draw {
 				public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getButton()==e.BUTTON3){    // 判断获取的按钮是否为鼠标的右击     
-					System.out.println(e.getX());
+					System.out.print(e.getX());
+					System.out.print(" ");
 					System.out.println(e.getY());
+					if (e.getX() <= 200 && e.getY() <= 100) {
+						System.out.println("1 Clicked!");
+					}
 				}
 				}
 				
@@ -252,7 +256,7 @@ public class Draw {
             g2d.setColor(Color.RED);
 
             // 1. 绘制一个圆: 圆的外切矩形 左上角坐标为(0, 0), 宽高为100
-            g2d.drawOval(0, 0, 100, 100);
+            g2d.drawOval(0, 0, 200, 100);
 
             g2d.setColor(Color.GRAY);
 
