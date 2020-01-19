@@ -16,16 +16,14 @@ public class Russian
     public static void main(String[] agrs)
     {
         JFrame frame=new JFrame("Chinese to Russian");  
-        MyPanel jp=new MyPanel(); 
-		jp.setPreferredSize(new Dimension(300, 150));
+		frame.setLayout(null);//布局设置为null
 		
+        MyPanel jp=new MyPanel(); 
+		jp.setBounds(90, 60, 120, 100);//上面的位置和大小,也可以用setBounds来设置
+       
 		JLabel label = new JLabel("请输入想要查询的中文或者俄文单词：");
-        JTextField txtfield1=new JTextField(); 
-        txtfield1.setText("Input Chinese or Russian");    
 		JButton button = new JButton("查询");
-
 		jp.add(label);
-        jp.add(txtfield1);
 		jp.add(button);
 		
 		// 为按钮绑定监听器
@@ -36,8 +34,15 @@ public class Russian
                 JOptionPane.showMessageDialog(null, "保存成功！");
             }
         });
+		
+		MyPanel jp_a=new MyPanel(); 
+		JTextField txtfield1=new JTextField(); 
+        txtfield1.setText("Input Chinese or Russian");    
+		jp_a.add(txtfield1);
      
         frame.add(jp);
+		frame.add(jp_a);
+		
         frame.setBounds(300,200,400,100);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

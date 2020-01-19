@@ -1,4 +1,4 @@
-program project1;
+program main;
 
 {$mode objfpc}{$H+}
 
@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazopenglcontext, Unit1, Unit2
+  Forms, mainform, toolsform
   { you can add units after this };
 
 {$R *.res}
