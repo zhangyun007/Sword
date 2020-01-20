@@ -1,0 +1,1 @@
+选择下面的菜单 Project/ProjectInspector 然后单击 add按钮，然后单击new requirement 然后选择LazOpenGLContext 包。

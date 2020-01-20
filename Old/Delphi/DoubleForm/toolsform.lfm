@@ -1,0 +1,37 @@
+object Form2: TForm2
+  Left = 360
+  Height = 502
+  Top = 206
+  Width = 513
+  Caption = 'Form2'
+  ClientHeight = 502
+  ClientWidth = 513
+  LCLVersion = '2.0.6.0'
+  object PageControl1: TPageControl
+    Left = 56
+    Height = 370
+    Top = 54
+    Width = 368
+    ActivePage = TabSheet1
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = '调试'
+      ClientHeight = 340
+      ClientWidth = 360
+      object Memo1: TMemo
+        Left = 8
+        Height = 338
+        Top = 0
+        Width = 350
+        Lines.Strings = (
+          'Memo1'
+        )
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = '过程'
+    end
+  end
+end

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="http://www.softwhy.com/" />
+<title>蚂蚁部落</title>
+</head>
+<body>
+<div class="div1">
+  <svg id="svg1" xmlns="http://www.w3.org/2000/svg" width=600 height=400>
+  </svg>
+</div>
+<script>
+window.onload = function() {
+  var ming = 'http://www.w3.org/2000/svg';
+  var oSvg = document.getElementById('svg1');
+  
+  var oPolyLine = null;
+  var pointsNum = '';
+  
+  function createTag(tagName, tagAttr) {
+    let tag = document.createElementNS(ming, tagName);
+    for (var attr in tagAttr) {
+      tag.setAttribute(attr, tagAttr[attr]);
+    }
+    return tag;
+  }
+  var obj = document.querySelectorAll('.div1')[0];
+  
+  
+  obj.appendChild(createTag('svg', {
+    'xmlns': ming
+  }));
+  oSvg.onmousedown = function(ev) {
+    if (!oPolyLine) {
+      oPolyLine = createTag('polyline', {
+        'fill': 'none',
+        'stroke': 'red',
+        'stroke-width': '2'
+      });
+      oSvg.appendChild(oPolyLine);
+    }
+    var x = ev.clientX - obj.offsetLeft;
+    var y = ev.clientY - obj.offsetTop;
+  
+    if (pointsNum == '') {
+      pointsNum = x + ',' + y;
+    } else {
+      pointsNum += ',' + x + ',' + y;
+    }
+  
+    oPolyLine.setAttribute('points', pointsNum);
+    var oCircle = createTag('circle', {
+      'cx': x,
+      'cy': y,
+      'r': '5',
+      'fill': 'white',
+      'stroke': 'blue',
+      'stroke-width': 3
+    });
+    oSvg.appendChild(oCircle);
+	
+	var oText = createTag('text', {
+		'x': x + 5, 
+		'y': y + 5, 
+		'fill': 'green',
+		//'style': "font-size: 50px;font-family: 'Arial';",
+		'innerHTML': "A"
+	});
+	oSvg.appendChild(oText);
+  
+    if (ev.button === 2) {
+      oSvg.onmousemove = null;
+      oSvg.oncontextmenu = function() {
+        oSvg.onmousemove = null;
+        return false;
+      };
+    } else {
+      oSvg.onmousemove = function(ev) {
+        var ev = ev || window.event;
+  
+        if (oPolyLine) {
+          var x = ev.clientX - obj.offsetLeft;
+          var y = ev.clientY - obj.offsetTop;
+          oPolyLine.setAttribute('points', pointsNum + ',' + x + ',' + y);
+        }
+  
+      };
+    }
+  }
+}
+</script>
+</body>
+</html>
