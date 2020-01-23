@@ -1,14 +1,15 @@
 import java.awt.Font;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.*;
 import java.awt.*;
 
 import java.io.*; 
-
 
 
 public class FlowChart
@@ -18,8 +19,14 @@ public class FlowChart
         JFrame frame = new JFrame("Chinese to Russian");  
 		frame.setLayout(null);//布局设置为null
 		
+		/*
+		Container con = frame.getContentPane();
+        JScrollPane jp = new JScrollPane(new JTextArea(50,20));
+        con.add(jp);
+		*/
+		
         MyPanel jp = new MyPanel(); 
-		jp.setBounds(90, 60, 1200, 1000);		//位置和长宽
+		jp.setBounds(500, 500, 800, 600);		//位置和长宽
 		jp.setBorder(BorderFactory.createLineBorder(Color.red, 3));	//线边框
        
 		JLabel label = new JLabel("请输入想要查询的中文或者俄文单词：");
@@ -39,19 +46,22 @@ public class FlowChart
 		MyPanel jp_a = new MyPanel(); 
 		jp_a.setBounds(120, 120, 240, 240);
 		jp_a.setBorder(BorderFactory.createLineBorder(Color.blue, 3));	//线边框
-
-
-		JTextField txtfield1 = new JTextField(); 
-        txtfield1.setText("Input Chinese or Russian");    
-		
-		jp_a.add(txtfield1);
-     
+		 
         frame.add(jp);
 		frame.add(jp_a);
 		
         frame.setBounds(300,200,800,600);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.addMouseListener(new MouseAdapter() {   //为窗口添加鼠标事件监听器
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (e.getButton() == e.BUTTON3) {    // 判断获取的按钮是否为鼠标的右击     
+					jp_a.setBounds(e.getX(), e.getY(), 240, 240);
+				}
+			}
+		});
     }
 	
 	/**
