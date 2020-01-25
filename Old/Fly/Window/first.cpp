@@ -1,20 +1,20 @@
-ï»¿#include <windows.h>
+#include <windows.h>
 
-//ä½¿ç”¨CString
+//Ê¹ÓÃCString
 //#include <atlstr.h>
 
 #pragma comment(lib,"User32.lib")
 
-//æŒ‰é’®ID
+//°´Å¥ID
 #define IDB_ONE     3301  
 #define IDB_TWO     3302  
 #define IDB_THREE   3303  
  
-//å‡½æ•°å£°æ˜
+//º¯ÊıÉùÃ÷
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);  
   
-LPCSTR WINDOWS_CLASS = "MyWindowClass";    //ç±»å  
-LPCSTR WINDOWS_TITLE = "æµ‹è¯•æŒ‰é’®";   //çª—å£æ ‡é¢˜  
+LPCSTR WINDOWS_CLASS = "MyWindowClass";    //ÀàÃû  
+LPCSTR WINDOWS_TITLE = "²âÊÔ°´Å¥";   //´°¿Ú±êÌâ  
 
 //CString str("abcd");
 
@@ -31,7 +31,8 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
     wc.hInstance = hThisApp;  
     wc.lpfnWndProc = (WNDPROC)WindowProc;  
     wc.lpszClassName = WINDOWS_CLASS;  
-    wc.style = CS_HREDRAW | CS_VREDRAW;  
+    //wc.style = CS_HREDRAW | CS_VREDRAW;  
+	wc.style = WS_POPUP | WS_BORDER | WS_THICKFRAME;
     RegisterClassEx(&wc);  
     
     
@@ -75,9 +76,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
  
     case WM_CREATE: 
 		{  
-			//MessageBox(hwnd, "Ğ¤Ğ«Ğ’Ğ¤Ğ«", "æç¤º", MB_OK | MB_ICONINFORMATION);  
+			//MessageBox(hwnd, "§¶§½§£§¶§½", "ÌáÊ¾", MB_OK | MB_ICONINFORMATION);  
 			
-            //åˆ›å»ºä¸‰ä¸ªæŒ‰é’®  
+            //´´½¨Èı¸ö°´Å¥  
             HWND mymdiwnd = CreateWindow("MDICLIENT", "MDICLIENT", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
                 35, 10, 200, 100, hwnd, (HMENU)IDB_ONE, NULL, NULL);  
                 
@@ -115,18 +116,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             switch(LOWORD(wParam))  
             {  
             case IDB_ONE:  
-                //MessageBox(hwnd, L"æ‚¨ç‚¹å‡»äº†ç¬¬ä¸€ä¸ªæŒ‰é’®ã€‚", L"æç¤º", MB_OK | MB_ICONINFORMATION);  
+                //MessageBox(hwnd, L"Äúµã»÷ÁËµÚÒ»¸ö°´Å¥¡£", L"ÌáÊ¾", MB_OK | MB_ICONINFORMATION);  
                 SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"First");  
                 break;  
                 
             case IDB_TWO:  
-                //MessageBox(hwnd, L"æ‚¨ç‚¹å‡»äº†ç¬¬äºŒä¸ªæŒ‰é’®ã€‚", L"æç¤º", MB_OK | MB_ICONINFORMATION);  
+                //MessageBox(hwnd, L"Äúµã»÷ÁËµÚ¶ş¸ö°´Å¥¡£", L"ÌáÊ¾", MB_OK | MB_ICONINFORMATION);  
                 SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"Second");  
                 break;  
                 
             case IDB_THREE:  
-                //MessageBox(hwnd, L"æ‚¨ç‚¹å‡»äº†ç¬¬ä¸‰ä¸ªæŒ‰é’®ã€‚", L"æç¤º", MB_OK | MB_ICONINFORMATION);  
-                SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"ç¬¬ä¸‰ä¸ªæŒ‰éˆ•å·²ç‚¹å‡»");  
+                //MessageBox(hwnd, L"Äúµã»÷ÁËµÚÈı¸ö°´Å¥¡£", L"ÌáÊ¾", MB_OK | MB_ICONINFORMATION);  
+                SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"µÚÈı¸ö°´âoÒÑµã»÷");  
                 break;  
                 
             default:  
