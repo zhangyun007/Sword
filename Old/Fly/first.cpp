@@ -35,7 +35,7 @@ int main()
 	class Desk d;
 	class MyDesk m;
 
-	//容器里存放对象指针比存放对象更好，对象可能很大，指针只占四个字节。
+	//�������Ŷ���ָ��ȴ�Ŷ�����ã�������ܴܺ�ָ��ֻռ�ĸ��ֽڡ�
 	vector<class Desk *> dv;
 
 	d.desk();

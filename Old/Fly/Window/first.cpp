@@ -31,8 +31,8 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
     wc.hInstance = hThisApp;  
     wc.lpfnWndProc = (WNDPROC)WindowProc;  
     wc.lpszClassName = WINDOWS_CLASS;  
-    //wc.style = CS_HREDRAW | CS_VREDRAW;  
-	wc.style = WS_POPUP | WS_BORDER | WS_THICKFRAME;
+    wc.style = CS_HREDRAW | CS_VREDRAW;  
+	//wc.style = WS_POPUP | WS_BORDER | WS_THICKFRAME;
     RegisterClassEx(&wc);  
     
     
