@@ -31,10 +31,10 @@ def on_draw():
     ]
     
     #绘制的时候代码很简单
-    glBegin(GL_QUADS);
+    glBegin(GL_QUADS)
     for i in range(6):         # 有六个面，循环六次
         for j in range(4):     # 每个面有四个顶点，循环四次
             glVertex3fv(vertex_list[index_list[i][j]]);
-    glEnd();
+    glEnd()
     
 pyglet.app.run()
