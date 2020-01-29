@@ -2,14 +2,14 @@
 		"Name": "Rectangle",
 		"ID": "First",
 		"Click": "FirstClick",
-		"Title": "测试窗口",
+		"Title": "Test Title",
 		"Top": "100",
 		"Left": "100",
 		"Width": "100",
 		"Height": "100",
 		"Child": {
 			"Name":"Text",
-			"Caption":"第一段文本"
+			"Caption":"My name is zhang xiao ping"
 		},
 		"Brother":{
 				"Name": "Rectangle",
