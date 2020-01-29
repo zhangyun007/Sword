@@ -1,23 +1,23 @@
-{
-		"Name": "Rectangle",
-		"ID": "First",
-		"Click": "FirstClick",
-		"Title": "Test Title",
-		"Top": "100",
-		"Left": "100",
-		"Width": "100",
-		"Height": "100",
-		"Child": {
-			"Name":"Text",
-			"Caption":"My name is zhang xiao ping"
-		},
-		"Brother":{
-				"Name": "Rectangle",
-				"ID": "Second",
-				"Click": "SecondClick",
-				"T": "100",
-				"L": "100",
-				"W": "100",
-				"H": "100"
-		}
+{"TopLevel":[{
+	"Name": "Rectangle",
+	"ID": "First",
+	"Click": "FirstClick",
+	"Title": "Test Title",
+	"Top": "100",
+	"Left": "100",
+	"Width": "100",
+	"Height": "100",
+	"Child": {
+		"Name":"Text",
+		"Caption":"My name is zhang xiao ping"
+	}},
+	{
+	"Name": "Rectangle",
+	"ID": "Second",
+	"Click": "SecondClick",
+	"T": "100",
+	"L": "100",
+	"W": "100",
+	"H": "100"
+	}]
 }

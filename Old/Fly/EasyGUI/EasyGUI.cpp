@@ -23,7 +23,7 @@ void Draw_Window(json j) {
 	
 	MSG  msg ;    
 	
-	if (j["Name"] == "Rectangle") {		
+	if (j["TopLevel"][0]["Name"] == "Rectangle") {		
 		WNDCLASSW wc = {0};
 		wc.lpszClassName = L"RectangleClass";
 		wc.hInstance     = NULL;
@@ -35,7 +35,7 @@ void Draw_Window(json j) {
 	
 		RegisterClassW(&wc);
 		
-		string str = j["Title"];
+		string str = j["TopLevel"][0]["Title"];
 		cout << str;
 		
 		// WS_DLGFRAME表示窗口不带标题栏
@@ -46,7 +46,7 @@ void Draw_Window(json j) {
 						
 		HDC hdc=::GetDC(hWnd);
 		
-		if (j["Child"]["Name"] == "Text") {
+		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
 			HPEN hpen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 			HPEN hpen_old = (HPEN)SelectObject(hdc, hpen);
 			//参数：桌面句柄，XY坐标，文字，文字宽度
@@ -73,7 +73,7 @@ int main() {
 	std::ifstream i("test.json");
 	json j;
 	i >> j;
-	cout << j["Name"];
+	cout << j["TopLevel"][0]["Name"];
 	
 	Draw_Window(j);
 	
