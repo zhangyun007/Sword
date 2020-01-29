@@ -1,0 +1,23 @@
+{
+		"Name": "Rectangle",
+		"ID": "First",
+		"Click": "FirstClick",
+		"Title": "测试窗口",
+		"Top": "100",
+		"Left": "100",
+		"Width": "100",
+		"Height": "100",
+		"Child": {
+			"Name":"Text",
+			"Caption":"第一段文本"
+		},
+		"Brother":{
+				"Name": "Rectangle",
+				"ID": "Second",
+				"Click": "SecondClick",
+				"T": "100",
+				"L": "100",
+				"W": "100",
+				"H": "100"
+		}
+}
