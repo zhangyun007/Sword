@@ -4,6 +4,7 @@
 //#include <atlstr.h>
 
 #pragma comment(lib,"User32.lib")
+#pragma comment(lib,"gdi32.lib")
 
 //按钮ID
 #define IDB_ONE     3301  
@@ -79,8 +80,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			//MessageBox(hwnd, "ФЫВФЫ", "提示", MB_OK | MB_ICONINFORMATION);  
 			
             //创建三个按钮  
-            HWND mymdiwnd = CreateWindow("MDICLIENT", "MDICLIENT", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+            HWND mymdiwnd = CreateWindow("MDICLIENT", "MDICLIENT", WS_VISIBLE | WS_CHILD,  
                 35, 10, 200, 100, hwnd, (HMENU)IDB_ONE, NULL, NULL);  
+
+			HDC hdc = GetDC(mymdiwnd);
+			
+			// 创建红色1像素宽度的实线画笔
+			HPEN hpen1 = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+			HPEN hpen_old = (HPEN)SelectObject(hdc, hpen1);
+			
+			Rectangle(hdc, 40, 40, 50, 50);
+				
                 
             CreateWindow("LISTBOX", "LISTBOX", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
                 35, 150, 160, 60, hwnd, (HMENU)IDB_TWO, NULL, NULL); 
