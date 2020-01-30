@@ -405,7 +405,9 @@ class TRBtreeSet: TSet<T> {
 	}
 };
 
-
+/*
+ *234树每一个节点可能有2、3、4个子节点，节点可以用3种数据结构表示
+ */
 template <class T, class U>
 class T234treeMap: TMap<T, U> {
 	void show() {
