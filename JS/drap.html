@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style type="text/css">
+#div1 {width:198px; height:66px;padding:10px;border:1px solid #aaaaaa;}
+</style>
+<script type="text/javascript">
+function allowDrop(ev)
+{
+ev.preventDefault();
+}
+function drag(ev)
+{
+ev.dataTransfer.setData("Text",ev.target.id);
+}
+function drop(ev)
+{
+ev.preventDefault();
+var data=ev.dataTransfer.getData("Text");
+ev.target.appendChild(document.getElementById(data));
+}
+</script>
+</head>
+<body>
+<p>请把 W3School 的图片拖放到矩形中：</p>
+<div style="transform: translate(-100px, 0px);margin-left:150px">
+<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+<img id="drag1" src="https://box.bdimg.com/static/fisp_static/common/img/searchbox/logo_news_276_88_1f9876a.png" draggable="true" ondragstart="drag(event)" />
+</div>    
+</body>
+</html>
