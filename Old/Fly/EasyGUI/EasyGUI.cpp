@@ -41,12 +41,14 @@ void Draw_Window(json j) {
 		// WS_DLGFRAME表示窗口不带标题栏
 		HWND hWnd = CreateWindowW(wc.lpszClassName, (LPCWSTR)str.c_str(),
 					//WS_POPUP | WS_VISIBLE,
-					WS_OVERLAPPEDWINDOW,
+					WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL,
 					CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, 0, 0);  
 						
-		HDC hdc=::GetDC(hWnd);
+		//HDC hdc=::GetDC(hWnd);
+		HDC hdc = GetWindowDC(GetDesktopWindow());
 		
 		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
+			cout << "Text!!!\n";
 			HPEN hpen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 			HPEN hpen_old = (HPEN)SelectObject(hdc, hpen);
 			//参数：桌面句柄，XY坐标，文字，文字宽度
