@@ -36,7 +36,7 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
     RegisterClassEx(&wc);  
     
     
-    HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE,  
+    HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE | WS_HSCROLL,  
                     WINDOWS_CLASS,  
                     WINDOWS_TITLE,  
                     WS_OVERLAPPEDWINDOW,  
@@ -87,27 +87,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                  
             CreateWindow("Button", "Button", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
                 35, 250, 160, 60, hwnd, (HMENU)IDB_THREE, NULL, NULL);  
-				
-				
-				    HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE,  
-                    WINDOWS_CLASS,  
-                    WINDOWS_TITLE,  
-                    WS_OVERLAPPEDWINDOW,  
-                    0,  
-                    0,  
-                    100,  
-                    50,  
-                    mymdiwnd,  
-                    NULL,  
-                    wc.hInstance,  
-                    NULL);  
-					
-					if (hwnd == NULL)  
-					{
-						return -1;
-					}
-					
-	
 		}  
 		return 0; 
          

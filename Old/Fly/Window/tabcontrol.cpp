@@ -85,6 +85,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg,
 
             CreateWindowW(WC_BUTTONW, L"Clear", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
                 250, 110, 100, 25, hwnd, (HMENU) BTN_CLR, NULL, NULL);
+				
+			
+				
             break;
 
         case WM_COMMAND:
