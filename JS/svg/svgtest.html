@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<link rel="stylesheet" type="text/css" href="svg.select.css"/> 
+		<script src="svg.min.js"></script>
+		<script src="svg.draggable.js"></script>		    
 		<script type="text/javascript">
+		
 			function test() {
+				var draw = SVG('svgDemo').size(400, 400)
+				var rect = draw.rect(50, 40).move(10, 10).attr({fill: '#f06'});
 				
+				rect.draggable();
 			}	
+			
 			function open_win() {
 				var win = window.open();
 				win.document.write("Hello!");
@@ -19,14 +27,13 @@
 		</Script>
         <meta charset="UTF-8">
         <title>椭圆</title>
+		
 		<style type="text/css">
 			body {
 				overflow-y: auto;
 				overflow-x: hidden;
 			}
-			input {
-				border: 1px solid #ff000;
-			}
+
 			div {
 				border: 5px solid blue;
 				width: 300px;
@@ -57,7 +64,8 @@
 			}
 		</style>
     </head>
-    <body onload="test()">
+    <body bgcolor="black" onload="test()">
+	<div id="svgDemo"></div>
 	<div id="d2">
 		<text id="error" x="50%" y="50%" alignment-baseline="middle" text-anchor="middle"></text>    
 	</div>
@@ -70,23 +78,13 @@
 		<input type="button" value="保存" onclick="open_win()">
 		</form>
 	</div>
-	    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" height="500">
-            <line x1="0" y1="0" x2="500" y2="500" style="stroke:rgb(0,0,255);stroke-width:3" />
-        </svg>
-		
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" hidden="500">
-            <ellipse cx="300" cy="80" rx="100" ry="50" style="fill:yellow;stroke:dodgerblue;stroke-width:5" />
-        </svg>
-		
-		<div id="div">
-		<svg width="250" height="250">
-			<rect x="10" y="10" width="220" height="200" stroke="red" stroke-width="5px" fill="white"/>
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" height="300">
+			<rect x="10" y="10" width="220" height="200" stroke="blue" stroke-width="5px" fill="black"/>
 			<foreignObject x="20" y="20" width="200" height="130">
 				<input id="text1" type="text" style="width: 200px; height:50px; border:4px solid #ff000;" />
 			</foreignObject>
 		</svg>
-		</div>
-		
+		<br>
 		<svg id="isvg" >
 
 <defs>
