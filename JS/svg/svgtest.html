@@ -2,9 +2,6 @@
 <html>
     <head>	    
 		<script type="text/javascript">
-			function test() {
-			}	
-			
 			function myfoucs() {
 				var o = document.getElementById("d3");
 				o.style.border="1px solid red";
@@ -21,7 +18,14 @@
 					alert(e);
 					document.getElementById("error").innerHTML = e;
 				}			
-			}			
+			}		
+
+			function new_statement() {
+				var d = document.createElement('div');
+				d.innerHTML = '添加的div';    
+				document.body.appendChild(d);
+			}	
+			
 		</Script>
         <meta charset="UTF-8">
         <title>椭圆</title>
@@ -90,7 +94,7 @@
 	<div id="d3">
 		<center>
 		<form>
-			<input type="button" value="添加语句" onclick="open_win()">
+			<input type="button" value="添加语句" onclick="new_statement()">
 		</form>
 		</center>
 	</div>
