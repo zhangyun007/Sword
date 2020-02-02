@@ -79,8 +79,6 @@ void Draw_Window(json j, HINSTANCE hInstance, int iCmdShow) {
 		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
 			cout << "Text!!!\n";
 		}	
-		
-		GdiplusShutdown(gdiplusToken);
 	} 
 }
 
