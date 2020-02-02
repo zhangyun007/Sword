@@ -1,7 +1,7 @@
 {
 	"TopLevel":[
 		{
-			"Name": "Rectangle",
+			"Name": "div",
 			"ID": "First",
 			"Click": "FirstClick",
 			"Title": "Test Title",
@@ -9,17 +9,20 @@
 			"Left": "100",
 			"Width": "100",
 			"Height": "100",
+			"Image": "D:\test.bmp"
 			"Child": {
 				"Name":"Text",
 				"Caption":"My name is zhang xiao ping"
 			}
 		},{
-			"Name": "Rectangle",
+			"Name": "div",
 			"ID": "Second",
 			"Click": "SecondClick",
-			"T": "100",
-			"L": "100",
-			"W": "100",
-			"H": "100"
+			"T": "80",
+			"L": "70",
+			"W": "60",
+			"H": "30",
+			"comments": "TLWH表示使用百分比定位，80表示80%，意为距离父矩形左边的长度为父矩形宽度的80%"
 		}]
+	"comments": "子矩形会覆盖父矩形区域；兄弟矩形之间，后创建的可能会覆盖先创建的矩形。"
 }
