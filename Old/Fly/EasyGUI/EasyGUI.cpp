@@ -23,9 +23,9 @@ void Draw_Window(json j) {
 	
 	MSG  msg ;    
 	
-	if (j["TopLevel"][0]["Name"] == "Rectangle") {		
+	if (j["TopLevel"][0]["Name"] == "Div") {		
 		WNDCLASSW wc = {0};
-		wc.lpszClassName = L"RectangleClass";
+		wc.lpszClassName = L"DivClass";
 		wc.hInstance     = NULL;
 		//wc.hbrBackground = GetSysColorBrush(RGB(255, 0, 0));
 		//wc.hbrBackground = CreateSolidBrush(RGB(255, 0, 0));
@@ -36,7 +36,7 @@ void Draw_Window(json j) {
 		RegisterClassW(&wc);
 		
 		string str = j["TopLevel"][0]["Title"];
-		cout << str;
+		cout << str << "\n";
 		
 		// WS_DLGFRAME表示窗口不带标题栏
 		HWND hWnd = CreateWindowW(wc.lpszClassName, (LPCWSTR)str.c_str(),
@@ -44,8 +44,8 @@ void Draw_Window(json j) {
 					WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL,
 					CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, 0, 0);  
 						
-		//HDC hdc=::GetDC(hWnd);
-		HDC hdc = GetWindowDC(GetDesktopWindow());
+		HDC hdc= GetDC(hWnd);
+		//HDC hdc = GetWindowDC(GetDesktopWindow());
 		
 		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
 			cout << "Text!!!\n";
@@ -54,7 +54,7 @@ void Draw_Window(json j) {
 			//参数：桌面句柄，XY坐标，文字，文字宽度
 			TextOutA(hdc, 400, 400, "hahahahaah", 12);
 			Ellipse(hdc,200,150,300,250);
-			::ReleaseDC(hWnd, hdc); //一定要释放句柄
+			ReleaseDC(hWnd, hdc); //一定要释放句柄
 		}	
 		
 		//SW_MAXIMIZE，全屏幕显示（看不见底层的任务栏），不等于窗口最大化。
@@ -75,6 +75,7 @@ int main() {
 	std::ifstream i("test.json");
 	json j;
 	i >> j;
+	
 	cout << j["TopLevel"][0]["Name"];
 	
 	Draw_Window(j);

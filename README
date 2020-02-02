@@ -1,3 +1,11 @@
+ToBeDone：
+
+1. C++ Easy GUI库
+
+2. JavaScript 流程图编程
+
+
+
 git for windows镜像下载：
 https://github.com/waylau/git-for-win
 
@@ -19,8 +27,6 @@ https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/
 
 notepad++编辑器：https://notepad-plus-plus.org/
 默认的风格可能不是很喜欢，点击“设置/语言格式设置”，然后在”选择主题“选项里选择自己喜爱的主题；点击视图/自动换行。
-
-Visual Studio Code
 
 
 目录结构
@@ -44,10 +50,9 @@ hosts文件末尾添加：
 
 一、类型系统。
 	
-	静态类型还是动态类型？C,Java是静态类型，变量需要先声明，再使用；Python, Bash, Php是动态类型，变量直接使用。
+	静态类型还是动态类型？C/C++,Java是静态类型，变量需要先声明，再使用；Python, Bash, Php是动态类型，变量直接使用。
 	
 二、数组及复杂数据结构
-
 	数组，链表，哈希数组，平衡树结构等等。C/C++复杂数据结构是通过标准模板库（STL）来实现；并不是语言核心，而Python Php等复杂数据结构则是语言核心。个人倾向将数据结构作为语言关键字实现，而不是作为标准库实现。
 		
 三、条件和循环语句。
