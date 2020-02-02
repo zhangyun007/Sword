@@ -78,6 +78,7 @@ void Draw_Window(json j, HINSTANCE hInstance, int iCmdShow) {
    	
 		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
 			cout << "Text!!!\n";
+			//SendMessage(hWnd, WM_SETTEXT, 0, LPARAM("呵呵"));
 		}	
 	} 
 }
@@ -85,8 +86,13 @@ void Draw_Window(json j, HINSTANCE hInstance, int iCmdShow) {
 VOID OnPaint(HDC hdc)
 {
    Graphics graphics(hdc);
+   
    Pen      pen(Color(255, 0, 0, 255));
    graphics.DrawLine(&pen, 0, 0, 200, 200);
+   
+   SolidBrush brush(Color::Red);  
+   Font *f = new Font(L"Times new roman", 16);
+   graphics.DrawString(L"Hello", 5, f, PointF(0,0), &brush);
 }
 
 int WINAPI WinMain(
@@ -117,25 +123,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
    
    switch(message)
    {
-   case WM_PAINT:
-      hdc = BeginPaint(hWnd, &ps);
-      OnPaint(hdc);
-      EndPaint(hWnd, &ps);
-
-	  //获取可执行文件所在的目录
-	  char dir[64];
-	  GetCurrentDirectory(64, dir);
-	  
-	  char file[74];
-	  strcpy(file, dir);
-	  strcat(file, "\\test.bmp");
-	  //MessageBox(hWnd, file, "提示", MB_OK); 
-	  
-      return 0;
-   case WM_DESTROY:
-      PostQuitMessage(0);
-      return 0;
-   default:
-      return DefWindowProc(hWnd, message, wParam, lParam);
+		//设置Edit控件的文本
+	case WM_SETTEXT:
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		OnPaint(hdc);
+		EndPaint(hWnd, &ps);
+		return 0;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
    }
 }
