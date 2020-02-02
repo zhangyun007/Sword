@@ -1,4 +1,4 @@
-﻿#include <string>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -52,7 +52,7 @@ void Draw_Window(json j) {
 			HPEN hpen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 			HPEN hpen_old = (HPEN)SelectObject(hdc, hpen);
 			//参数：桌面句柄，XY坐标，文字，文字宽度
-			TextOutA(hdc, 400, 400, "hahahahaah", 12);
+			TextOutA(hdc, 200, 200, "hahahahaah", 12);
 			Ellipse(hdc,200,150,300,250);
 			ReleaseDC(hWnd, hdc); //一定要释放句柄
 		}	
