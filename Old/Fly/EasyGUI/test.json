@@ -1,5 +1,4 @@
-{
-	"TopLevel":[
+[
 		{
 			"Name": "Div",
 			"ID": "First",
@@ -14,7 +13,9 @@
 				"Name":"Text",
 				"Caption":"My name is zhang xiao ping"
 			}
-		},{
+		},
+		
+		{
 			"Name": "Div",
 			"ID": "Second",
 			"Click": "SecondClick",
@@ -23,6 +24,5 @@
 			"W": "60",
 			"H": "30",
 			"Comments" : ""
-		}],
-	"Comments" : ""
-}
+		}
+]

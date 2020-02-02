@@ -19,14 +19,18 @@ using json = nlohmann::json;
 #pragma comment(lib, "gdiplus.lib") 
 #pragma comment(lib, "gdi32.lib")
 
+HINSTANCE hInstance;
+int iCmdShow;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
 /*
  *绘制矩形区域的顺序：先父后子，先兄后弟。
  */
-void Draw_Window(json j, HINSTANCE hInstance, int iCmdShow) {
-	if (j["TopLevel"][0]["Name"] == "Div") {			
+void Draw_Window(json j) 
+	//绘制第一个DIV
+	if (j[0]["Name"] == "Div") {			
 		string str = j["TopLevel"][0]["Title"];
 		cout << str << "\n";
 		
@@ -75,12 +79,12 @@ void Draw_Window(json j, HINSTANCE hInstance, int iCmdShow) {
 		}
 		
 		GdiplusShutdown(gdiplusToken);
-   	
-		if (j["TopLevel"][0]["Child"]["Name"] == "Text") {
+	} 
+	
+	if (j[0]["Child"]["Name"] == "Text") {
 			cout << "Text!!!\n";
 			//SendMessage(hWnd, WM_SETTEXT, 0, LPARAM("呵呵"));
-		}	
-	} 
+	}	
 }
 
 VOID OnPaint(HDC hdc)
@@ -96,13 +100,15 @@ VOID OnPaint(HDC hdc)
 }
 
 int WINAPI WinMain(
-                HINSTANCE hInstance,     // handle to current instance
-                HINSTANCE hPrevInstance, // handle to previous instance
-                LPSTR lpCmdLine,         // command line
-                int nCmdShow             // show state
+                HINSTANCE hInst,		// handle to current instance
+                HINSTANCE hPrev, 		// handle to previous instance
+                LPSTR lpCmdLine,        // command line
+                int nCmd             	// show state
 ){
 	
 	//system("chcp 65001");
+	hInstance = hInst;
+	iCmdShow = nCmd;
 	
 	// read a JSON file
 	std::ifstream i("test.json");
@@ -111,7 +117,7 @@ int WINAPI WinMain(
 	
 	cout << j["TopLevel"][0]["Name"];
 	
-	Draw_Window(j, hInstance, nCmdShow);
+	Draw_Window(j);
 
 } 
 
