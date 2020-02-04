@@ -8,6 +8,18 @@
 
 using namespace std;
 
+
+/*多处malloc失败的代码，这部分是否可以优化一下？*/
+
+
+/*Python里有列表、字典、集合，这三种数据结构都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象
+
+本程序库计划实现STL中的多种容器和常用算法，包括序列式容器vector，list，deque以及关联式容器map，set，unordered_map，unordered_set。我们将要实现的容器都继承自TObject，TObject为所有类的父类，因此TObject指针类型则可以指向所有的子类对象。这种方法用在多个面向对象库中，比如Java库以及Delphi的VCL库。
+
+结合vector和map，我们可以得到一个元素类型为TObject *的vector和key、value都是TObject *的map。
+*/
+
+
 //智能指针，自动释放ptr指向的对象
 template <class T> 
 class AutoPtr {
@@ -29,23 +41,15 @@ private:
 };
 
 
-/*多处malloc失败的代码，这部分是否可以优化一下？*/
-
-/*
-Python里的列表、字典、集合，这三种数据结构中都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象。
-TObject为所有类的父类，TObject *指针类型则可以指向所有的子类对象。结合vector和map，我们可以得到一个保存TObject *的vector和能保存key和value都是TObject *的map。
-*/
-
-/*
-本程序计划实现STL中的各种容器，包括序列式容器vector，list，deque以及关联式容器map，set，unordered_map，unordered_set，区别是这些容器都继承自TObject。
-*/
 class TObject {
 public:
-	//零函数表示该函数在当前类中不用被实现，同时意味着该类不能实例化；虚函数意味着该函数在子类中可以有不同的实现；
+	//零函数表示该函数在当前类中没有定义，同时意味着该类不能实例化；
+	//虚函数virtual意味着该函数在子类中可以有不同的实现；
 	virtual void show() = 0;
+	
 	//当一个类有子类时，该类的析构函数必须是虚函数，否则子类对象被删除时，子类的析构函数不会被调用。
 	//有了虚析构函数，子类对象析构时，先调用子类的析构函数，再调用父类的析构函数。
-	//保险起见，不管三七二十一，见到析构函数，就加一个virtual，肯定没错。
+	//见到析构函数，就加一个virtual，肯定没错。
 	virtual ~TObject() { 
 		cout << "TObject destruct!\n";
 	}
@@ -66,8 +70,6 @@ private:
 	int i;
 };
 
-//长字符串。用len储存字符串长度，这样避免了读者的程序中多次用strlen计算长度
-//大致上，字符串越长，需要用strlen的地方越多，TString的好处越明显。
 class TString : TObject {
 public:
 	void show() {
@@ -80,13 +82,13 @@ public:
 		len = 0;
 	}
 	TString(char *p) {
-		len = strlen(p);
 		str = (char *)malloc(len + 1);
 		if (str == NULL) {
 			cout << "malloc fail, cause TString fail.\n";
 		}
 		strcpy(str, p);
 		str[len] = '\0';
+		len = strlen(p);
 	}
 	//注意：复制构造函数参数前要加上“&"
 	TString(TString& s) {
@@ -96,13 +98,14 @@ public:
 		}
 		strcpy(str, s.GetStr());
 		str[len] = '\0';
+		len = s.GetLen();
 	}
 	TString & operator =(TString &s) {
 		if (this != &s) {
 			str = (char *)malloc(s.GetLen() + 1);
-			len = s.GetLen();
 			strcpy(str, s.GetStr());
 			str[len] = '\0';
+			len = s.GetLen();
 		}
 		return *this;
 	}
@@ -120,13 +123,15 @@ public:
 	}
 	void StrCat(char *p) {
 		char * tmp = (char *)malloc(strlen(str) + strlen(p));
-		strcpy(tmp, str);		strcat(tmp, p);
-
+		strcpy(tmp, str);		
+		strcat(tmp, p);
 		free(str);
+		
 		str = tmp;
+		len = strlen(tmp);
 	}
 private:
-	char *str; //以\0结尾，中文字符用两个字节保存
+	char *str;  //以\0结尾，中文字符用两个字节保存
 	int len;	//字符串长度，不包括\0，
 };
 
@@ -153,8 +158,8 @@ public:
 		cout << "TVector Capacity = " << capacity() << " size = "  << size() << "...\n";
 	}
 	TVector() {
-		// 新C++中new失败会抛出一个异常对象，但是C++也提供了老式的通过返回值是否为NULL来判断内存是否申请成功。
-		//这个内存申请操作符函数为：new(std::nothrow)，我还是喜欢传统的空指针判断方式，不喜欢抛出异常对象处理方式。
+		//C++中new失败会抛出一个异常对象，但是也提供了老式的方法：返回值是否为NULL。
+		//这个内存申请操作符函数为：new(std::nothrow)
 		finish = start =  new(std::nothrow) T;
 		if (start == NULL) {
 			//这里最好打印到log文件，因为有可能没有console
