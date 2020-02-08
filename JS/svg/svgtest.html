@@ -2,6 +2,11 @@
 <html>
     <head>	    
 		<script type="text/javascript">
+		
+			function test() {
+				alert("test");
+			}
+			
 			function myfoucs() {
 				var o = document.getElementById("d3");
 				o.style.border="1px solid red";
@@ -25,6 +30,10 @@
 				d.innerHTML = '添加的div';    
 				document.body.appendChild(d);
 			}	
+						
+			ft1.ondblclick = function (){//鼠标双击事件函数
+				alert("你刚刚触发了鼠标双击事件");
+			}
 			
 		</Script>
         <meta charset="UTF-8">
@@ -75,8 +84,8 @@
 			}
 		</style>
     </head>
-    <body bgcolor="white" onload="test()">
-	
+    <body bgcolor="white">
+		
 	<div id="d1">
 	
 	<form>
@@ -99,9 +108,8 @@
 		</form>
 		</center>
 	</div>
-
 	
-		<div id="d4" onmouseover="myfoucs()">
+		<div id="d4" onmouseover="myfoucs()" ondblclick="test()">
 		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" position="absolute" top="100" left="100" width="500" height="300"  onmouseover="focus()">
 			<rect x="10" y="10" width="220" height="200" stroke="blue" stroke-width="5px" fill="yellow"/>
 			<foreignObject x="20" y="20" width="200" height="130">
