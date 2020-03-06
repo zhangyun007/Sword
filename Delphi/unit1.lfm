@@ -1,10 +1,28 @@
 object Form1: TForm1
-  Left = 347
-  Height = 375
+  Left = 454
+  Height = 378
   Top = 145
-  Width = 472
+  Width = 560
+  AlphaBlend = True
+  AlphaBlendValue = 123
+  BorderStyle = bsNone
   Caption = 'Form1'
+  ClientHeight = 378
+  ClientWidth = 560
+  OnMouseDown = FormMouseDown
   LCLVersion = '2.0.6.0'
+  object Label1: TLabel
+    Left = 64
+    Height = 1
+    Top = 144
+    Width = 1
+    Color = clDefault
+    Font.Color = clBlue
+    Font.Height = -27
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
+  end
   object TrayIcon1: TTrayIcon
     PopUpMenu = PopupMenu1
     Icon.Data = {
@@ -9299,17 +9317,23 @@ object Form1: TForm1
       426082
     }
     Visible = True
-    left = 154
-    top = 61
+    left = 224
+    top = 56
   end
   object PopupMenu1: TPopupMenu
-    left = 206
-    top = 161
+    left = 80
+    top = 56
     object MenuItem1: TMenuItem
       Caption = '选项'
     end
     object MenuItem2: TMenuItem
       Caption = '退出'
+      OnClick = MenuItem2Click
     end
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    left = 200
+    top = 152
   end
 end
