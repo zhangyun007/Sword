@@ -12,8 +12,21 @@ console.log(os.type());
 console.log(os.arch());
 
 a = [1, 2, 3, 4, 5, 6];
+
+//四种for循环，推荐最后一种。
 for (var i = 0; i < a.length; i++)
 	console.log(a[i]);
+
+a.forEach(function(name){
+   console.log(name);
+});
+
+for (var i in a)
+	console.log(a[i]);
+
+for (var i of a) {
+	console.log(i);
+}
 
 //从a[2]开始删除，删除1个元素
 a.splice(2, 1);
