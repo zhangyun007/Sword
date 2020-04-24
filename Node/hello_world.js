@@ -1,6 +1,17 @@
-var app = require('express')();
-app.listen(3000)
+const express = require("express");
+const app = express();
+const router = express.Router();		
 
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '\\hello_world.html');
-});
+const path = require("path");
+
+app .set("views", path.join(__dirname, "views"))
+    .set("view engine", "ejs")
+    .use("/",router)
+    .listen(666, "127.0.0.1");
+	
+router.get("/", function(req, res){
+    res.render("hello_world",{
+        name: "zhang",
+        id: 12
+    });
+})
