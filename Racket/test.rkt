@@ -10,3 +10,7 @@
 (define x (range 100))
 (list-ref x 45)
 (mul 3 x)
+
+(define newdisplay (lambda (x) (begin (display x)(newline))))
+(define tt (lambda args (for-each newdisplay args)))
+(tt 'abc 'efg 'tomson)
