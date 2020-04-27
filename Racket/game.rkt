@@ -1,5 +1,5 @@
 #lang Racket
- (require 2htdp/image)
+(require 2htdp/image)
 (require 2htdp/planetcute)
 
 ; stack : non-empty-list-of-images -> image
