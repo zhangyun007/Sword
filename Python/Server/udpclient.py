@@ -1,7 +1,12 @@
 from socket import *  
 
-#HOST='localhost'
-HOST='deque.me'
+# 局域网
+HOST='localhost'
+
+# 公网
+#HOST='deque.me'
+#HOST='36.7.226.209'
+
 PORT=9999  
 
 s = socket(AF_INET,SOCK_DGRAM)  
