@@ -26,7 +26,7 @@ var server = net.createServer(function(socket){
     })
 })
 
-// 这里的IP地址是外网IP，实际上，应该在无限路由器上运行改程序。
+// 这里的IP地址是外网IP，实际上，应该在无线路由器上运行改程序。这里运行会失败，不能在公网IP上listen
 server.listen(8000, '36.7.226.209', function(){
     console.log("Creat server on http://127.0.0.1:8000/");
 })

@@ -13,8 +13,12 @@ print(host)
 
 port = 9999
 
-# 绑定端口
-serversocket.bind((host, port))
+# 最好是bind 0.0.0.0,这样127.0.0.1, localhost，以及192.168... 客户都可以连接:
+# serversocket.bind(('0.0.0.0', port))
+
+# bind公网地址会失败？p2p软件怎么做的？
+serversocket.bind(('36.7.226.209', port))
+
 
 # 设置最大连接数，超过后排队
 serversocket.listen(5)
