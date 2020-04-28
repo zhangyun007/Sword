@@ -2,7 +2,7 @@
 
 (define (range n) (if (eq? n 1) (list 1) (append (range (- n 1)) (cons n `()))))
 
-;将列表乘以整数
+;将整数乘以列表
 (define (mul n m)
   (if (> (length m) 1) (cons (* n (car m)) (mul n (cdr m))) (list (* n (car m))))
   )
@@ -25,3 +25,10 @@
 
 (define sum 0)
 (for-each (lambda (x) (set! sum (+ sum x))) ‘(1 2 3 4))
+
+(for-each (lambda (x) (begin (display (* 2 x)) (newline))) (list 2 4 6 2 12 65))
+
+(apply + (list 1 3 5 6))
+
+(define y (list (cons "Dict" "字典") (cons "test" "测试")))
+
