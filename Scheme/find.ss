@@ -1,5 +1,6 @@
 #lang Racket
 
+;不带引号的是符号型，本质是指向字符串的指针，比较无需比较字符串，而只是比较指针是否相等.
 (define zipcodes '(
  (96774 ookala hawaii)
  (90001 losangeles california)
