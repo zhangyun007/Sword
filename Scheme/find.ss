@@ -14,9 +14,9 @@
 (define find 
 	(lambda (x zipcodes)
 		(if (eq? zipcodes `())
-			`() ; do nothing.
+			`()			; 最后一项作为返回值，return `()
 			(if (eq? x (caddr (car zipcodes)))    						
-				(cons (car (car zipcodes))(find x (cdr zipcodes)))	
+				(cons (car (car zipcodes)) (find x (cdr zipcodes)))	
 				(find x (cdr zipcodes))
             ) 
 		)

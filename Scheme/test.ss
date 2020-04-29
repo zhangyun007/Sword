@@ -15,6 +15,11 @@
 (define tt (lambda args (for-each newdisplay args)))
 (tt 'abc 'efg 'tomson)
 
+;以begin开始的语句块，其中的语句将顺序执行，最后一项是函数的返回值
+(define (fun x) (begin (display "abc") `(12 3 54) `("abcd"))
+
+;x的值为`("abcd")
+(define x (fun 6))
 
 ;map和for-each格式相同。map返回一个值，for-each没有返回值。
 
