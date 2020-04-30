@@ -95,7 +95,9 @@ global_env = standard_env()
 def repl(prompt='lis.py> '):
     "A prompt-read-eval-print loop."
     while True:
-        val = eval(parse(input(prompt)))
+		tmp = parse(input(prompt))
+		print(tmp)
+        val = eval(tmp)
         if val is not None: 
             print(lispstr(val))
 

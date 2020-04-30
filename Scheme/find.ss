@@ -23,3 +23,5 @@
 )
  
 (find `california zipcodes)
+
+;lisp保留字: lambda cons(pair) car(left) cdr(right) list define let set 
