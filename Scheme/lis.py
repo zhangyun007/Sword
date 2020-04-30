@@ -1,6 +1,6 @@
 ################ Lispy: Scheme Interpreter in Python
 
-## (c) Peter Norvig, 2010-16; See http://norvig.com/lispy.html
+## I am coding this on base of Peter Norvig, 2010-16, http://norvig.com/lispy.html
 
 from __future__ import division
 import math
@@ -95,8 +95,8 @@ global_env = standard_env()
 def repl(prompt='lis.py> '):
     "A prompt-read-eval-print loop."
     while True:
-		tmp = parse(input(prompt))
-		print(tmp)
+        tmp = parse(input(prompt))
+        print(tmp)
         val = eval(tmp)
         if val is not None: 
             print(lispstr(val))
@@ -141,6 +141,13 @@ def eval(x, env=global_env):
     elif x[0] == 'lambda':         # (lambda (var...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
+    elif x[0] == 'begin':			# (begin () ()) bein语句项目个数不固定。
+        for i in range(len(x)):
+            if i != 0:
+                if i == len(x) - 1:
+                    return eval(x[i], env)
+                else:
+                    eval(x[i], env)
     else:                          # (proc arg...)
         proc = eval(x[0], env)
         args = [eval(exp, env) for exp in x[1:]]
