@@ -2,6 +2,12 @@
 
 (define (range n) (if (eq? n 1) (list 1) (append (range (- n 1)) (cons n `()))))
 
+;初始值和停止条件，为什么两个小括号？
+(do ((i 0 (+ i 1)))     ; 初始值和 step 条件
+    ((> i 4))			; 停止条件,取值为 #f 时停止
+    (display i)       	; 循环主体 (命令)
+)
+
 ;将整数乘以列表
 (define (mul n m)
   (if (> (length m) 1) (cons (* n (car m)) (mul n (cdr m))) (list (* n (car m))))

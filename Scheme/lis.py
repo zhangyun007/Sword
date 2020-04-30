@@ -124,15 +124,15 @@ def eval(x, env=global_env):
     if isinstance(x, Symbol):      # variable reference
         return env.find(x)[x]
     elif not isinstance(x, List):  # constant literal
-        return x                
+        return x    
+'''
+   quote是容易把人绕晕的关键词，使用符号类型的理由可能是性能 -- 特别是比较两个符号是否相等时，性能比比较字符串更快。
+   
     elif x[0] == 'quote':          # (quote exp)
         (_, exp) = x
         return exp
-    elif x[0] == 'if':             # (if test conseq alt)
-        (_, test, conseq, alt) = x
-        exp = (conseq if eval(test, env) else alt)
-        return eval(exp, env)
-    elif x[0] == 'define':         # (define var exp)
+''' 
+ elif x[0] == 'define':         # (define var exp)
         (_, var, exp) = x
         env[var] = eval(exp, env)
     elif x[0] == 'set!':           # (set! var exp)
@@ -141,6 +141,10 @@ def eval(x, env=global_env):
     elif x[0] == 'lambda':         # (lambda (var...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
+    elif x[0] == 'if':             # (if test conseq alt)
+        (_, test, conseq, alt) = x
+        exp = (conseq if eval(test, env) else alt)
+        return eval(exp, env)
     elif x[0] == 'begin':			# (begin () ()) bein语句项目个数不固定。
         for i in range(len(x)):
             if i != 0:
