@@ -39,9 +39,6 @@
 ;字典数据结构
 (define y (list (cons "Dict" "字典") (cons "test" "测试")))
 
-(tcp-listen 1024 10 #t "127.0.0.1")
-
-
 (define (swap) (let ((c y)) (set! y x) (set! x c) ))
 
 ;写文件
