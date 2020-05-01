@@ -10,7 +10,7 @@ y = (10, 15, 3, 22)
 for a in x:
 	for b in y:
 		if a * b > 25:
-			bigmuls.append((a, b))
+			bigmuls = bigmuls + [(a, b)]	
 print(bigmuls)
 
 # 不推荐，过于复杂。
@@ -32,8 +32,9 @@ print(funa(3))
 L = [lambda x: x+2, lambda x: x*2, lambda x: x**2]
 print("L=", L[0](1), L[1](2), L[2](3))
 
-funb = lambda *x: x[-1]
-print(funb(12))
+#返回最后一个参数
+funb = lambda *x: x[-1] 
+print(funb(12, 23, 34))
 
 
 # 列表转成字典

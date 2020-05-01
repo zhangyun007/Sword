@@ -61,7 +61,7 @@ def standard_env():
         'begin':   lambda *x: x[-1],
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
-        'cons':    lambda x,y: [x] + y,
+        'cons':    lambda x,y: [x] + ['.'] + [y],
         'eq?':     op.is_, 
         'equal?':  op.eq, 
         'length':  len, 
