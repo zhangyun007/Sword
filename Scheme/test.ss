@@ -3,9 +3,12 @@
 (integer? 12)
 (real? 12.4)
 (string? "abc")
-
 (symbol? 'a)
 (atom? 12)
+
+;cons不是list，list是一个cons
+(cons? (list 2 3))
+(list? (cons 3 4))
 
 ;返回结果3
 (+ 1 2)
