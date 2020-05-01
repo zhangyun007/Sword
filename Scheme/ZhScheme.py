@@ -127,8 +127,8 @@ def eval(x, env=global_env):
         return env.find(x)[x]
     elif not isinstance(x, List):  # constant literal
         return x    
-
-    elif x[0] == 'quote':          # (quote exp)
+    elif x[0] == 'quote':         	# Return the exp literally; do not evaluate it.
+									# Example: (quote (+ 1 2))  -> (+ 1 2)  
         (_, exp) = x
         return exp
     elif x[0] == 'define':         # (define var exp)

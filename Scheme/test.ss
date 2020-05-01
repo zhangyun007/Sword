@@ -1,5 +1,11 @@
 #lang Racket
 
+;返回结果3
+(+ 1 2)
+
+;quote意为引用，如果之后跟一个列表，直接返回列表，不对列表进行计算。
+(quote (+ 1 2))
+
 (define (range n) (if (eq? n 1) (list 1) (append (range (- n 1)) (cons n `()))))
 
 ;初始值和停止条件，为什么两个小括号？
@@ -17,15 +23,17 @@
 (list-ref x 45)
 (mul 3 x)
 
+
+;以begin开始的语句块，其中的语句将顺序执行，最后一项是函数的返回值
+(define (fun x) (begin (display "abc") `(12 3 54) `("abcd"))
+;x的值为`("abcd")
+(define x (fun 6))
+
+
 (define newdisplay (lambda (x) (begin (display x)(newline))))
 (define tt (lambda args (for-each newdisplay args)))
 (tt 'abc 'efg 'tomson)
 
-;以begin开始的语句块，其中的语句将顺序执行，最后一项是函数的返回值
-(define (fun x) (begin (display "abc") `(12 3 54) `("abcd"))
-
-;x的值为`("abcd")
-(define x (fun 6))
 
 ;map和for-each格式相同。map返回一个值，for-each没有返回值。
 
@@ -45,7 +53,12 @@
 ;字典数据结构
 (define y (list (cons "Dict" "字典") (cons "test" "测试")))
 
+
+;交换变量
+(define m 10)
+(define n 12)
 (define (swap) (let ((c y)) (set! y x) (set! x c) ))
+
 
 ;写文件
 (define out (open-output-file some-file))
