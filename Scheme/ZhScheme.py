@@ -120,6 +120,7 @@ class Procedure(object):
         return eval(self.body, Env(self.parms, args, self.env))
 
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
+# 哪些应该设计成过程，哪些应该设计成关键字呢？
 
 def eval(x, env=global_env):
     "Evaluate an expression in an environment."
