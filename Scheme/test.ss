@@ -10,6 +10,10 @@
 (list + 1 2)
 (list (lambda x (+ x 1)) 3 4 list)
 
+(procedure? list)
+(procedure? +)
+
+;(procedure? quote)会导致语法错误，说明quote不是内置函数，也许算是“关键字”或者“保留字”
 
 (define (range n) (if (eq? n 1) (list 1) (append (range (- n 1)) (cons n '()))))
 
