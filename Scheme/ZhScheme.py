@@ -56,7 +56,7 @@ def standard_env():
         '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
         '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
         'abs':     abs,
-        'append':  op.add,  
+        'append':  op.add,  	# 连接两个列表
         #'apply':   apply,
         'begin':   lambda *x: x[-1],
         'car':     lambda x: x[0],
