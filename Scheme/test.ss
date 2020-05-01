@@ -22,6 +22,9 @@
 (procedure? values)
 (procedure? +)
 
+;注意cons和append的区别：前者构造一个pair，两个参数分别为左右部；后者将第一个参数的最后一项和第二个参数构造一个pair，作为原list的最后一项。
+(cons (list 1 2) 3)
+(append (list 1 2) 3)
 
 (define-values (x y) (values 1 2))
 
