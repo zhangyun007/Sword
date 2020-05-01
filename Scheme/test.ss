@@ -66,7 +66,10 @@
 ;交换变量
 (define m 10)
 (define n 12)
-(define (swap) (let ((c y)) (set! y x) (set! x c) ))
+(define t)
+(set! t m)
+(set! m n)
+(set! n t)
 
 
 ;写文件
