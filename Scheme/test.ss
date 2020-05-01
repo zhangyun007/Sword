@@ -1,5 +1,11 @@
 ;#lang Racket
 
+(integer? 12)
+(real? 12.4)
+(string? "abc")
+(symbol? 'a)
+(atom? 12)
+
 ;返回结果3
 (+ 1 2)
 
