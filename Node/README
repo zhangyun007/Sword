@@ -17,4 +17,4 @@ npm是专门管理node模块的管理工具，而bower是node的模块，因为b
 bower install bower.json
 
 
-server里是Python程序，改写成Node
+ejs -- html网页模板，需要安装npm install -g ejs模块
