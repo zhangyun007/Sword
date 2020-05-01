@@ -4,6 +4,7 @@
 (+ 1 2)
 
 ;quote意为引用,如果之后跟一个列表,直接返回列表,不对列表进行计算。
+;quote意义不明，也许可以删掉
 (quote (+ 1 2))
 
 ;list构造一个列表, list和+都是系统内置函数(procudre)
@@ -46,7 +47,11 @@
 
 ;map和for-each格式相同。map返回一个值,for-each没有返回值。
 
+;三者都能运行。这里有问题：通常人们会希望少打几个字，而使用'。
 (map (lambda (x) (* x x)) '(1 2 3))
+(map (lambda (x) (* x x)) (quote (1 2 3)))
+(map (lambda (x) (* x x)) (list 1 2 3))
+
 
 (map + '(1 3 5) '(2 4 6))
 (map (lambda (x y) (* x y)) '(1 2 3) '(2 4 6))
@@ -59,7 +64,7 @@
 (apply + (list 1 3 5 6))
 
 
-;字典数据结构
+;字典 -- 一种常见的数据结构， Python,JavaScript中都有该结构
 (define z (list (cons "Dict" "字典") (cons "test" "测试")))
 
 
