@@ -12,7 +12,17 @@
 (list (lambda x (+ x 1)) 3 4 list)
 
 (procedure? list)
+(procedure? values)
 (procedure? +)
+
+
+(define-values (x y) (values 1 2))
+
+(define xy 123)
+(define-values (get-x put-x!)
+       (values
+       (lambda () xy)
+       (lambda (v) (set! xy v))))
 
 ;(procedure? quote)会导致语法错误，说明quote不是内置函数，也许算是“关键字”或者“保留字”
 
