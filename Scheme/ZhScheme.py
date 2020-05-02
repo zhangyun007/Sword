@@ -8,38 +8,34 @@ import operator as op
 
 # Types
 
-Symbol = str          # A Lisp Symbol is implemented as a Python str
-List   = list         # A Lisp List is implemented as a Python list
-Number = (int, float) # A Lisp Number is implemented as a Python int or float
-
-# 常量，用于保存Symbol，用于快速比较。
-const = []
+String = str          					# A Lisp String is implemented as a Python str
+Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or float
+List   = list         					# A Lisp List is implemented as a Python list
 
 # 过程
 var = {
         '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
         '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
+		'not':     op.not_,
+		'eq?':     op.is_, 
+        'equal?':  op.eq, 
+		'max':     max,
+        'min':     min,
         'abs':     abs,
-        'append':  op.add,  	# 连接两个列表
-        #'apply':   lambda *x: x[0](x[1:]),
-        'begin':   lambda *x: x[-1],
+		'round':   round,
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
         'cons':    lambda x,y: [x] + ['.'] + [y],
-        'eq?':     op.is_, 
-        'equal?':  op.eq, 
-        'length':  len, 
         'list':    lambda *x: list(x), 
-        'list?':   lambda x: isinstance(x,list), 
-        'map':     map,
-        'max':     max,
-        'min':     min,
-        'not':     op.not_,
+		'append':  op.add,  	# 连接两个列表
+		'length':  len, 		# 列表长度
+		'map':     map,
         'null?':   lambda x: x == [], 
-        'number?': lambda x: isinstance(x, Number),   
         'procedure?': callable,
-        'round':   round,
-        'symbol?': lambda x: isinstance(x, Symbol),
+		'number?': lambda x: isinstance(x, Number),   
+        'String?': lambda x: isinstance(x, String),
+		'list?':   lambda x: isinstance(x,list), 
+		'begin':   lambda *x: x[-1]		# 返回最后一项
 }
 
 var.update(vars(math)) # sin, cos, sqrt, pi, ...
@@ -57,7 +53,8 @@ def tokenize(s):
 def read_from_tokens(tokens):
     "Read an expression from a sequence of tokens."
     if len(tokens) == 0:
-        raise SyntaxError('unexpected EOF while reading')
+        repl()
+        # raise SyntaxError('unexpected EOF while reading')
     token = tokens.pop(0)
     if '(' == token:
         L = []
@@ -68,15 +65,18 @@ def read_from_tokens(tokens):
     elif ')' == token:
         raise SyntaxError('unexpected )')
     else:
+	    # 这里返回字符串，应该转成具体的数据类型，
         return atom(token)
 
 def atom(token):
-    "Numbers become numbers; every other token is a symbol."
-    try: return int(token)
+	# 注意，转换次序。bool?
+    try: 
+        return int(token)
     except ValueError:
-        try: return float(token)
+        try: 
+            return float(token)
         except ValueError:
-            return Symbol(token)
+            return String(token)
 
 # call this to entery Interaction.
 
@@ -106,15 +106,14 @@ class Procedure(object):
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
 # 哪些应该设计成过程，哪些应该设计成关键字呢？
 
-def eval(x, env=(const, var)):
+def eval(x, env=var):
     "Evaluate an expression in an environment."
-    if isinstance(x, Symbol):      # variable reference
+    if isinstance(x, String):      # variable reference
         return var[x]
     elif not isinstance(x, List):  # constant literal
         return x    
-    elif x[0] == 'quote':          # (quote exp) , return a Symbol
-        (_, exp) = x
-        return exp
+    elif x[0] == 'exit':           
+        exit()
     elif x[0] == 'define':         # (define name exp)
         (_, name, exp) = x
         var[name] = eval(exp, env)
@@ -132,3 +131,5 @@ def eval(x, env=(const, var)):
         proc = eval(x[0], env)
         args = [eval(exp, env) for exp in x[1:]]
         return proc(*args)
+
+repl()
