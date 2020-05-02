@@ -13,3 +13,5 @@ Eshell V8.3  (abort with ^G)
 4
 
 erl -pa 参数的意思是 Path Add, 添加目录到 erlang 的 beam 文件查找目录列表里。
+
+ErLang里的所谓的“变量”只能绑定一次，实际就是“常量”。
