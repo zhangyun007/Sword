@@ -5,12 +5,13 @@
 from __future__ import division
 import math
 import operator as op
+import builtins
 
 # Types
 
-String = str          					# A Lisp String is implemented as a Python str
+String = str          			# A Lisp String is implemented as a Python str
 Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or float
-List   = list         					# A Lisp List is implemented as a Python list
+List   = list         			# A Lisp List is implemented as a Python list
 
 # 过程
 var = {
@@ -40,6 +41,14 @@ var = {
 
 var.update(vars(math)) # sin, cos, sqrt, pi, ...
 
+a = dir(__builtins__)
+for i in range(len(a)):
+		a[i] = (a[i], a[i])
+
+var.update(dict(a)) # ord...
+
+print(var)
+
 # Parsing: parse, tokenize, and read_from_tokens
 
 def parse(program):
@@ -54,7 +63,6 @@ def read_from_tokens(tokens):
     "Read an expression from a sequence of tokens."
     if len(tokens) == 0:
         repl()
-        # raise SyntaxError('unexpected EOF while reading')
     token = tokens.pop(0)
     if '(' == token:
         L = []
@@ -65,7 +73,7 @@ def read_from_tokens(tokens):
     elif ')' == token:
         raise SyntaxError('unexpected )')
     else:
-	    # 这里返回字符串，应该转成具体的数据类型，
+	    # 这里将字符串转成具体的数据类型，
         return atom(token)
 
 def atom(token):
@@ -129,7 +137,9 @@ def eval(x, env=var):
         return eval(exp, env)
     else:                          # (proc arg...)
         proc = eval(x[0], env)
+		print(proc)
         args = [eval(exp, env) for exp in x[1:]]
+        print(args)
         return proc(*args)
 
 repl()

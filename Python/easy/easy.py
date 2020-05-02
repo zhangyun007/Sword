@@ -43,6 +43,9 @@ print(a)
 print(a['sape'])
 print(a['jack'])
 
+a = ['a', 'b', 'c']
+for i in range(len(a)):
+		a[i] = (a[i], a[i])
 
 dict1 = {'Name': 'Zara', 'Age': 7}
 dict2 = {'Sex': 'female' }
