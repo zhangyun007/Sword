@@ -46,18 +46,16 @@ def atom(token):
         except ValueError:
             return Symbol(token)
 
-################ Environments
+# 常量，用于保存Symbol，用于快速比较。
+const = []
 
-def standard_env():
-    "An environment with some Scheme standard procedures."
-    env = Env()
-    env.update(vars(math)) # sin, cos, sqrt, pi, ...
-    env.update({
+# 过程
+var = {
         '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
         '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
         'abs':     abs,
         'append':  op.add,  	# 连接两个列表
-        #'apply':   apply,
+        #'apply':   lambda *x: x[0](x[1:]),
         'begin':   lambda *x: x[-1],
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
@@ -76,22 +74,9 @@ def standard_env():
         'procedure?': callable,
         'round':   round,
         'symbol?': lambda x: isinstance(x, Symbol),
-    })
-    return env
+}
 
-class Env(dict):
-    "An environment: a dict of {'var':val} pairs, with an outer Env."
-    def __init__(self, parms=(), args=(), outer=None):
-        self.update(zip(parms, args))
-        self.outer = outer
-    def find(self, var):
-        "Find the innermost Env where var appears."
-        return self if (var in self) else self.outer.find(var)
-
-'''
-全局对象，
-'''
-global_env = standard_env()
+var.update(vars(math)) # sin, cos, sqrt, pi, ...
 
 # call this to entery Interaction.
 
@@ -111,7 +96,6 @@ def lispstr(exp):
     else:
         return str(exp)
 
-
 class Procedure(object):
     "A user-defined Scheme procedure."
     def __init__(self, parms, body, env):
@@ -122,23 +106,22 @@ class Procedure(object):
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
 # 哪些应该设计成过程，哪些应该设计成关键字呢？
 
-def eval(x, env=global_env):
+def eval(x, env=(const, var)):
     "Evaluate an expression in an environment."
     if isinstance(x, Symbol):      # variable reference
-        return env.find(x)[x]
+        return var[x]
     elif not isinstance(x, List):  # constant literal
         return x    
-    elif x[0] == 'quote':         	# Return the exp literally; do not evaluate it.
-									# Example: (quote (+ 1 2))  -> (+ 1 2)  
+    elif x[0] == 'quote':          # (quote exp) , return a Symbol
         (_, exp) = x
         return exp
-    elif x[0] == 'define':         # (define var exp)
-        (_, var, exp) = x
-        env[var] = eval(exp, env)
-    elif x[0] == 'set!':           # (set! var exp)
-        (_, var, exp) = x
-        env.find(var)[var] = eval(exp, env)
-    elif x[0] == 'lambda':         # (lambda (var...) body)
+    elif x[0] == 'define':         # (define name exp)
+        (_, name, exp) = x
+        var[name] = eval(exp, env)
+    elif x[0] == 'set!':           # (set! name exp)
+        (_, name, exp) = x
+        var[name] = eval(exp, env)
+    elif x[0] == 'lambda':         # (lambda (name...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
     elif x[0] == 'if':             # (if test conseq alt)

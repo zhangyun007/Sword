@@ -86,6 +86,7 @@
 
 (for-each (lambda (x) (begin (display (* 2 x)) (newline))) (list 2 4 6 2 12 65))
 
+(eval '(+ 1 2))
 (apply + (list 1 3 5 6))
 
 
