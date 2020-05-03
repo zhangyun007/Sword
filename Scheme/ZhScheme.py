@@ -14,7 +14,7 @@ Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or f
 List   = list         			# A Lisp List is implemented as a Python list
 
 # 过程
-var = {
+procs = {
         '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
         '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
 		'not':     op.not_,
@@ -31,23 +31,21 @@ var = {
 		'append':  op.add,  	# 连接两个列表
 		'length':  len, 		# 列表长度
 		'map':     map,
+		'print':   print,
+		'exit':	   exit,
         'null?':   lambda x: x == [], 
         'procedure?': callable,
 		'number?': lambda x: isinstance(x, Number),   
         'String?': lambda x: isinstance(x, String),
-		'list?':   lambda x: isinstance(x,list), 
+		'list?':   lambda x: isinstance(x,List), 
 		'begin':   lambda *x: x[-1]		# 返回最后一项
 }
-
-var.update(vars(math)) # sin, cos, sqrt, pi, ...
+procs.update(vars(math)) # sin, cos, sqrt, pi, ...
+print(procs)
 
 a = dir(__builtins__)
-for i in range(len(a)):
-		a[i] = (a[i], a[i])
 
-var.update(dict(a)) # ord...
-
-print(var)
+var = {}
 
 # Parsing: parse, tokenize, and read_from_tokens
 
@@ -112,16 +110,13 @@ class Procedure(object):
         return eval(self.body, Env(self.parms, args, self.env))
 
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
-# 哪些应该设计成过程，哪些应该设计成关键字呢？
+# 哪些是过程，哪些是关键字？
+# 一、Python内置过程直接使用，当作Scheme内置过程。exit应当作内置过程。
 
-def eval(x, env=var):
+def eval(x, env = (procs, var)):
     "Evaluate an expression in an environment."
-    if isinstance(x, String):      # variable reference
-        return var[x]
-    elif not isinstance(x, List):  # constant literal
-        return x    
-    elif x[0] == 'exit':           
-        exit()
+    if isinstance(x, String) or isinstance(x, Number):      # variable reference
+        return x
     elif x[0] == 'define':         # (define name exp)
         (_, name, exp) = x
         var[name] = eval(exp, env)
@@ -136,10 +131,10 @@ def eval(x, env=var):
         exp = (conseq if eval(test, env) else alt)
         return eval(exp, env)
     else:                          # (proc arg...)
-        proc = eval(x[0], env)
-		print(proc)
+        name = eval(x[0], env)
+        print(procs[name])
         args = [eval(exp, env) for exp in x[1:]]
         print(args)
-        return proc(*args)
+        return procs[proc](*args)
 
 repl()
