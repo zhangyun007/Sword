@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "time"
+    "github.com/ccding/go-stun/stun"
 )
 
 func test_print(a int){
@@ -14,6 +15,11 @@ func main(){
         go test_print(i)
     }
     time.Sleep(time.Second)
+    
+    nat, host, err := stun.NewClient().Discover()
+    fmt.Println(nat)
+    fmt.Println(host)
+    fmt.Println(err)
 }
 
 /*在实现高并发的时候只需要在调用的函数前面加上go，就表示开启了并发。

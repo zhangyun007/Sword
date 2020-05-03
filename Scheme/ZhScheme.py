@@ -11,10 +11,11 @@ import builtins
 
 String = str          			# A Lisp String is implemented as a Python str
 Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or float
+# List中可以包含List、Number或者String
 List   = list         			# A Lisp List is implemented as a Python list
 
-# 过程
-procs = {
+# 环境变量（全局变量）
+env_g = {
         '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
         '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
 		'not':     op.not_,
@@ -27,6 +28,7 @@ procs = {
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
         'list':    lambda *x: list(x), 
+        'list-ref':lambda x, y: x[y], 
 		'append':  op.add,  	# 连接两个列表
 		'length':  len, 		# 列表长度
 		'map':     map,
@@ -39,12 +41,10 @@ procs = {
 		'list?':   lambda x: isinstance(x,List), 
 		'begin':   lambda *x: x[-1]		# 返回最后一项
 }
-procs.update(vars(math)) # sin, cos, sqrt, pi, ...
-print(procs)
+env_g.update(vars(math)) # sin, cos, sqrt, pi, ...
+print(env_g)
 
 a = dir(__builtins__)
-
-var = {}
 
 # Parsing: parse, tokenize, and read_from_tokens
 
@@ -90,7 +90,7 @@ def repl(prompt='ZhScheme> '):
     while True:
         tmp = parse(input(prompt))
         print(tmp)
-        val = eval(tmp)
+        val = eval(tmp, env_g)
         if val is not None: 
             print(lispstr(val))
 
@@ -101,6 +101,7 @@ def lispstr(exp):
     else:
         return str(exp)
 
+# 每个过程中包括其定义的变量，也就是env.
 class Procedure(object):
     "A user-defined Scheme procedure."
     def __init__(self, parms, body, env):
@@ -110,31 +111,44 @@ class Procedure(object):
 
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
 # 哪些是过程，哪些是关键字？
-# 一、Python内置过程直接使用，当作Scheme内置过程。exit应当作内置过程。
 
-def eval(x, env = (procs, var)):
-    "Evaluate an expression in an environment."
-    if isinstance(x, String) or isinstance(x, Number):      # variable reference
+def eval(x, env):
+    # 也有可能是字符串常量，怎么区分处理？
+    if isinstance(x, String):      # variable reference
+        #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
+        if x in env.keys():
+            return env[x]
+        else:
+            # 也可能是程序写错，用了未定义的变量。
+            return x
+    elif isinstance(x, Number):      # constant number
         return x
+    elif x[0] == 'env':         # (env) 打印环境变量
+        print(env)        
     # define 和 set定义赋值变量
     elif x[0] == 'define':         # (define name exp)
         (_, name, exp) = x
-        var[name] = eval(exp, env)
+        print(name)
+        if name not in env.keys():
+            env[name] = eval(exp, env)
+        else:
+            print("Error Message: define [" + name + "] again.")
     elif x[0] == 'set!':           # (set! name exp)
         (_, name, exp) = x
-        var[name] = eval(exp, env)
+        env[name] = eval(exp, env)
     elif x[0] == 'lambda':         # (lambda (name...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
     elif x[0] == 'if':             # (if test conseq alt)
         (_, test, conseq, alt) = x
-        exp = (conseq if eval(test, env) else alt)
+        exp = (conseq if eval(test) else alt)
         return eval(exp, env)
     else:                          # (proc arg...)
-        name = eval(x[0], env)
-        print(procs[name])
+        proc = eval(x[0], env)
         args = [eval(exp, env) for exp in x[1:]]
-        print(args)
-        return procs[name](*args)
+        if proc in env_g.values():
+            return proc(*args)
+        else:
+            return proc(*args)
 
 repl()
