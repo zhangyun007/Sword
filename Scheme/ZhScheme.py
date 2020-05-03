@@ -35,7 +35,7 @@ procs = {
         'null?':   lambda x: x == [], 
         'procedure?': callable,
 		'number?': lambda x: isinstance(x, Number),   
-        'String?': lambda x: isinstance(x, String),
+        'string?': lambda x: isinstance(x, String),
 		'list?':   lambda x: isinstance(x,List), 
 		'begin':   lambda *x: x[-1]		# 返回最后一项
 }
