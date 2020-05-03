@@ -26,7 +26,6 @@ procs = {
 		'round':   round,
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
-        'cons':    lambda x,y: [x] + ['.'] + [y],
         'list':    lambda *x: list(x), 
 		'append':  op.add,  	# 连接两个列表
 		'length':  len, 		# 列表长度
@@ -117,6 +116,7 @@ def eval(x, env = (procs, var)):
     "Evaluate an expression in an environment."
     if isinstance(x, String) or isinstance(x, Number):      # variable reference
         return x
+    # define 和 set定义赋值变量
     elif x[0] == 'define':         # (define name exp)
         (_, name, exp) = x
         var[name] = eval(exp, env)
@@ -135,6 +135,6 @@ def eval(x, env = (procs, var)):
         print(procs[name])
         args = [eval(exp, env) for exp in x[1:]]
         print(args)
-        return procs[proc](*args)
+        return procs[name](*args)
 
 repl()
