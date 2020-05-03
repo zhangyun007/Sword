@@ -1,6 +1,6 @@
 # Scheme Interpreter in Python
 
-# I am coding this on base of Peter Norvig, 2010-16, http://norvig.com/lispy.html
+# I am changing this from Peter Norvig, 2010-16, http://norvig.com/lispy.html
 
 from __future__ import division
 import math
