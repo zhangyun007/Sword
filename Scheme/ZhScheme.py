@@ -112,43 +112,46 @@ class Procedure(object):
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
 # 哪些是过程，哪些是关键字？
 
+isa = isinstance
+
 def eval(x, env):
-    # 也有可能是字符串常量，怎么区分处理？
-    if isinstance(x, String):      # variable reference
-        #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
-        if x in env.keys():
-            return env[x]
-        else:
-            # 也可能是程序写错，用了未定义的变量。
-            return x
-    elif isinstance(x, Number):      # constant number
-        return x
-    elif x[0] == 'env':         # (env) 打印环境变量
-        print(env)        
-    # define 和 set定义赋值变量
-    elif x[0] == 'define':         # (define name exp)
-        (_, name, exp) = x
-        print(name)
-        if name not in env.keys():
+    while True:
+        # 也有可能是字符串常量，怎么区分处理？
+        if isa(x, String):      # variable reference
+            #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
+            if x in env.keys():
+                return env[x]
+            else:
+                # 也可能是程序写错，用了未定义的变量。
+                return x
+        elif not isa(x, List):   # constant literal
+            return x                
+        elif x[0] == 'env':         # (env) 打印环境变量
+            print(env)        
+        # define 和 set定义赋值变量
+        elif x[0] == 'define':         # (define name exp)
+            (_, name, exp) = x
+            print(name)
+            if name not in env.keys():
+                env[name] = eval(exp, env)
+            else:
+                print("Error Message: define [" + name + "] again.")
+        elif x[0] == 'set!':           # (set! name exp)
+            (_, name, exp) = x
             env[name] = eval(exp, env)
-        else:
-            print("Error Message: define [" + name + "] again.")
-    elif x[0] == 'set!':           # (set! name exp)
-        (_, name, exp) = x
-        env[name] = eval(exp, env)
-    elif x[0] == 'lambda':         # (lambda (name...) body)
-        (_, parms, body) = x
-        return Procedure(parms, body, env)
-    elif x[0] == 'if':             # (if test conseq alt)
-        (_, test, conseq, alt) = x
-        exp = (conseq if eval(test) else alt)
-        return eval(exp, env)
-    else:                          # (proc arg...)
-        proc = eval(x[0], env)
-        args = [eval(exp, env) for exp in x[1:]]
-        if proc in env_g.values():
-            return proc(*args)
-        else:
-            return proc(*args)
+        elif x[0] == 'lambda':         # (lambda (name...) body)
+            (_, parms, body) = x
+            return Procedure(parms, body, env)
+        elif x[0] == 'if':             # (if test conseq alt)
+            (_, test, conseq, alt) = x
+            exp = (conseq if eval(test) else alt)
+            return eval(exp, env)
+        else:                          # (proc arg...)
+            proc = eval(x[0], env)
+            args = [eval(exp, env) for exp in x[1:]]
+            if proc in env_g.values():
+                return proc(*args)
+            else:
+                return proc(*args)
 
 repl()
