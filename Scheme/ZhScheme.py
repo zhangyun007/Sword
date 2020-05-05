@@ -7,11 +7,10 @@ import math
 import operator as op
 import builtins
 
-# Types
-
+Bool = bool
 String = str          			# A Lisp String is implemented as a Python str
-Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or float
-# List中可以包含List、Number或者String
+Number = (int, float) 	        # A Lisp Number is implemented as a Python int or float
+# List中可以包含List、Number、String、Bool
 List   = list         			# A Lisp List is implemented as a Python list
 Dict   = dict
 
@@ -47,7 +46,6 @@ env_g = {
         'dict?':    lambda x: isa(x, Dict),
 }
 env_g.update(vars(math)) # sin, cos, sqrt, pi, ...
-print(env_g)
 
 a = dir(__builtins__)
 
@@ -79,14 +77,17 @@ def read_from_tokens(tokens):
         return atom(token)
 
 def atom(token):
-	# 注意，转换次序。bool?
+	# 注意，转换次序。
     try: 
         return int(token)
     except ValueError:
         try: 
             return float(token)
         except ValueError:
-            return String(token)
+            if token == "True" or token == "False":
+                return Bool(token)
+            else:
+                return String(token)
 
 # call this to entery Interaction.
 
@@ -94,7 +95,7 @@ def repl(prompt='ZhScheme> '):
     "A prompt-read-eval-print loop."
     while True:
         tmp = parse(input(prompt))
-        # print(tmp)
+        print(tmp)
         val = eval(tmp, env_g)
         if val is not None: 
             print(lispstr(val))
@@ -117,24 +118,20 @@ class Procedure(object):
             self.env[self.parms[i]] = args[i]
         return eval(self.body, self.env)
 
-# 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
-# 哪些是过程，哪些是关键字？
+# 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？哪些是过程，哪些是关键字？
+# 传入env参数是列表或者字典的指针
 
 def eval(x, env):
     while True:
         if x == []:
             return
-        # 可能是字符串常量、变量名或者bool值(True和False)怎么区分处理？
-        if isa(x, String):      # variable reference
+        # 可能是字符串常量或者变量名，怎么区分处理？
+        if isa(x, String):
             #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
             if x in env.keys():
-                return env[x]
-            if x == "True" or x == "False":
-                return bool(x)
-          
-            # 也可能是程序写错，用了未定义的变量。
+                return env[x]          
             return x
-        elif not isa(x, List):   # constant literal
+        elif not isa(x, List):
             return x   
         if x[0] in keywords.keys():
             return keywords[x[0]](x, env)
@@ -144,12 +141,17 @@ def eval(x, env):
 def env_fun(x, y):
     print(y)
 
+# 跳出for while循环体
+def break_fun(x, y):
+    pass
+
+# 从当前函数返回
+def return_fun(x, y):
+    pass
 
 # x传入列表，y传入env
 def define_fun(x, y):
     (_, name, exp) = x
-    print(name)    
-    print(exp)
     if name not in y.keys():
         y[name] = eval(exp, y)
     else:
@@ -167,12 +169,21 @@ def if_fun(x, y):
     (_, test, conseq, alt) = x
     exp = (conseq if eval(test, y) else alt)
     return eval(exp, y)
-    
-# (for (i 0) (< i 100) (set i (+ i 1)) ()) 
+
+# (define i 12)
+# (while (> i 3) (....))
+def while_fun(x, y):
+    if (len(x) != 3):
+        print("Error Message: [while] needs 2 args.")
+    while eval(x[1], y):
+        eval(x[2], y)
+        
+#      (define i 0)
+# (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
 def for_fun(x, y):
     if (len(x) != 5):
         print("Error Message: [for] needs 4 args.")
-    y[x[1][0]] = x[1][1]
+    eval(x[1], y)
     while True:
         if eval(x[2], y) == True:
              eval(x[4], y)
@@ -194,9 +205,12 @@ def other_fun(x, y):
 
 keywords = {
     'env':      env_fun,
+    'break':    break_fun,
+    'return':   return_fun,
     'define':   define_fun,
     'set':      set_fun,
     'if':       if_fun,
+    'while':    while_fun,
     'for':      for_fun,
     'lambda':   lambda_fun,
 }

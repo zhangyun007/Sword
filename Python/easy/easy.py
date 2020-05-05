@@ -52,3 +52,10 @@ dict2 = {'Sex': 'female' }
 
 dict1.update(dict2)
 print("Value : %s" %  dict1)
+
+def change(x):
+    x["test"] = "new!"
+
+# dict1多了一项，说明参数传list或者dict指针。
+change(dict1)
+print(dict1)
