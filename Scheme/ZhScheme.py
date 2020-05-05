@@ -142,6 +142,7 @@ def env_fun(x, y):
     print(y)
 
 # 跳出for while循环体
+# (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
 def break_fun(x, y):
     pass
 
@@ -167,9 +168,12 @@ def set_fun(x, y):
 # (if test conseq alt)
 def if_fun(x, y):
     (_, test, conseq, alt) = x
-    exp = (conseq if eval(test, y) else alt)
-    return eval(exp, y)
-
+    if eval(test, y) == True:
+        return eval(conseq, y)
+    else:
+        if alt != None:
+            return eval(alt, y)
+        
 # (define i 12)
 # (while (> i 3) (....))
 def while_fun(x, y):
