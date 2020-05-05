@@ -13,6 +13,9 @@ String = str          			# A Lisp String is implemented as a Python str
 Number = (int, float, bool) 	# A Lisp Number is implemented as a Python int or float
 # List中可以包含List、Number或者String
 List   = list         			# A Lisp List is implemented as a Python list
+Dict   = dict
+
+isa = isinstance
 
 # 环境变量（全局变量），用户可以修改。
 env_g = {
@@ -28,6 +31,7 @@ env_g = {
         'car':     lambda x: x[0],
         'cdr':     lambda x: x[1:], 
         'list':    lambda *x: list(x), 
+        # 考虑用[]实现列表下标
         'list-ref':lambda x, y: x[y], 
 		'append':  op.add,  	# 连接两个列表
 		'length':  len, 		# 列表长度
@@ -37,9 +41,10 @@ env_g = {
         'begin':    lambda *x: x[-1],   # (begin (...) (...) (...)) 返回最后一项
         'procedure?': callable,
         'null?':   lambda x: x == [], 
-		'number?': lambda x: isinstance(x, Number),   
-        'string?': lambda x: isinstance(x, String),
-		'list?':   lambda x: isinstance(x,List), 
+		'number?': lambda x: isa(x, Number),   
+        'string?': lambda x: isa(x, String),
+		'list?':   lambda x: isa(x, List), 
+        'dict?':    lambda x: isa(x, Dict),
 }
 env_g.update(vars(math)) # sin, cos, sqrt, pi, ...
 print(env_g)
@@ -89,7 +94,7 @@ def repl(prompt='ZhScheme> '):
     "A prompt-read-eval-print loop."
     while True:
         tmp = parse(input(prompt))
-        print(tmp)
+        # print(tmp)
         val = eval(tmp, env_g)
         if val is not None: 
             print(lispstr(val))
@@ -115,8 +120,6 @@ class Procedure(object):
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？
 # 哪些是过程，哪些是关键字？
 
-isa = isinstance
-
 def eval(x, env):
     while True:
         if x == []:
@@ -132,54 +135,70 @@ def eval(x, env):
             # 也可能是程序写错，用了未定义的变量。
             return x
         elif not isa(x, List):   # constant literal
-            return x                
-        elif x[0] == 'env':         # (env) 打印环境变量
-            print(env)            
-        # define 和 set定义赋值变量
-        elif x[0] == 'define':         # (define name exp)
-            (_, name, exp) = x
-            print(name)
-            if name not in env.keys():
-                env[name] = eval(exp, env)
-            else:
-                print("Error Message: define [" + name + "] again.")
-        elif x[0] == 'set!':           # (set! name exp)
-            (_, name, exp) = x
-            if name in env.keys():
-                env[name] = eval(exp, env)
-            else:
-                print("Error Message: [" + name + "] not define.")
-        elif x[0] == 'lambda':         # (lambda (name...) body)
-            (_, parms, body) = x
-            return Procedure(parms, body, env)
-        elif x[0] == 'if':             # (if test conseq alt)
-            (_, test, conseq, alt) = x
-            exp = (conseq if eval(test, env) else alt)
-            return eval(exp, env)
-        # (for (define i 0) (< i 100) (+ i 1) ()) 
-        # 返回最后一项的计算结果 -- 循环体
-        elif x[0] == 'for':
-            # for 循环体内使用公用一个新的env，
-            if (len(x) != 5):
-                print("Error Message: [for] needs 4 args.")
-            # (define i 0)作为for程序块内部变量，上一层不可见。
-            eval(x[1], env) 
-            print(env)
-            '''
-            parse(x[3])
-            while True:
-                eval(x[3], env)
-                if eval(x[2], env) == True:
-                    '''
-            proc = eval(x[4], env)                 # (proc arg...)
-            print(proc)
-            args = [eval(exp, env) for exp in x[1:]]
-            return proc(*args)
-        else:                          # (proc arg...)
-            proc = eval(x[0], env)
-            print(proc)
-            args = [eval(exp, env) for exp in x[1:]]
-            return proc(*args)
-        return
+            return x   
+        if x[0] in keywords.keys():
+            return keywords[x[0]](x, env)
+        else:
+            return other_fun(x, env)
+
+def env_fun(x, y):
+    print(y)
+
+
+# x传入列表，y传入env
+def define_fun(x, y):
+    (_, name, exp) = x
+    print(name)    
+    print(exp)
+    if name not in y.keys():
+        y[name] = eval(exp, y)
+    else:
+        print("Error Message: define [" + name + "] again.")
+        
+def set_fun(x, y):
+    (_, name, exp) = x
+    if name in y.keys():
+        y[name] = eval(exp, y)
+    else:
+        print("Error Message: [" + name + "] not define.")
+
+# (if test conseq alt)
+def if_fun(x, y):
+    (_, test, conseq, alt) = x
+    exp = (conseq if eval(test, y) else alt)
+    return eval(exp, y)
+    
+# (for (i 0) (< i 100) (set i (+ i 1)) ()) 
+def for_fun(x, y):
+    if (len(x) != 5):
+        print("Error Message: [for] needs 4 args.")
+    y[x[1][0]] = x[1][1]
+    while True:
+        if eval(x[2], y) == True:
+             eval(x[4], y)
+        else:
+            break
+        eval(x[3], y)     # (+ i 1) 
+
+# (define a (lambda x (print x)))
+# (lambda parms body)
+def lambda_fun(x, y):
+    (_, parms, body) = x
+    return Procedure(parms, body, y)
+
+# (proc ....) 用户定义函数，用该函数处理
+def other_fun(x, y):
+    proc = eval(x[0], y)
+    args = [eval(exp, y) for exp in x[1:]]
+    return proc(*args)
+
+keywords = {
+    'env':      env_fun,
+    'define':   define_fun,
+    'set':      set_fun,
+    'if':       if_fun,
+    'for':      for_fun,
+    'lambda':   lambda_fun,
+}
 
 repl()
