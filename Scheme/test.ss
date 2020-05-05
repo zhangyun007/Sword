@@ -29,17 +29,6 @@
        (lambda (v) (set! xy v))))
 
 
-;将整数乘以列表
-(define (mul n m)
-  (if (> (length m) 1) (cons (* n (car m)) (mul n (cdr m))) (list (* n (car m))))
-  )
-
-(define x (range 100))
-(list-ref x 45)
-(mul 3 x)
-
-
-
 ;以begin开始的语句块,其中的语句将顺序执行,最后一项是函数的返回值
 (define (fun x) (begin (display "abc") '(12 3 54) '("abcd")))
 ;x的值为`("abcd")

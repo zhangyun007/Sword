@@ -1,25 +1,21 @@
 #lang Racket
 
-;尾部递归
 (time
   (define (sum x r)
       (if (eq? x 0)
-          0
-       (sum (- x 1) (+ x r))
+          r
+          (sum (- x 1) (+ x r))
        )
     )
-   (sum 10000 0)
+   (sum 100000 0)
  )
 
-;循环
+;循环，为什么有2个括号？
 (time 
     (define sum 0)
     (do ((i 0 (+ i 1)))         ; 初始值和 step 条件
-        ((> i 10000))			; 停止条件,取值为 #f 时停止
+        ((> i 100000))			; 停止条件,取值为 #f 时停止
         (set! sum (+ sum i))
-        (display " ")
-        (display sum)
-        (newline)
     )
     sum
 )
