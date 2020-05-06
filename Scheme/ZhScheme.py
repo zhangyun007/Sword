@@ -16,38 +16,73 @@ Dict   = dict
 
 isa = isinstance
 
-# 环境变量（全局变量），用户可以修改。
-env_g = {
-        '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
-        '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
-		'not':     op.not_,
-		'eq?':     op.is_, 
-        'equal?':  op.eq, 
-		'max':     max,
-        'min':     min,
-        'abs':     abs,
-		'round':   round,
-        'car':     lambda x: x[0],
-        'cdr':     lambda x: x[1:], 
-        'list':    lambda *x: list(x), 
-        # 考虑用[]实现列表下标
-        'list-ref':lambda x, y: x[y], 
-		'append':  op.add,  	# 连接两个列表
-		'length':  len, 		# 列表长度
-		'map':     map,
-		'print':   print,
-		'exit':	   exit,
-        'begin':    lambda *x: x[-1],   # (begin (...) (...) (...)) 返回最后一项
-        'procedure?': callable,
-        'null?':   lambda x: x == [], 
-		'number?': lambda x: isa(x, Number),   
-        'string?': lambda x: isa(x, String),
-		'list?':   lambda x: isa(x, List), 
-        'dict?':    lambda x: isa(x, Dict),
-}
-env_g.update(vars(math)) # sin, cos, sqrt, pi, ...
 
-a = dir(__builtins__)
+# 跳出for while循环体，找到外层的while或者for循环。
+# (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
+def break_fun(x, y):
+    pass
+
+# 从当前函数返回
+def return_fun(x, y):
+    pass
+
+# x : ["define" "i" 23]
+# y : env
+# 该函数定义一个变量和过程，
+def define_fun(x, y):
+    if x[1] not in y.keys():
+        y[x[1]] = eval(x[2], y)
+    else:
+        print("Error Message: define [" + name + "] again.")
+        
+def set_fun(x, y):
+    (_, name, exp) = x
+    if name in y.keys():
+        y[name] = eval(exp, y)
+    else:
+        print("Error Message: [" + name + "] not define.")
+
+# (if test conseq alt)
+def if_fun(x, y):
+    (_, test, conseq, alt) = x
+    if eval(test, y) == True:
+        return eval(conseq, y)
+    else:
+        if alt != None:
+            return eval(alt, y)
+        
+# (define i 12)
+# (while (< x 40) (begin (print x) (set x (+ x 1))))
+def while_fun(x, y):
+    if (len(x) != 3):
+        print("Error Message: [while] needs 2 args.")
+    while eval(x[1], y):
+        eval(x[2], y)
+        
+#      (define i 0)
+# (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
+def for_fun(x, y):
+    if (len(x) != 5):
+        print("Error Message: [for] needs 4 args.")
+    eval(x[1], y)
+    while True:
+        if eval(x[2], y) == True:
+             eval(x[4], y)
+        else:
+            break
+        eval(x[3], y)     # (+ i 1) 
+
+# (define a (lambda x (print x)))
+# (lambda parms body)
+def lambda_fun(x, y):
+    (_, parms, body) = x
+    return Procedure(parms, body, y)
+
+# (proc ....) 用户定义函数，用该函数处理
+def other_fun(x, y):
+    proc = eval(x[0], y)
+    args = [eval(exp, y) for exp in x[1:]]
+    return proc(*args)
 
 # Parsing: parse, tokenize, and read_from_tokens
 
@@ -94,8 +129,11 @@ def atom(token):
 def repl(prompt='ZhScheme> '):
     "A prompt-read-eval-print loop."
     while True:
+        # 得到字符串列表
         tmp = parse(input(prompt))
         print(tmp)
+        
+        # 为每一项赋予其类型
         val = eval(tmp, env_g)
         if val is not None: 
             print(lispstr(val))
@@ -121,102 +159,108 @@ class Procedure(object):
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？哪些是过程，哪些是关键字？
 # 传入env参数是列表或者字典的指针
 
-def eval(x, env):
+
+# env中有两个变量，其中my存放本列表运算后新增的变量；father指向父列表变量。
+# 当需要计算一个列表，查找变量时，必须沿着叶子节点一直找到根。
+class env:
+    def __init__(self, fa):
+        self.my = {}
+        self.father = fa
+
+def find(var, e):
+    if var in e.my.keys():
+        return e.my[var]
+    else:
+        e = e.father
+        while True:
+            if var in e.my.keys():
+                return e.my[var]
+            else:
+                e = e.father
+            # 只有env_g的father为None
+            if e == None:    
+                return None
+                    
+env_g = env(None);
+
+# 环境变量（全局变量），用户可以修改。
+env_g.my.update({
+        '+':op.add, '-':op.sub, '*':op.mul, '/':op.truediv, 
+        '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq, 
+		'not':     op.not_,
+		'eq?':     op.is_, 
+        'equal?':  op.eq, 
+		'max':     max,
+        'min':     min,
+        'abs':     abs,
+		'round':   round,
+        'car':     lambda x: x[0],
+        'cdr':     lambda x: x[1:], 
+        'list':    lambda *x: list(x), 
+        # 考虑用[]实现列表下标
+        'list-ref':lambda x, y: x[y], 
+		'append':  op.add,  	# 连接两个列表
+		'length':  len, 		# 列表长度
+		'map':     map,
+		'print':   print,
+		'exit':	   exit,
+        'begin':    lambda *x: x[-1],   # (begin (...) (...) (...)) 返回最后一项
+        'procedure?': callable,
+        'null?':   lambda x: x == [], 
+		'number?': lambda x: isa(x, Number),   
+        'string?': lambda x: isa(x, String),
+		'list?':   lambda x: isa(x, List), 
+        'dict?':    lambda x: isa(x, Dict),
+        
+        'set':      set_fun,
+        'if':       if_fun,
+        'while':    while_fun,
+        'for':      for_fun,
+        'lambda':   lambda_fun,
+})
+
+env_g.my.update(vars(math)) # sin, cos, sqrt, pi, ...
+ 
+# x： 待解析的list
+# e:  env对象
+def eval(x, e):
+    
     while True:
         if x == []:
             return
-        # 可能是字符串常量或者变量名，怎么区分处理？
+            
+        # 函数调用
+        if isa(x, List):
+            
+            # 打印当前的环境。
+            if x[0] == 'env':
+                print("-----")
+                print(e.my)
+            
+            elif x[0] == 'define':
+                if x[1] not in e.my.keys():
+                    e.my[x[1]] = eval(x[2], e)
+                else:
+                    print("Error Message: define [" + x[1] + "] again.")
+                    
+            else:
+                proc = find(x[0], e)
+                if proc:
+                    args = []
+                    for i in x[1:]:
+                        args = args + [eval(i, e)]
+                    return proc(*args)
+                else:
+                    print("Error Message: Procedure ", x[0], " not define.")
+            
         if isa(x, String):
             #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
-            if x in env.keys():
-                return env[x]          
-            return x
-        elif not isa(x, List):
-            return x   
-        if x[0] in keywords.keys():
-            return keywords[x[0]](x, env)
-        else:
-            return other_fun(x, env)
-
-def env_fun(x, y):
-    print(y)
-
-# 跳出for while循环体
-# (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
-def break_fun(x, y):
-    pass
-
-# 从当前函数返回
-def return_fun(x, y):
-    pass
-
-# x传入列表，y传入env
-def define_fun(x, y):
-    (_, name, exp) = x
-    if name not in y.keys():
-        y[name] = eval(exp, y)
-    else:
-        print("Error Message: define [" + name + "] again.")
-        
-def set_fun(x, y):
-    (_, name, exp) = x
-    if name in y.keys():
-        y[name] = eval(exp, y)
-    else:
-        print("Error Message: [" + name + "] not define.")
-
-# (if test conseq alt)
-def if_fun(x, y):
-    (_, test, conseq, alt) = x
-    if eval(test, y) == True:
-        return eval(conseq, y)
-    else:
-        if alt != None:
-            return eval(alt, y)
-        
-# (define i 12)
-# (while (> i 3) (....))
-def while_fun(x, y):
-    if (len(x) != 3):
-        print("Error Message: [while] needs 2 args.")
-    while eval(x[1], y):
-        eval(x[2], y)
-        
-#      (define i 0)
-# (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
-def for_fun(x, y):
-    if (len(x) != 5):
-        print("Error Message: [for] needs 4 args.")
-    eval(x[1], y)
-    while True:
-        if eval(x[2], y) == True:
-             eval(x[4], y)
-        else:
-            break
-        eval(x[3], y)     # (+ i 1) 
-
-# (define a (lambda x (print x)))
-# (lambda parms body)
-def lambda_fun(x, y):
-    (_, parms, body) = x
-    return Procedure(parms, body, y)
-
-# (proc ....) 用户定义函数，用该函数处理
-def other_fun(x, y):
-    proc = eval(x[0], y)
-    args = [eval(exp, y) for exp in x[1:]]
-    return proc(*args)
-
-keywords = {
-    'env':      env_fun,
-    'break':    break_fun,
-    'return':   return_fun,
-    'define':   define_fun,
-    'set':      set_fun,
-    'if':       if_fun,
-    'while':    while_fun,
-    'for':      for_fun,
-    'lambda':   lambda_fun,
-}
+            value = find(x, e)
+            if value != None:
+                return value
+            else:
+                return x
+                
+        return x   
 
 repl()
