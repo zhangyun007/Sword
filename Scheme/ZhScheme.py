@@ -119,15 +119,13 @@ def find(var, e):
         return e.my[var]
     else:
         e = e.father
-        while True:
+        while e != None:
             if var in e.my.keys():
                 return e.my[var]
             else:
                 e = e.father
-            # 只有env_g的father为None
-            if e == None:    
-                return None
-                    
+        return None
+        
 env_g = env(None);
 
 # 环境变量（全局变量），用户可以修改。
@@ -157,7 +155,7 @@ env_g.my.update({
 		'number?': lambda x: isa(x, Number),   
         'string?': lambda x: isa(x, String),
 		'list?':   lambda x: isa(x, List), 
-        'dict?':    lambda x: isa(x, Dict),
+        'dict?':   lambda x: isa(x, Dict),
 })
 
 env_g.my.update(vars(math)) # sin, cos, sqrt, pi, ...
@@ -244,6 +242,7 @@ def eval(x, e):
                     print("Error Message: Procedure ", x[0], " not define.")
             
         if isa(x, String):
+            print(x)
             #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
             value = find(x, e)
             if value != None:
