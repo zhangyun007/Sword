@@ -59,3 +59,14 @@ def change(x):
 # dict1多了一项，说明参数传list或者dict指针。
 change(dict1)
 print(dict1)
+
+class MyDict(object):
+    def __init__(self, a):
+        self.d = a
+        self.d["test"] = 'old'
+        print("self.d =", self.d)
+    
+dict3 = MyDict(dict1)
+print(dict1)
+
+     
