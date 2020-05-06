@@ -26,66 +26,8 @@ def break_fun(x, y):
 def return_fun(x, y):
     pass
 
-# x : ["define" "i" 23]
-# y : env
-# 该函数定义一个变量和过程，
-def define_fun(x, y):
-    if x[1] not in y.keys():
-        y[x[1]] = eval(x[2], y)
-    else:
-        print("Error Message: define [" + name + "] again.")
-        
-def set_fun(x, y):
-    (_, name, exp) = x
-    if name in y.keys():
-        y[name] = eval(exp, y)
-    else:
-        print("Error Message: [" + name + "] not define.")
-
-# (if test conseq alt)
-def if_fun(x, y):
-    (_, test, conseq, alt) = x
-    if eval(test, y) == True:
-        return eval(conseq, y)
-    else:
-        if alt != None:
-            return eval(alt, y)
-        
-# (define i 12)
-# (while (< x 40) (begin (print x) (set x (+ x 1))))
-def while_fun(x, y):
-    if (len(x) != 3):
-        print("Error Message: [while] needs 2 args.")
-    while eval(x[1], y):
-        eval(x[2], y)
-        
-#      (define i 0)
-# (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
-def for_fun(x, y):
-    if (len(x) != 5):
-        print("Error Message: [for] needs 4 args.")
-    eval(x[1], y)
-    while True:
-        if eval(x[2], y) == True:
-             eval(x[4], y)
-        else:
-            break
-        eval(x[3], y)     # (+ i 1) 
-
-# (define a (lambda x (print x)))
-# (lambda parms body)
-def lambda_fun(x, y):
-    (_, parms, body) = x
-    return Procedure(parms, body, y)
-
-# (proc ....) 用户定义函数，用该函数处理
-def other_fun(x, y):
-    proc = eval(x[0], y)
-    args = [eval(exp, y) for exp in x[1:]]
-    return proc(*args)
-
-# Parsing: parse, tokenize, and read_from_tokens
-
+              
+    
 def parse(program):
     "Read a Scheme expression from a string."
     return read_from_tokens(tokenize(program))
@@ -148,26 +90,31 @@ def lispstr(exp):
 # 每个过程中包括其定义的变量，也就是env.
 class Procedure(object):
     "A user-defined Scheme procedure."
-    def __init__(self, parms, body, env):
-        self.parms, self.body, self.env = parms, body, env
+    def __init__(self, parms, body, e):
+        self.parms, self.body, self.e = parms, body, e
     def __call__(self, *args): 
         # parms是形参，args是实参
         for i in range(len(self.parms)):
-            self.env[self.parms[i]] = args[i]
-        return eval(self.body, self.env)
+            self.e.my[self.parms[i]] = args[i]
+        
+        # 函数体内定义的变量，存在c.my中，只在函数内可见。
+        c = env(self.e);
+        return eval(self.body, c)
 
 # 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？哪些是过程，哪些是关键字？
 # 传入env参数是列表或者字典的指针
 
 
-# env中有两个变量，其中my存放本列表运算后新增的变量；father指向父列表变量。
-# 当需要计算一个列表，查找变量时，必须沿着叶子节点一直找到根。
+# env中有两个变量，其中my存放函数执行时新增的变量；father指向上层环境变量。
+# 查找变量时，必须沿着叶子节点一直找到根。
 class env:
     def __init__(self, fa):
         self.my = {}
         self.father = fa
 
 def find(var, e):
+    #print(var)
+    #print(e.my.keys())
     if var in e.my.keys():
         return e.my[var]
     else:
@@ -211,12 +158,6 @@ env_g.my.update({
         'string?': lambda x: isa(x, String),
 		'list?':   lambda x: isa(x, List), 
         'dict?':    lambda x: isa(x, Dict),
-        
-        'set':      set_fun,
-        'if':       if_fun,
-        'while':    while_fun,
-        'for':      for_fun,
-        'lambda':   lambda_fun,
 })
 
 env_g.my.update(vars(math)) # sin, cos, sqrt, pi, ...
@@ -232,17 +173,66 @@ def eval(x, e):
         # 函数调用
         if isa(x, List):
             
+            # 处理多余的括号，使得 ((+ 3 4 ))也能算
+            if len(x) == 1 and isa(x[0], List):
+                return eval(x[0], e)
+                
             # 打印当前的环境。
             if x[0] == 'env':
-                print("-----")
-                print(e.my)
+                for i in e.my.keys():
+                    print(i, " : ", e.my[i])
             
             elif x[0] == 'define':
+                # 定义函数
+                
+                # 定义变量
                 if x[1] not in e.my.keys():
                     e.my[x[1]] = eval(x[2], e)
                 else:
                     print("Error Message: define [" + x[1] + "] again.")
+            
+            elif x[0] == 'set':
+                if x[1] in e.my.keys():
+                    e.my[x[1]] = eval(x[2], e)
+                else:
+                    print("Error Message: [" + x[1] + "] not define.")
+            
+            elif x[0] == 'lambda':
+                # (define a (lambda x (print x)))
+                # (lambda parms body)
+                return Procedure(x[1], x[2], e)
+                
+            elif x[0] == 'if':
+                #(if (test) (conseq) (alt)) 
+                if eval(x[1], e) == True:
+                    return eval(x[2], e)
+                else:
+                    if len(x) == 4:
+                        return eval(x[3], e)
+               
+            elif x[0] == 'while':
+                # (define i 12)
+                # (while (< x 40) (begin (print x) (set x (+ x 1))))
+                if (len(x) != 3):
+                    print("Error Message: [while] needs 2 args.")
+                while eval(x[1], e):
+                    eval(x[2], e)
                     
+            elif x[0] == 'for':
+            
+                #      (define i 0)
+                # (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
+                if (len(x) != 5):
+                    print("Error Message: [for] needs 4 args.")
+                    
+                eval(x[1], e)
+                while True:
+                    if eval(x[2], e) == True:
+                        eval(x[4], e)
+                    else:
+                        break
+                    eval(x[3], e)     # (+ i 1) 
+        
             else:
                 proc = find(x[0], e)
                 if proc:
