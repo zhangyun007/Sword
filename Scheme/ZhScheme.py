@@ -5,7 +5,7 @@
 from __future__ import division
 import math
 import operator as op
-import builtins
+
 
 Bool = bool
 String = str          			# A Lisp String is implemented as a Python str
@@ -16,18 +16,7 @@ Dict   = dict
 
 isa = isinstance
 
-
-# 跳出for while循环体，找到外层的while或者for循环。
-# (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
-def break_fun(x, y):
-    pass
-
-# 从当前函数返回
-def return_fun(x, y):
-    pass
-
-              
-    
+           
 def parse(program):
     "Read a Scheme expression from a string."
     return read_from_tokens(tokenize(program))
@@ -230,7 +219,13 @@ def eval(x, e):
                     else:
                         break
                     eval(x[3], e)     # (+ i 1) 
-        
+            
+            # 跳出for while循环体，找到外层的while或者for循环。
+            # (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
+            elif x[0] == 'break':
+                pass
+            elif x[0] == 'return':
+                pass
             else:
                 proc = find(x[0], e)
                 if proc:
