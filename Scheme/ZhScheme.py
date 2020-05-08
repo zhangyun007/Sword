@@ -167,7 +167,6 @@ class Procedure(object):
         c = env(self.e);
         return eval(self.body, c)
 
-# 为什么begin是Scheme内置过程，而lambda和if不是内置过程呢？哪些是过程，哪些是关键字？
  
 # x： 待解析的list
 # e:  env对象
@@ -179,6 +178,10 @@ def eval(x, e):
         if x == []:
             return
                 
+        # 哪些是全局过程，哪些是关键字？
+        # Python内置过程，当作全局过程。
+        # 当计算一个list可能需要递归时（需要传入新的环境），则当作关键字处理。
+        
         # 打印当前的环境。
         if x[0] == 'env':
             for i in e.my.keys():
