@@ -192,7 +192,7 @@ class Procedure(object):
 # 可能返回一个bool,int,float,string,list或者None
 
 def eval(x, e):
-          
+    
     if isa(x, List):
         if x == []:
             return
@@ -310,9 +310,14 @@ def eval(x, e):
                 eval(x[3], e)     # (+ i 1) 步长
                 
             return
+        
+        # (struct posn (x y))
+        # (posn-x (posn 1 2))
+        
+        elif x[0] == 'struct':
+        
+        elif x[0] == 'eval':           
 
-        # 跳出for while循环体，找到外层的while或者for循环。
-        # (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
         elif x[0] == 'break':
             return 'break'
             
