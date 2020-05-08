@@ -1,5 +1,8 @@
 #lang Racket
 
+;ChezSchme打开汇编输出
+(#%$assembly-output #t)
+
 (integer? 12)
 (real? 12.4)
 (string? "abc")
@@ -57,7 +60,26 @@
 (set! n t)
 
 
+(define a (list 1 2 3 4))     ; a is '(1 2 3 4)
+
+(define (list-set! list k val)
+    (if (zero? k)
+        (set-car! list val)
+        (list-set! (cdr list) (- k 1) val)))
+
+(list-set! a 2 100)           ; a is '(1 2 100 4)
+
+
+(set-car! (list-tail a 2) 716)
+
+
+(define new-table (make-vector 3 (make-vector 3 #f)))
+(vector-set! (vector-ref new-table 0) 0 42) ; we modify a single position ...
+
 ;写文件
 (define out (open-output-file "some-file-1"))
 (display "hello world" out)
 ;(close-ouput-port out)
+
+;call/cc函数，接受一个函数作为参数，并且，作为参数的函数也只能有一个参数。
+(call/cc (lambda (k) 5 4 (k (list 7 4 5) 3 6))
