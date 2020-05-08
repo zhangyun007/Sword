@@ -5,6 +5,7 @@
 from __future__ import division
 import math
 import operator as op
+import datetime
 
 
 Bool = bool
@@ -69,7 +70,7 @@ env_g.my.update({
         'list':    lambda *x: list(x), 
         # 考虑用[]实现列表下标
         'list-ref':lambda x, y: x[y], 
-        'set-list': lambda x, y, z: x[y] = z,
+        # 'set-list': lambda x, y, z: x[y] = z,
 		
         'append':  op.add,  	# 连接两个列表
 		'length':  len, 		# 列表长度
@@ -254,7 +255,7 @@ def eval(x, e):
             
         elif x[0] == 'for':
         
-            #      (define i 0)
+            # (define i 0)
             # (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
             if (len(x) != 5):
                 print("Error Message: [for] needs 4 args.")
@@ -268,6 +269,13 @@ def eval(x, e):
                 eval(x[3], e)     # (+ i 1) 
             return
         
+        elif x[0] == 'time':
+        
+            start = datetime.datetime.now()
+            eval(x[1], e)
+            end = datetime.datetime.now()    
+            print(end - start)
+
         # 跳出for while循环体，找到外层的while或者for循环。
         # (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
         elif x[0] == 'break':
@@ -288,7 +296,6 @@ def eval(x, e):
                 return 
         
     if isa(x, String):
-        print(x)
         #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
         value = find(x, e)
         if value != None:
