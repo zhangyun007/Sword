@@ -32,7 +32,8 @@
        (lambda (v) (set! xy v))))
 
 
-;以begin开始的语句块,其中的语句将顺序执行,最后一项是函数的返回值
+;以begin开始的语句块,其中的语句将顺序执行,最后一项是函数的返回值 
+; lambda函数体也一样。
 (define (fun x) (begin (display "abc") '(12 3 54) '("abcd")))
 ;x的值为`("abcd")
 (define y (fun 6))
@@ -69,17 +70,26 @@
 
 (list-set! a 2 100)           ; a is '(1 2 100 4)
 
-
 (set-car! (list-tail a 2) 716)
 
 
 (define new-table (make-vector 3 (make-vector 3 #f)))
 (vector-set! (vector-ref new-table 0) 0 42) ; we modify a single position ...
 
+
 ;写文件
 (define out (open-output-file "some-file-1"))
 (display "hello world" out)
 ;(close-ouput-port out)
 
+
 ;call/cc函数，接受一个函数作为参数，并且，作为参数的函数也只能有一个参数。
 (call/cc (lambda (k) 5 4 (k (list 7 4 5) 3 6))
+(call/cc (lambda (return)
+        (for-each (lambda (x) (if (< x 0) (return x)))
+                '(99 88 77 66 55))
+        #t))
+(call/cc (lambda (return)
+         (for-each (lambda (x) (if (< x 0) (return x)))
+                '(11 22 33 44 -55 66 77))
+        #t))

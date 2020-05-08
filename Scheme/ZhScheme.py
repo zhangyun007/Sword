@@ -40,7 +40,26 @@ def find(var, e):
         
 env_g = env(None);
 
-# (call/cc (lambda (k) (* 5 (k 8) 45)))
+# (call/cc (lambda k (* 5 (k 8) 45)))
+# (define x (call/cc (lambda (k) (begin 5 4 (k (list 7 4 5)) 3 6))))
+
+# (define y (call/cc (lambda (k) (while (<  i 10) (begin (if (= i 6) (k "break...") (print i) (set i (+ i 1))))))))
+
+'''
+ (define m (call/cc (lambda (k) (while (< i 10) 
+                                    (begin (if (= i 6) 
+                                                (k "break...") 
+                                                (begin (print i) (set i (+ i 1))
+                                                )
+                                           )
+                                    )
+                                )
+                    )
+           )
+ )
+ (define m (call/cc (lambda (k) (while (< i 10)(begin (if (= i 6)(k 123)(begin (print i) (set i (+ i 1)))))))))
+'''
+
 def callcc(proc):
     "Call proc with current continuation; escape only"
     ball = RuntimeWarning("Sorry, can't continue this continuation any longer.")
@@ -70,10 +89,9 @@ env_g.my.update({
         'list':    lambda *x: list(x), 
         # 考虑用[]实现列表下标
         'list-ref':lambda x, y: x[y], 
-        # 'set-list': lambda x, y, z: x[y] = z,
 		
         'append':  op.add,  	# 连接两个列表
-		'length':  len, 		# 列表长度
+		'len':     len, 		# 列表长度
 		'map':     map,
 		'print':   print,
 		'exit':	   exit,
@@ -153,7 +171,7 @@ def lispstr(exp):
     else:
         return str(exp)
 
-# 每个过程中包括其定义的变量，也就是env.
+# 函数可能有返回值，也可能返回None，也就是没有返回值。
 class Procedure(object):
     "A user-defined Scheme procedure."
     def __init__(self, parms, body, e):
@@ -170,7 +188,8 @@ class Procedure(object):
  
 # x： 待解析的list
 # e:  env对象
-# 可能没有返回值 -- 也就是返回None
+
+# 可能返回一个bool,int,float,string,list或者None
 
 def eval(x, e):
           
@@ -179,18 +198,25 @@ def eval(x, e):
             return
                 
         # 哪些是全局过程，哪些是关键字？
-        # Python内置过程，当作全局过程。
+        # 如果希望利用Python内置过程，则放进env_g里。
         # 当计算一个list可能需要递归时（需要传入新的环境），则当作关键字处理。
         
+        # 用于注释
+        elif x[0] == 'quote':
+            return
+            
         # 打印当前的环境。
         if x[0] == 'env':
             for i in e.my.keys():
                 print(i, " : ", e.my[i])
             return;
+            
+        elif x[0] == 'time':
         
-        # 用于注释
-        elif x[0] == 'quote':
-            return
+            start = datetime.datetime.now()
+            eval(x[1], e)
+            end = datetime.datetime.now()    
+            print(end - start)
             
         elif x[0] == 'define':                
             # 定义变量
@@ -226,8 +252,12 @@ def eval(x, e):
                 
         # (begin (...) (...) (...)) 依次执行
         elif x[0] == 'begin':
-            for i in x[1:]:
-                eval(i, e)
+            for i in range(len(x)):
+                if i == len(x) - 1:
+                    # 返回最后一项
+                    return eval(x[i], e)
+                else:
+                    eval(x[i+1], e)
             return
 
         elif x[0] == 'lambda':
@@ -241,21 +271,27 @@ def eval(x, e):
         elif x[0] == 'if':
             #(if (test) (conseq) (alt)) 
             if eval(x[1], e) == True:
-                eval(x[2], e)
+                return eval(x[2], e)
             else:
                 if len(x) == 4:
-                    eval(x[3], e)
+                    return eval(x[3], e)
             return
            
+        #(while (< i 23) (begin (print i) (set i (+ i 1))(if (eq? i 12) (break))))
         elif x[0] == 'while':
+        
             # (define i 12)
             # (while (< x 40) (begin (print x) (set x (+ x 1))))
             if (len(x) != 3):
                 print("Error Message: [while] needs 2 args.")
+                
             while eval(x[1], e):
-                eval(x[2], e)
+                # 检测到break，很可能是跳出循环。
+                if eval(x[2], e) == 'break':
+                    break
             return
             
+        # (for (define i 23) (< i 45) (set i (+ i 2)) (begin (print i) (if (eq? i 43) break)))
         elif x[0] == 'for':
         
             # (define i 0)
@@ -266,25 +302,22 @@ def eval(x, e):
             eval(x[1], e)
             while True:
                 if eval(x[2], e) == True:
-                    eval(x[4], e)
+                    tmp = eval(x[4], e)
+                    if tmp == 'break':
+                        break
                 else:
                     break
-                eval(x[3], e)     # (+ i 1) 
+                eval(x[3], e)     # (+ i 1) 步长
+                
             return
-        
-        elif x[0] == 'time':
-        
-            start = datetime.datetime.now()
-            eval(x[1], e)
-            end = datetime.datetime.now()    
-            print(end - start)
 
         # 跳出for while循环体，找到外层的while或者for循环。
         # (while (< i 20) (begin (print (* 2 i)) (if (= i 15) break) (set i (+ i 2))))
         elif x[0] == 'break':
-            return
+            return 'break'
+            
         elif x[0] == 'return':
-            return
+            return 'return'
             
         # 函数调用
         else:
