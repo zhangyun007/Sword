@@ -41,24 +41,12 @@ def find(var, e):
 env_g = env(None);
 
 # (call/cc (lambda k (* 5 (k 8) 45)))
-# (define x (call/cc (lambda (k) (begin 5 4 (k (list 7 4 5)) 3 6))))
 
-# (define y (call/cc (lambda (k) (while (<  i 10) (begin (if (= i 6) (k "break...") (print i) (set i (+ i 1))))))))
+# (call/cc (lambda (k) (begin 5 4 (k (list 7 4 5)) 3 6)))
 
-'''
- (define m (call/cc (lambda (k) (while (< i 10) 
-                                    (begin (if (= i 6) 
-                                                (k "break...") 
-                                                (begin (print i) (set i (+ i 1))
-                                                )
-                                           )
-                                    )
-                                )
-                    )
-           )
- )
- (define m (call/cc (lambda (k) (while (< i 10)(begin (if (= i 6)(k 123)(begin (print i) (set i (+ i 1)))))))))
-'''
+# (call/cc (lambda (k) (begin (define i 0)(while (< i 10)(begin (if (= i 6)(k 123)(begin (print i) (set i (+ i 1)))))))))
+
+# callcc函数里定义一个throw函数, throw作为proc的参数
 
 def callcc(proc):
     "Call proc with current continuation; escape only"
@@ -315,9 +303,10 @@ def eval(x, e):
         # (posn-x (posn 1 2))
         
         elif x[0] == 'struct':
-        
+            pass
         elif x[0] == 'eval':           
-
+            pass
+            
         elif x[0] == 'break':
             return 'break'
             

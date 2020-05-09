@@ -84,11 +84,18 @@
 
 
 ;call/cc函数，接受一个函数作为参数，并且，作为参数的函数也只能有一个参数。
-(call/cc (lambda (k) 5 4 (k (list 7 4 5) 3 6))
+(define fun (lambda (k) 5 4 (k (list 7 4 5)) 3 6))
+(fun display)
+
+;普通的函数调用，返回函数定义中的最后一项列表的计算结果, 而call/cc调用，则可以让函数在计算任意一项列表后返回其结果，同时中止该函数的计算。
+;
+(call/cc fun)
+
 (call/cc (lambda (return)
         (for-each (lambda (x) (if (< x 0) (return x)))
                 '(99 88 77 66 55))
         #t))
+        
 (call/cc (lambda (return)
          (for-each (lambda (x) (if (< x 0) (return x)))
                 '(11 22 33 44 -55 66 77))
