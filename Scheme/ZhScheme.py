@@ -275,12 +275,12 @@ def eval(x, e, s):
             if len(x) != 3:
                 print("Error Message: [lambda] needs 2 args.")
                 return 
-            return Procedure(x[1], x[2], e)
+            return Procedure(x[1], x[2], e, s)
             
         elif x[0] == 'if':
             #(if (test) (conseq) (alt)) 
             if eval(x[1], e, s) == True:
-                return eval(x[2], e)
+                return eval(x[2], e, s)
             else:
                 if len(x) == 4:
                     return eval(x[3], e, s)
@@ -300,7 +300,7 @@ def eval(x, e, s):
                     break
             return
             
-        # (for (define i 23) (< i 45) (set i (+ i 2)) (begin (print i) (if (eq? i 43) break)))
+        # (for (set i 23) (< i 45) (set i (+ i 2)) (begin (print i) (if (eq? i 43) break)))
         elif x[0] == 'for':
         
             # (define i 0)
