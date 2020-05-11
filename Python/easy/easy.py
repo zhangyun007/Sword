@@ -56,6 +56,7 @@ print("Value : %s" %  dict1)
 def change(x):
     x["test"] = "new!"
 
+
 # dict1多了一项，说明参数传list或者dict指针。
 change(dict1)
 print(dict1)
@@ -68,5 +69,15 @@ class MyDict(object):
     
 dict3 = MyDict(dict1)
 print(dict1)
+
+
+
+def fn(self,name="world"):
+    print("Hello,%s"%name)
+    
+# 使用type定义类
+Hello = type('Hello',(object,),dict(hello=fn))
+h = Hello()
+h.hello()
 
      
