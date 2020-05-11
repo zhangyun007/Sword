@@ -103,6 +103,7 @@ env_g.my.update({
         
         'dir':     dir,
         'type':    type,
+        '.':       lambda x, y: x.y, 
         
         'int': {}
 })
@@ -275,7 +276,7 @@ def eval(x, e):
             if len(x) != 3:
                 print("Error Message: [lambda] needs 2 args.")
                 return 
-            return Procedure(x[1], x[2], e, s)
+            return Procedure(x[1], x[2], e)
             
         elif x[0] == 'if':
             #(if (test) (conseq) (alt)) 
@@ -320,7 +321,7 @@ def eval(x, e):
                 
             return
         
-        # 定义类以及数据成员(class point (dict (tuple x 3)))
+        # 定义类以及数据成员(class point (list (list n 2)(list m (lambda x (* 2 x)))))
         
         elif x[0] == 'class':
             print(x[2])
@@ -339,7 +340,7 @@ def eval(x, e):
             return 'break'
             
         elif x[0] == 'return':
-             'return'
+            return 'return'
             
         else:               
             tmp = find(x[0], e)
@@ -350,9 +351,9 @@ def eval(x, e):
                 for i in x[1:]:
                     args = args + [eval(i, e)]
                 return tmp(*args)
-        
-            # (point x)
-            # 对象数据成员
+                
+            dir(tmp)
+            # (point) 创造对象
             return tmp()
             
     if isa(x, String):
