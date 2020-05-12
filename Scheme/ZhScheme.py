@@ -236,7 +236,13 @@ def eval(x, e):
             return
             
         # 动态变量
-        elif x[0] == 'define':                
+        elif x[0] == 'define':       
+            # 定义函数
+            if isa(x[1], List):
+                if x[1][0] not in e.my.keys():
+                    e.my[x[1][0]] = Procedure(x[1][1:], x[2], e)    
+                return
+                
             # 定义变量
             if x[1] not in e.my.keys():
                 e.my[x[1]] = eval(x[2], e)
@@ -353,8 +359,6 @@ def eval(x, e):
         # ???? 函数返回，用try,except实现。
         # 用call/cc
         elif x[0] == 'return':
-        
-            global b
             b.retval = eval(x[1], e)
             raise b
             
