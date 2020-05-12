@@ -93,12 +93,13 @@ env_g.my.update({
         'open':    lambda *x: open(x[1:]),
                 
         'call/cc': callcc,
+        
         'procedure?': callable,
         'null?':   lambda x: x == [], 
+        'bool?':   lambda x: isa(x, Bool),   
 		'number?': lambda x: isa(x, Number),   
         'string?': lambda x: isa(x, String),
 		'list?':   lambda x: isa(x, List), 
-        'struct?': lambda x: True,
         'dict?':   lambda x: isa(x, Dict),
         
         'dir':     dir,
@@ -109,7 +110,9 @@ env_g.my.update({
 })
 
 env_g.my.update(vars(math)) # sin, cos, sqrt, pi, ...
-        
+       
+b = RuntimeWarning("Return ...")
+       
 def parse(program):
     "Read a Scheme expression from a string."
     return read_from_tokens(tokenize(program))
@@ -184,7 +187,12 @@ class Procedure(object):
         
         # 函数体内定义的变量，存在c.my中，只在函数内可见。
         c = env(self.e);
-        return eval(self.body, c)
+        
+        try:
+            return eval(self.body, c)
+        except RuntimeWarning as w:
+            if w is b: 
+                return b.retval
 
  
 # x： 待解析的list
@@ -271,6 +279,7 @@ def eval(x, e):
             return
 
         elif x[0] == 'lambda':
+        
             # (define a (lambda x (print x)))
             # (lambda parms body)
             if len(x) != 3:
@@ -279,6 +288,7 @@ def eval(x, e):
             return Procedure(x[1], x[2], e)
             
         elif x[0] == 'if':
+        
             #(if (test) (conseq) (alt)) 
             if eval(x[1], e) == True:
                 return eval(x[2], e)
@@ -324,6 +334,7 @@ def eval(x, e):
         # 定义类以及数据成员(class point (list (list n 2)(list m (lambda x (* 2 x)))))
         
         elif x[0] == 'class':
+        
             print(x[2])
             tmp = type(x[1],(object,),dict(eval(x[2], e)))
             dir(tmp)
@@ -339,8 +350,13 @@ def eval(x, e):
         elif x[0] == 'break':
             return 'break'
             
+        # ???? 函数返回，用try,except实现。
+        # 用call/cc
         elif x[0] == 'return':
-            return 'return'
+        
+            global b
+            b.retval = eval(x[1], e)
+            raise b
             
         else:               
             tmp = find(x[0], e)
