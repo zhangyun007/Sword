@@ -6,7 +6,8 @@ from __future__ import division
 import math
 import operator as op
 import datetime
-
+import types
+ 
 
 Bool = bool
 String = str          			# A Lisp String is implemented as a Python str
@@ -27,9 +28,7 @@ class env:
         self.father = fa
 
 def find(var, e):
-    #print(var)
-    #print(e.my.keys())
-    if var in e.my.keys():
+    if var in list(e.my.keys()):
         return e.my[var]
     else:
         e = e.father
@@ -90,7 +89,7 @@ env_g.my.update({
 		'print':   print,
 		'exit':	   exit,
         
-        'open':    lambda *x: open(x[1:]),
+        'open':    open,
                 
         'call/cc': callcc,
         
@@ -104,7 +103,9 @@ env_g.my.update({
         
         'dir':     dir,
         'type':    type,
-        '.':       lambda x, y: x.y, 
+        'getattr': getattr,
+        'setattr': setattr,
+        '.':       lambda x, y: getattr(x, y), 
         
         'int': {}
 })
@@ -372,9 +373,9 @@ def eval(x, e):
                     args = args + [eval(i, e)]
                 return tmp(*args)
                 
-            dir(tmp)
-            # (point) 创造对象
-            return tmp()
+            if type(tmp) is types.new_class: 
+                # (point) 创造对象
+                return tmp()
             
     if isa(x, String):
         #如果x在环境变量里，那么很可能是一个变量，而不是字符串。
