@@ -98,6 +98,7 @@ env_g.my.update({
         'bool?':   lambda x: isa(x, Bool),   
 		'number?': lambda x: isa(x, Number),   
         'string?': lambda x: isa(x, String),
+        'tuple?':  lambda x: isa(x, Tuple), 
 		'list?':   lambda x: isa(x, List), 
         'dict?':   lambda x: isa(x, Dict),
         
@@ -349,9 +350,6 @@ def eval(x, e):
                 e.my[x[1]] = tmp
             else:
                 print("Error Message: define [" + x[1] + "] again.")
-            return
-            
-        elif x[0] == 'eval':           
             return
             
         elif x[0] == 'break':
