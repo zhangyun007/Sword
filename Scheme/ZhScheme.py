@@ -7,7 +7,7 @@ import math
 import operator as op
 import datetime
 import types
- 
+
 
 Bool = bool
 String = str          			# A Lisp String is implemented as a Python str
@@ -93,14 +93,21 @@ env_g.my.update({
                 
         'call/cc': callcc,
         
-        'procedure?': callable,
+        'callable': callable,
         'null?':   lambda x: x == [], 
+        # python的bool可能有错 bool("False")返回了True
         'bool?':   lambda x: isa(x, Bool),   
 		'number?': lambda x: isa(x, Number),   
         'string?': lambda x: isa(x, String),
         'tuple?':  lambda x: isa(x, Tuple), 
 		'list?':   lambda x: isa(x, List), 
         'dict?':   lambda x: isa(x, Dict),
+        
+        'not':     lambda x: not(x),
+        'and':     lambda x, y: x and y,
+        'or':      lambda x: x or y,
+        
+        'isa':     isinstance,
         
         'dir':     dir,
         'type':    type,
@@ -148,8 +155,10 @@ def atom(token):
         try: 
             return float(token)
         except ValueError:
-            if token == "True" or token == "False":
-                return Bool(token)
+            if token == "True":
+                return True
+            if token == "False":
+                return False
             else:
                 return String(token)
 
@@ -361,8 +370,19 @@ def eval(x, e):
             b.retval = eval(x[1], e)
             raise b
             
-        else:               
-            tmp = find(x[0], e)
+        else:
+            print(x[0])
+            
+            v = eval(x[0], e)
+            
+            # 函数调用
+            if callable(v):
+                args = []
+                for i in x[1:]:
+                    args = args + [eval(i, e)]
+                return v(*args)
+                
+            tmp = find(v, e)
             
             # 函数调用
             if callable(tmp):
