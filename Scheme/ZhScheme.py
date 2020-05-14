@@ -7,6 +7,7 @@ import math
 import operator as op
 import datetime
 import types
+import sys
 
 
 Bool = bool
@@ -370,9 +371,7 @@ def eval(x, e):
             b.retval = eval(x[1], e)
             raise b
             
-        else:
-            print(x[0])
-            
+        else:            
             v = eval(x[0], e)
             
             # 函数调用
@@ -405,4 +404,35 @@ def eval(x, e):
             
     return x   
 
-repl()
+if len(sys.argv) == 1:
+    # 逐行解释执行用户输入
+    repl()
+    exit()
+
+def is_blank(line):
+    for ch in line:
+        if ch != ' ' and ch != '\t' and ch != '\n' and ch != '\r':
+            return False
+    return True
+    
+if len(sys.argv) == 2:
+    # 解释执行Scheme程序文件
+    
+    # 逐行读取文件并解释执行。
+    f = open(sys.argv[1], "r")
+
+    for line in f:
+        if is_blank(line):
+            continue
+        
+        print("...>")
+        print(line)
+        # 分析列表的意义，并计算。
+        val = eval(parse(line), env_g)
+        
+        # 打印计算结果
+        if val is not None: 
+            print(val)
+
+    f.close()
+    exit()
