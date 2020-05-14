@@ -416,9 +416,9 @@ def is_blank(line):
     return True
     
 if len(sys.argv) == 2:
-    # 解释执行Scheme程序文件
+    # 以块为单位解释执行Scheme程序文件
     
-    # 逐行读取文件并解释执行。
+    # 以行为单位读取文件并解释执行。
     f = open(sys.argv[1], "r")
 
     for line in f:
