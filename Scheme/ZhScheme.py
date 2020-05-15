@@ -373,7 +373,7 @@ def eval(x, e):
             
         else:            
             v = eval(x[0], e)
-            
+            print(v)
             # 函数调用
             if callable(v):
                 args = []
@@ -414,13 +414,25 @@ def is_blank(line):
         if ch != ' ' and ch != '\t' and ch != '\n' and ch != '\r':
             return False
     return True
-    
-if len(sys.argv) == 2:
-    # 以块为单位解释执行Scheme程序文件
-    
-    # 以行为单位读取文件并解释执行。
-    f = open(sys.argv[1], "r")
 
+# 传入tokens不能为空列表
+def get_list(tokens):
+    token = tokens.pop(0)
+    if '(' == token:
+        L = []
+        while tokens[0] != ')':
+            L.append(get_list(tokens))
+        tokens.pop(0) # pop off ')'
+        print(L)
+        return L
+    elif ')' == token:
+        raise SyntaxError('Error Message: Unexpected [)]')
+    else:
+	    # 这里将字符串转成具体的数据类型，
+        return atom(token)
+        
+# 以行为单位读取文件并解释执行。
+def eval_as_line(f):
     for line in f:
         if is_blank(line):
             continue
@@ -433,6 +445,23 @@ if len(sys.argv) == 2:
         # 打印计算结果
         if val is not None: 
             print(val)
+          
+def eval_as_file(f):
+    tmp = get_list(tokenize(f.read()))
+    print(tmp)
+        
+    # 分析列表的意义，并计算。
+    val = eval(tmp, env_g)
+        
+    # 打印计算结果
+    if val is not None: 
+        print(val)
 
+if len(sys.argv) == 2:
+    f = open(sys.argv[1], "r")
+    
+    #eval_as_line(f)
+    eval_as_file(f)
+        
     f.close()
     exit()
