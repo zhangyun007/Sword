@@ -94,7 +94,7 @@ env_g.my.update({
                 
         'call/cc': callcc,
         
-        'callable': callable,
+        'procedure?': callable,
         'null?':   lambda x: x == [], 
         # python的bool可能有错 bool("False")返回了True
         'bool?':   lambda x: isa(x, Bool),   
@@ -205,7 +205,6 @@ class Procedure(object):
         except RuntimeWarning as w:
             if w is b: 
                 return b.retval
-
  
 # x： 待解析的list
 # e:  env对象
@@ -220,7 +219,6 @@ def eval(x, e):
                 
         # 哪些是全局过程，哪些是关键字？
         # 如果希望利用Python内置过程，则放进env_g里。
-        # 当计算一个list可能需要递归时（需要传入新的环境），则当作关键字处理。
         
         # 用于注释
         elif x[0] == 'quote':
@@ -286,15 +284,14 @@ def eval(x, e):
                 print("Error Message: argument 1 must be a list.")
             return
                 
-        # (begin (...) (...) (...)) 依次执行
+        # (begin (...) (...) (...)) 依次执行，返回最后一项的运算结果。
         elif x[0] == 'begin':
-            for i in range(len(x)):
-                if i == len(x) - 1:
-                    # 返回最后一项
-                    return eval(x[i], e)
-                else:
+            l = len(x)
+            for i in range(l - 1):
+                if i != l - 2:
                     eval(x[i+1], e)
-            return
+            # 返回最后一项
+            return eval(x[i+1], e)
 
         elif x[0] == 'lambda':
         
@@ -305,21 +302,20 @@ def eval(x, e):
                 return 
             return Procedure(x[1], x[2], e)
             
-        elif x[0] == 'if':
-        
-            #(if (test) (conseq) (alt)) 
-            if eval(x[1], e) == True:
+        elif x[0] == 'if':        
+            cond = eval(x[1], e)
+            if cond == True:
                 return eval(x[2], e)
             else:
                 if len(x) == 4:
                     return eval(x[3], e)
             return
-           
-        #(while (< i 23) (begin (print i) (set i (+ i 1))(if (eq? i 12) (break))))
+
+        elif x[0] == 'switch':
+            return
+     
         elif x[0] == 'while':
         
-            # (define i 12)
-            # (while (< x 40) (begin (print x) (set x (+ x 1))))
             if (len(x) != 3):
                 print("Error Message: [while] needs 2 args.")
                 
@@ -329,11 +325,8 @@ def eval(x, e):
                     break
             return
             
-        # (for (set i 23) (< i 45) (set i (+ i 2)) (begin (print i) (if (eq? i 43) break)))
         elif x[0] == 'for':
         
-            # (define i 0)
-            # (for (set i 0) (< i 100) (set i (+ i 1)) ()) 
             if (len(x) != 5):
                 print("Error Message: [for] needs 4 args.")
                 
@@ -350,7 +343,6 @@ def eval(x, e):
             return
         
         # 定义类以及数据成员(class point (list (list n 2)(list m (lambda x (* 2 x)))))
-        
         elif x[0] == 'class':
         
             print(x[2])
@@ -365,23 +357,14 @@ def eval(x, e):
         elif x[0] == 'break':
             return 'break'
             
-        # ???? 函数返回，用try,except实现。
+        # ??? 函数返回，用try,except实现。
         # 用call/cc
         elif x[0] == 'return':
             b.retval = eval(x[1], e)
             raise b
             
-        else:            
-            v = eval(x[0], e)
-            print(v)
-            # 函数调用
-            if callable(v):
-                args = []
-                for i in x[1:]:
-                    args = args + [eval(i, e)]
-                return v(*args)
-                
-            tmp = find(v, e)
+        else:                       
+            tmp = find(x[0], e)
             
             # 函数调用
             if callable(tmp):
