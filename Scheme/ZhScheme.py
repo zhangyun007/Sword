@@ -42,12 +42,6 @@ def find(var, e):
         
 env_g = env(None);
 
-# (call/cc (lambda k (* 5 (k 8) 45)))
-
-# (call/cc (lambda (k) (begin 5 4 (k (list 7 4 5)) 3 6)))
-
-# (call/cc (lambda (k) (begin (define i 0)(while (< i 10)(begin (if (= i 6)(k 123)(begin (print i) (set i (+ i 1)))))))))
-
 # callcc函数里定义一个throw函数, throw作为proc的参数
 
 def callcc(proc):
@@ -59,8 +53,11 @@ def callcc(proc):
     try:
         return proc(throw)
     except RuntimeWarning as w:
-        if w is ball: return ball.retval
-        else: raise w
+        if w is ball: 
+            print(".... ", ball.retval)
+            return ball.retval
+        else: 
+            raise w
 
 
 # 环境变量（全局变量），用户可以修改。
