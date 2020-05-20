@@ -1,8 +1,3 @@
-cd Java
-del *.class
-cd ..
-
-
 cd Fly
 del *.exe *.obj
 
