@@ -16,6 +16,9 @@ git add *
 git commit -a
 git push
 
+git branch new
+git checkoout new
+
 
 编程相关软件：
 
