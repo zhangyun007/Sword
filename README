@@ -17,7 +17,7 @@ git commit -a
 git push
 
 git branch new
-git checkoout new
+git checkout new
 
 
 编程相关软件：
