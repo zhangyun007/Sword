@@ -1,4 +1,4 @@
-一、排版系统应该从html/css和JavaFX的FXML中学习优秀的设计。
+一、排版系统应该从html/css中学习优秀的设计。
 
 二、网上找到一个很好的JSON库，非常方便和STL容器互相转换，所以EasyGUI库的排版使用JSON格式。
 

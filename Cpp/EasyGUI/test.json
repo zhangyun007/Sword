@@ -11,9 +11,9 @@
 			"Image": "D:\test.bmp",
 			"Child": [{
 				"Name": "Window",
-				"ID": "InFirst",
+				"ID": "Sc",
 				"Click": "FirstClick",
-				"Title": "In First Window",
+				"Title": "Second",
 				"Top": "50",
 				"Left": "50",
 				"Width": "50",
@@ -37,7 +37,7 @@
 		},
 		{
 			"Name": "Window",
-			"ID": "Second",
+			"ID": "Forth",
 			"Click": "SecondClick",
 			"T": "80",
 			"L": "70",

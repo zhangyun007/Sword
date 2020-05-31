@@ -54,7 +54,7 @@ void Create_Window(struct MyHWnd *tmp, json j) {
 
 	HWND 		hwnd;
 	
-	cout << "in top level\n"<< j << endl;
+	cout << "Top Window ......\n"<< j << endl;
 	
 	if (j["Name"] == "Window") {			
 		string str = j["Title"];
@@ -92,7 +92,7 @@ void Create_Window(struct MyHWnd *tmp, json j) {
 	//创建子窗口 -- 列表循环
 	for (auto i: j["Child"]) {
 		
-		cout << " ---- in for level\n"<< i << endl;
+		cout << " Child .... \n"<< i << endl;
 		
 		//可能有很多并列的子窗口，是否应该放到WndProc中的WM_PAINT中处理？
 		if (i["Name"] == "Window") {
@@ -115,7 +115,8 @@ void Create_Window(struct MyHWnd *tmp, json j) {
 			}
 		}
 		if (i["Name"] == "Text") {
-			//strcpy(tmp->str, i["Caption"]);
+      string s = i["Caption"];
+			strcpy(tmp->str, s.c_str());
 		}	
 	}
 }
@@ -127,11 +128,7 @@ void Show_Window(struct MyHWnd *tmp) {
 	
 	ShowWindow(tmp->curr, 1);
 	UpdateWindow(tmp->curr);
-	
-	if (tmp->str != "") {
-		Draw_Text(tmp->curr, tmp->str);
-	}
-	
+		
 	//子窗口
 	if (tmp->child != NULL) {
 		Show_Window(tmp->child);
@@ -158,8 +155,8 @@ int main() {
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 	
 	wndClass.style          = CS_HREDRAW | CS_VREDRAW;
-	//一个类公用一个窗口处理过程
-	wndClass.lpfnWndProc    = DefWindowProc;
+	//一个属于同一个窗口类的窗口公用一个窗口处理过程。
+	wndClass.lpfnWndProc    = WndProc;
 	wndClass.cbClsExtra     = 0;
 	wndClass.cbWndExtra     = 0;
 	wndClass.hInstance      = NULL;
@@ -173,11 +170,12 @@ int main() {
 	
 	first = (struct MyHWnd *)malloc(sizeof(struct MyHWnd));
 	first->curr = NULL;
+  strcpy(first->str, "");
 	first->parent = NULL;
 	first->child = NULL;
 	first->next = NULL;
 	
-	//绘制第一个窗口
+	//绘制第一个窗口描述，json文件里剩余的窗口描述，通常在用户点击鼠标、键盘时创建。
 	Create_Window(first, j[0]);
 	Show_Window(first);
 	
@@ -200,6 +198,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		case WM_SETTEXT:
 		//子窗口的绘制应该放在WM_PAINT消息中
 		case WM_PAINT:
+      {
+        PAINTSTRUCT pt;
+        HDC hdc;
+        hdc=BeginPaint(hWnd,&pt);
+        
+        SetTextColor(hdc,RGB(255,0,0));
+        SetBkColor(hdc,RGB(0,255,0));
+        SetBkMode(hdc,TRANSPARENT);
+        //为什么矩形绘制成功，但是字体没有绘制呢？
+        TextOut(hdc,0,0,TEXT("WM_PAINT"),strlen("WM_PAINT"));
+        Rectangle(hdc,0,0,100,100);
+        EndPaint(hWnd,&pt);
+      }
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);

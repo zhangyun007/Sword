@@ -1,4 +1,4 @@
-cd Fly
+cd EasyGUI
 del *.exe *.obj
 
 cd Window
