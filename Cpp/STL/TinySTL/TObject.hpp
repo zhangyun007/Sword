@@ -8,15 +8,12 @@
 
 using namespace std;
 
+/*多处malloc失败的代码，是否可以对错误处理一下？*/
 
-/*多处malloc失败的代码，这部分是否可以优化一下？*/
-
-
-/*Python里有列表、字典、集合，这三种数据结构都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象
+/*Python里有列表、字典、集合，这三种数据结构都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象，如果希望存储不同类型的对象，可以存储void *指针和其类型（字符串）。
 
 本程序库计划实现STL中的多种容器和常用算法，包括序列式容器vector，list，deque以及关联式容器map，set，unordered_map，unordered_set。我们将要实现的容器都继承自TObject，TObject为所有类的父类，因此TObject指针类型则可以指向所有的子类对象。这种方法用在多个面向对象库中，比如Java库以及Delphi的VCL库。
 
-结合vector和map，我们可以得到一个元素类型为TObject *的vector和key、value都是TObject *的map。
 */
 
 
@@ -46,9 +43,9 @@ public:
 	//零函数表示该函数在当前类中没有定义，同时意味着该类不能实例化；
 	//虚函数virtual意味着该函数在子类中可以有不同的实现；
 	virtual void show() = 0;
-	
 	//当一个类有子类时，该类的析构函数必须是虚函数，否则子类对象被删除时，子类的析构函数不会被调用。
 	//有了虚析构函数，子类对象析构时，先调用子类的析构函数，再调用父类的析构函数。
+  
 	//见到析构函数，就加一个virtual，肯定没错。
 	virtual ~TObject() { 
 		cout << "TObject destruct!\n";
@@ -452,8 +449,11 @@ void TLog(char *info) {
 }
 	
 /*返回指定值的迭代器，如果没有查到，返回end
-如下代码说明迭代器必须实现operator ++，operator *和operator ！=
-而C指针指针++，*和！=，可以当做迭代器传入,Tvector中的迭代器即为普通指针。
+
+Iter必须实现operator ++，operator *和operator ！=
+
+C指针可以做++，*和！=运算，所以可以当做迭代器传入,TVector中的迭代器即为普通指针。
+
 TFind函数只适用于序列式容器
 */
 template<class Iter, class T>
