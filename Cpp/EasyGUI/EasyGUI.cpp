@@ -151,6 +151,8 @@ int main() {
 	json j;
 	i >> j;
 	
+  cout << j;
+  return 0;
 	// Initialize GDI+.
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 	
@@ -174,7 +176,6 @@ int main() {
 	first->parent = NULL;
 	first->child = NULL;
 	first->next = NULL;
-	
 	//绘制第一个窗口描述，json文件里剩余的窗口描述，通常在用户点击鼠标、键盘时创建。
 	Create_Window(first, j[0]);
 	Show_Window(first);
@@ -186,6 +187,8 @@ int main() {
 	}
 	
 	GdiplusShutdown(gdiplusToken);
+  
+  free(first);
 	
 	return 0;
 }
