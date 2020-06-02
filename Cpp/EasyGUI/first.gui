@@ -1,0 +1,11 @@
+;单行注释
+
+(; )
+$window:1 @name=first @click=firstclick() @title=First @top=100 @left=100 @width=100 @height=100 @image="D:\test.bmp"
+  "My name is zhang xiao ping"
+  $window:2
+    "My name"
+    $div:3
+      "Hello world"
+    
+$window:1 @name=first @click=firstclick() @title=First @top=100 @left=100 @width=100 @height=100 @image="D:\test.bmp"
