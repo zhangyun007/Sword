@@ -29,7 +29,7 @@ struct MyHWnd {
 	struct MyHWnd *next;	//兄弟窗口
 };
 
-struct MyHWnd *first;
+struct MyHWnd *head;
 
 
 void Draw_Text(HWND hWnd, char *str) {
@@ -53,11 +53,9 @@ void Draw_Text(HWND hWnd, char *str) {
 void Create_Window(struct MyHWnd *tmp, json j) { 
 
 	HWND 		hwnd;
-	
-	cout << "Top Window ......\n"<< j << endl;
-	
-	if (j["Name"] == "Window") {			
-		string str = j["Title"];
+  
+	if (j[0] == "Window") {			
+		string str = j["title"];
 		
 		if (tmp->parent == NULL) {
 			hwnd = CreateWindow(
@@ -89,36 +87,32 @@ void Create_Window(struct MyHWnd *tmp, json j) {
 		tmp->curr = hwnd;
 	} 
 	
-	//创建子窗口 -- 列表循环
-	for (auto i: j["Child"]) {
-		
-		cout << " Child .... \n"<< i << endl;
-		
+  //窗口组件的各种属性处理
+  cout << j[1] << '\n';
+  
+  /*
+	//创建窗口子控件 -- 列表循环  
+  for (i=2; i<len(j); i++) {
+    
 		//可能有很多并列的子窗口，是否应该放到WndProc中的WM_PAINT中处理？
-		if (i["Name"] == "Window") {
-			if (tmp->child == NULL) {
-				//第一个子窗口
-				tmp->child = (struct MyHWnd*)malloc(sizeof(struct MyHWnd));
-				tmp->child ->curr = NULL;
-				tmp->child ->parent = tmp;
-				tmp->child ->child = NULL;
-				tmp->child ->next = NULL;
-				Create_Window(tmp->child, i);
-			} else {
-				//第一个子窗口的兄弟窗口
-				tmp->child->next = (struct MyHWnd*)malloc(sizeof(struct MyHWnd));
-				tmp->child->next->curr = NULL;
-				tmp->child->next->parent = tmp;
-				tmp->child->next->child = NULL;
-				tmp->child->next->next = NULL;
-				Create_Window(tmp->child->next, i);
-			}
-		}
-		if (i["Name"] == "Text") {
-      string s = i["Caption"];
-			strcpy(tmp->str, s.c_str());
-		}	
-	}
+    if (tmp->child == NULL) {
+      //第一个子窗口
+      tmp->child = (struct MyHWnd*)malloc(sizeof(struct MyHWnd));
+      tmp->child ->curr = NULL;
+      tmp->child ->parent = tmp;
+      tmp->child ->child = NULL;
+      tmp->child ->next = NULL;
+      Create_Window(tmp->child, i);
+    } else {
+      //第一个子窗口的兄弟窗口
+      tmp->child->next = (struct MyHWnd*)malloc(sizeof(struct MyHWnd));
+      tmp->child->next->curr = NULL;
+      tmp->child->next->parent = tmp;
+      tmp->child->next->child = NULL;
+      tmp->child->next->next = NULL;
+      Create_Window(tmp->child->next, i);
+    }    
+	}*/
 }
 
 /*
@@ -140,6 +134,11 @@ void Show_Window(struct MyHWnd *tmp) {
 	}
 }
 
+string to_uper(string s){
+  transform(s.begin(), s.end(), s.begin(), ::toupper);
+  return s;
+}
+
 int main() {
 	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR           gdiplusToken;
@@ -150,9 +149,10 @@ int main() {
 	std::ifstream i("test.json");
 	json j;
 	i >> j;
-	
+
   cout << j;
   return 0;
+  
 	// Initialize GDI+.
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 	
@@ -170,15 +170,20 @@ int main() {
 	
 	RegisterClass(&wndClass);
 	
-	first = (struct MyHWnd *)malloc(sizeof(struct MyHWnd));
-	first->curr = NULL;
-  strcpy(first->str, "");
-	first->parent = NULL;
-	first->child = NULL;
-	first->next = NULL;
-	//绘制第一个窗口描述，json文件里剩余的窗口描述，通常在用户点击鼠标、键盘时创建。
-	Create_Window(first, j[0]);
-	Show_Window(first);
+	head = (struct MyHWnd *)malloc(sizeof(struct MyHWnd));
+	head->curr = NULL;
+  strcpy(head->str, "");
+	head->parent = NULL;
+	head->child = NULL;
+	head->next = NULL;
+  
+  if (j["first"][0] != "WINDOW" ) {
+    cout << "顶层图形组件必须为Window\n";
+    exit(1);
+  }
+	//创建并显示第一个窗口，json文件里剩余的窗口，通常在用户点击鼠标、键盘时创建。
+	Create_Window(head, j["first"]);
+	Show_Window(head);
 	
 	//消息循环
 	while(GetMessage(&msg, NULL, 0, 0)) {
@@ -188,7 +193,7 @@ int main() {
 	
 	GdiplusShutdown(gdiplusToken);
   
-  free(first);
+  free(head);
 	
 	return 0;
 }

@@ -1,10 +1,10 @@
 {
-  "1": ["window", {"ID": "First","Click": "FirstClick","Title": "First Window", "Top": "100","Left": "100","Width": "100",	"Height": "100","Image": "D:\test.bmp"},
-  
-  ["window", {"ID": "Second","Click": "FirstClick","Title": "Second","Top": "50","Left": "50","Width": "50","Height": "50","Image": "D:\test.bmp"}
-  "My name is zhang xiao ping"],
-	
-  ["Window", {"ID": "three","Click": "three","Title": "The three Window","Top": "50","Left": "50","Width": "50","Height": "50","Image": "D:\test.bmp" "Three!"}], "Hello, world" ]
+  "first":["Window", {"title": "����",	"click": "fc"}]
+  "Hello", 
 
-  "2": ["Window", {"ID": "Forth",	"Click": "SecondClick",	"T": "80","L": "70","W": "60","H": "30","Comments" :"content是一个列表，即使只有一项，也要用[]。"}, "This is text!"]
+  ["Div", {"name":"te1"}, "div 1 test", "div2 test"],
+  
+  "test"],
+  
+  "option": ["Window", {"ID": "Forth",	"Click": "SecondClick",	"T": "80","L": "70","W": "60","H": "30","Comments" :"his is text!"}, "Hello "]
 }
