@@ -1,6 +1,4 @@
-;单行注释
-
-1 <window> name=first click=firstclick() title=First top=100 left=100 width=100 height=100 image="D:\test.bmp"
+1 <window> name=first click=firstclick() title=First top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
   2 <div>
     3 <text> caption="My..."
   2 <window>
