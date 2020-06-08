@@ -1,4 +1,4 @@
-ï»¿#include <vector>
+#include <vector>
 #include <iostream>
 #include <utility>
 #include <unordered_map>
@@ -7,19 +7,23 @@
 
 using namespace std;
 
-//è¯¥æ–‡ä»¶çš„ä¸»è¦ä½œç”¨æ˜¯æµ‹è¯•TObject.hppä¸­çš„å„ç§ç±»è¢«æ­£ç¡®çš„å®ç°äº†
+//¸ÃÎÄ¼şµÄÖ÷Òª×÷ÓÃÊÇ²âÊÔTObject.hppÖĞµÄ¸÷ÖÖÀà±»ÕıÈ·µÄÊµÏÖÁË
 
 int main()
 {
-	//ä¸­æ–‡å ä¸¤ä¸ªå­—ç¬¦
-	TString Ts("ä½ å¥½abc");
+  
+  char* myStr="Hello,World!";
+  MyOut << myStr << "\n";
+  
+	//ÖĞÎÄÕ¼Á½¸ö×Ö·û
+	TString Ts("ÄãºÃabc");
 	cout << Ts.GetStr() << "\n";
 	cout << Ts.GetLen() << "\n";
 	
 	
 	AutoPtr<TObject> p = (TObject *)(new TInt(39));
 	AutoPtr<TObject> *q = &p;	
-	//å¯ä»¥åœ¨TVectorä¸­æ·»åŠ TAutoPtr<TObject> *ç±»å‹å˜é‡ï¼Œé¿å…ä½¿ç”¨äºŒç»´æŒ‡é’ˆã€‚
+	//¿ÉÒÔÔÚTVectorÖĞÌí¼ÓTAutoPtr<TObject> *ÀàĞÍ±äÁ¿£¬±ÜÃâÊ¹ÓÃ¶şÎ¬Ö¸Õë¡£
 
 
 	TVector<int> Tv;
@@ -38,7 +42,7 @@ int main()
 	cout << "\n";
 
 	
-	//ä½¿ç”¨TObject *å¯ä»¥è®©vectorå’Œmapå®ç°Pythonä¸­åˆ—è¡¨å’Œå­—å…¸çš„åŠŸèƒ½
+	//Ê¹ÓÃTObject *¿ÉÒÔÈÃvectorºÍmapÊµÏÖPythonÖĞÁĞ±íºÍ×ÖµäµÄ¹¦ÄÜ
 	
 	std::vector <TObject *> v;
 	
@@ -80,14 +84,14 @@ int main()
 	
 	TLog("info");
 
-	//å¯èƒ½éœ€è¦ä¿®æ”¹TStringçš„operator =
+	//¿ÉÄÜĞèÒªĞŞ¸ÄTStringµÄoperator =
 	TVector<TString> Tv1;
-	//è¿™å¥å¯¼è‡´æ®µé”™è¯¯
+	//Õâ¾äµ¼ÖÂ¶Î´íÎó
 	//Tv1.push_back(TString("hello"));
 	TVector<TString>::Iterator tmp;
 	for (tmp = Tv1.begin(); tmp != Tv1.end(); tmp++) {
 		cout << tmp->GetStr();
-	}	
-	
+	}
+  
 	return 0;
 }

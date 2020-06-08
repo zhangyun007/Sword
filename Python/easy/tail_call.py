@@ -7,7 +7,7 @@
 
 import sys
 
-class TailRecurseException:
+class TailRecurseException(BaseException):
   def __init__(self, args, kwargs):
     self.args = args
     self.kwargs = kwargs
@@ -31,7 +31,7 @@ def tail_call_optimized(g):
       while 1:
         try:
           return g(*args, **kwargs)
-        except TailRecurseException, e:
+        except TailRecurseException as e:
           args = e.args
           kwargs = e.kwargs
   func.__doc__ = g.__doc__
@@ -44,7 +44,7 @@ def factorial(n, acc=1):
     return acc
   return factorial(n-1, n*acc)
 
-print factorial(10000)
+print(factorial(10000))
 # prints a big, big number,
 # but doesn't hit the recursion limit.
 
@@ -55,6 +55,6 @@ def fib(i, current = 0, next = 1):
   else:
     return fib(i - 1, next, current + next)
 
-print fib(10000)
+print(fib(10000))
 # also prints a big number,
 # but doesn't hit the recursion limit.

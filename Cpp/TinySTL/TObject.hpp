@@ -4,19 +4,32 @@
 
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-
+#include <cstdlib>
+#include <stdio.h>
+ 
 using namespace std;
 
-/*多处malloc失败的代码，是否可以对错误处理一下？*/
+//单元测试
+#define MyAssert(a, b) {auto _t=a; if (_t!=b) {cout<<__FILE__<<", "<<__LINE__<<": \n\tResult of " <<#a << " is " <<_t <<" \n\tExpect: "<<#b <<"\n"; exit(1);}}
 
-/*Python里有列表、字典、集合，这三种数据结构都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象，如果希望存储不同类型的对象，可以存储void *指针和其类型（字符串），参考vector5.cpp。
+//cout一个实现
+class MyOutstream{
+  public:
+    const MyOutstream& operator << (int value)const;//对整型变量的重载
+    const MyOutstream& operator << (char *str)const;//对字符串型的重载
+};
 
-本程序库计划实现STL中的多种容器和常用算法，包括序列式容器vector，list，deque以及关联式容器map，set，unordered_map，unordered_set。
+const MyOutstream& MyOutstream::operator<<(int value)const {
+    printf("%d",value);
+    return* this; //注意这个返回……
+}
 
-我们将要实现的容器都继承自TObject，TObject为所有类的父类，因此TObject指针类型则可以指向所有的子类对象。这种方法用在多个面向对象库中，比如Java库以及Delphi的VCL库。
+const MyOutstream& MyOutstream::operator << (char* str)const {
+    printf("%s",str);
+    return* this;
+}
 
-*/
+MyOutstream MyOut;
 
 
 //智能指针，自动释放ptr指向的对象
@@ -38,6 +51,17 @@ public:
 private:
 	T *ptr;
 };
+
+
+/*多处malloc失败的代码，是否可以对错误处理一下？*/
+
+/*Python里有列表、字典、集合，这三种数据结构都可以存放任意类型的对象，而STL容器只能存放一种特定类型的对象，如果希望存储不同类型的对象，可以存储void *指针和其类型（字符串），参考vector5.cpp。
+
+本程序库计划实现STL中的多种容器和常用算法，包括序列式容器vector，list，deque以及关联式容器map，set，unordered_map，unordered_set。
+
+我们将要实现的容器都继承自TObject，TObject为所有容器类的父类，因此TObject指针类型则可以指向所有的子类对象。这种方法用在多个面向对象库中，比如Java库以及Delphi的VCL库。
+
+*/
 
 
 class TObject {
