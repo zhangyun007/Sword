@@ -22,9 +22,8 @@ using namespace std;
 #pragma comment(lib, "gdi32.lib")
 
 #define IDT_TIMER1 12
-
+    
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-
         
 //得到一行文本的头一个单词。
 string 取首单词(string line) {
@@ -125,11 +124,10 @@ void 图形元素::创建图形元素() {
     cout << "will create a window\n";
     HWND 		hwnd;
     MSG                 msg;
-    
     WNDCLASS            wndClass;
     
     wndClass.style          = CS_HREDRAW | CS_VREDRAW;
-    //同一窗口类公用一个窗口处理过程。
+    //同一窗口类公用一个窗口处理过程，窗口处理过程要分析gs文件的内容才能知道。
     wndClass.lpfnWndProc    = WndProc;
     wndClass.cbClsExtra     = 0;
     wndClass.cbWndExtra     = 0;
@@ -160,6 +158,8 @@ void 图形元素::创建图形元素() {
       1000,                 // 10-second interval 
       (TIMERPROC) NULL);     // no timer callback 
     
+            SetWindowText(hwnd, "aaa");
+
     ShowWindow(hwnd, 1);
     UpdateWindow(hwnd);
     
@@ -174,9 +174,9 @@ void 图形元素::创建图形元素() {
   }
 }
 
-int main() {
-  SetConsoleOutputCP(65001);
-  ifstream in("first.gui");
+//读取GUI描述文件和GS脚本文件，生成图形程序。
+void read_gui_gs(string gui, string gs){
+  ifstream in(gui);
   string line;
       
   MyAssert(取首单词("hedllo world"), "hedllo");
@@ -203,7 +203,7 @@ int main() {
               con.创建图形元素();
           } else {
             cout << "You should start from 层 1.\n";
-            return 1;
+            return;
           }
         } else {
           if (con.层 - last == 1) {
@@ -216,11 +216,11 @@ int main() {
             }
             if (con.层 - last > 1) {
                 cout << "子控件的层数错误。\n";
-                return 1;
+                return;
             }
             if (con.层 == 1) {
                 cout << "多余的顶层控件。\n";
-                return 1;
+                return;
             }
           }
         }
@@ -229,7 +229,13 @@ int main() {
     }        
   } else {
       cout <<"no such file" << endl;
-  }
+  }  
+}
+
+int main() {
+  SetConsoleOutputCP(65001);
+  read_gui_gs("first.gui", "first.gs");
+  return 0;
 }
 
 int i = 0;

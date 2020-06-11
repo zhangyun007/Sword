@@ -1,3 +1,5 @@
+import sys
+
 a = [12, 23, 34, 345, 345, 234 , 234, 435, 345];
 # 半开半闭区间。包括左边，不包括右边。
 print(a[2:4])
@@ -70,14 +72,18 @@ class MyDict(object):
 dict3 = MyDict(dict1)
 print(dict1)
 
-
+def get_cur_info():
+    print(sys._getframe().f_code.co_filename)  # 当前文件名
+    print(sys._getframe().f_code.co_name)  # 当前函数名
+    print(sys._getframe().f_lineno) # 当前行号
+    print(sys._getframe().f_back.f_lineno) # 调用者的帧
 
 def fn(self,name="world"):
     print("Hello,%s"%name)
+    get_cur_info()
     
 # 使用type定义类
 Hello = type('Hello',(object,),dict(hello=fn))
 h = Hello()
 h.hello()
 
-     

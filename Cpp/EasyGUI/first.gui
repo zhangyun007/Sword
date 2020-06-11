@@ -1,7 +1,23 @@
-1 <WINDOW> name=first click=firstclick() title=First top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
+1 <WINDOW> name="first" click=firstclick() title=测试 top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
   2 <DIV>
-    3 <TEXT> caption="My..."
+    3 <TEXT> name="t1" caption="My..."
   2 <WINDOW>
     3 <TEXT> caption="My name"
     3 <DIV>
       4 <TEXT> captiion="Hello world"
+
+{
+click：单击
+dblclick：双击
+mousedown：鼠标按下
+mouseup：鼠标抬起
+mouseover：鼠标悬浮
+mouseout：鼠标离开
+mousemove：鼠标移动
+mouseenter：鼠标进入
+mouseleave：鼠标离开
+
+keydown：按键按下
+keyup：按键抬起
+keypress：按键按下抬起
+}
