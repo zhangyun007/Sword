@@ -26,7 +26,7 @@ using namespace std;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
         
 //得到一行文本的头一个单词。
-string 取首单词(string line) {
+string Get_First(string line) {
   string s = "";
   for (int i=0; i<line.length(); i++) {
     if (line[i] != ' ' && line[i] != '\t')
@@ -38,7 +38,7 @@ string 取首单词(string line) {
 }
 
 //去掉line开头的空白字符。
-string 去空格(string line) {
+string skip_blank(string line) {
   for (int i=0; i<line.length(); i++) {
     if (line[i]!=' ' && line[i]!='\t')
       return line.substr(i, line.length()-i);
@@ -46,42 +46,51 @@ string 去空格(string line) {
   return line;
 }
 
-class 图形元素 {
+class GUI_Element {
 public:  
-  unsigned short 层;   //控件在第几层？
-  string 元素名称;  //控件名称 ，可能的值为"<window>" "<text>" "<div>" ...
-  map<string, string> 元素属性; //控件属性  titile=1, 1为val的index.
-  vector<string> 值;           // 存储 "...."
+  unsigned short Level;   //控件在第几Level？
+  string Name;  //控件名称 ，可能的Val为"<window>" "<text>" "<div>" ...
+  map<string, string> Property; //控件属性  titile=1, 1为Val的index.
+  vector<string> Val;           // GUI描述中的字符串
+  
+  HWND 		hwnd;                   //当前控件的句柄
+  
+  class GUI_Element *parent;      //父节点
+  class GUI_Element *child;      //第一个子节点
+  class GUI_Element *brother;    //第一个兄弟节点
+
+  GUI_Element(string line);  
   
   /*将带空格的字符串存储到vector<string> val中，并用对应的vector下标来替换字符串。
   这么做的目的是为了方便做词法分析：以空格为间隔。*/
-  string 字符串变整型(string line);
-  图形元素(string line);
-  void 创建图形元素();
+  string String_2_Int(string line);
+  
+  //创建并绘制控件
+  void Create_Element();
 };
 
 //line是文件中的一行：1 window title="第一个窗口"
-图形元素::图形元素(string line) {
-  string l = 字符串变整型(line);
+GUI_Element::GUI_Element(string line) {
+  string l = String_2_Int(line);
   
-  string s = 取首单词(line);
+  string s = Get_First(line);
                             
   for (int i=0; i<s.length(); i++){
     if (!isdigit(s[i])) {
-      cout << "You should start with 层 number.\n";
+      cout << "You should start with Level number.\n";
       return;
     }
   }
   
-  层 = atoi(s.c_str());
+  Level = atoi(s.c_str());
   
-  元素名称 = 取首单词(去空格(line.substr(s.length())));
+  Name = Get_First(skip_blank(line.substr(s.length())));
   
-  cout << 层 << ", "<< 元素名称 << "\n";
+  cout << Level << ", "<< Name << "\n";
 }
 
 //字符串存到vector里，存下标，这样就消除了line中的空格。
-string 图形元素::字符串变整型(string line){
+string GUI_Element::String_2_Int(string line){
   string str = "";
   string s = "";
   char m[4] = "";
@@ -106,7 +115,7 @@ string 图形元素::字符串变整型(string line){
       i++;
     }
     
-    值.push_back(s);
+    Val.push_back(s);
     itoa(n, m, 4);
     str+=m;
     n++;
@@ -118,11 +127,11 @@ string 图形元素::字符串变整型(string line){
   return str;
 }
 
-void 图形元素::创建图形元素() {
+//创建并绘制控件，先父后子，先兄后弟。
+void GUI_Element::Create_Element() {
   
-  if (元素名称 == "<WINDOW>") {
+  if (Name == "<WINDOW>") {
     cout << "will create a window\n";
-    HWND 		hwnd;
     MSG                 msg;
     WNDCLASS            wndClass;
     
@@ -170,16 +179,19 @@ void 图形元素::创建图形元素() {
     }
   }
   
-  if (元素名称 == "<TEXT>") {
+  if (Name == "<TEXT>") {
+    str = "";
+    //找到上Level窗口句柄
+    InvalidateRect(parent->hwnd, NULL, TRUE);
   }
 }
 
 //读取GUI描述文件和GS脚本文件，生成图形程序。
-void read_gui_gs(string gui, string gs){
+void read_gui(string gui){
   ifstream in(gui);
   string line;
       
-  MyAssert(取首单词("hedllo world"), "hedllo");
+  MyAssert(Get_First("hedllo world"), "hedllo");
   
   if (in) {
       
@@ -187,44 +199,44 @@ void read_gui_gs(string gui, string gs){
     // line中不包括每行的换行符
     while (getline (in, line)) { 
     
-      line = 去空格(line);
+      line = skip_blank(line);
       cout << line << endl;
           
       if (line[0] == ';')
         continue;                
                       
       if (line!="") {
-        class 图形元素 con(line);
+        class GUI_Element con(line);
         
         if (last == -1) {
-          if (con.层 == 1) {
+          if (con.Level == 1) {
               last = 1;
-              //... 创建顶层窗口
-              con.创建图形元素();
+              //... 创建顶Level窗口
+              con.Create_Element();
           } else {
-            cout << "You should start from 层 1.\n";
+            cout << "You should start from Level 1.\n";
             return;
           }
         } else {
-          if (con.层 - last == 1) {
+          if (con.Level - last == 1) {
               //创建子控件。
-              last = con.层;
+              last = con.Level;
           } else {
             //
-            if (con.层 < last && con.层 != 1) {
+            if (con.Level < last && con.Level != 1) {
             
             }
-            if (con.层 - last > 1) {
-                cout << "子控件的层数错误。\n";
+            if (con.Level - last > 1) {
+                cout << "子控件的Level数错误。\n";
                 return;
             }
-            if (con.层 == 1) {
-                cout << "多余的顶层控件。\n";
+            if (con.Level == 1) {
+                cout << "多余的顶Level控件。\n";
                 return;
             }
           }
         }
-        cout << con.层 << "\n";
+        cout << con.Level << "\n";
       }
     }        
   } else {
@@ -234,7 +246,7 @@ void read_gui_gs(string gui, string gs){
 
 int main() {
   SetConsoleOutputCP(65001);
-  read_gui_gs("first.gui", "first.gs");
+  read_gui("first.gui");
   return 0;
 }
 
