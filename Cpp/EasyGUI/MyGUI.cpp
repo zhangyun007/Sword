@@ -22,9 +22,12 @@ using namespace std;
 #pragma comment(lib, "gdi32.lib")
 
 #define IDT_TIMER1 12
-    
+
+//存储@var部分的变量和值
+map<string, string> var;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-        
+
 //得到一行文本的头一个单词。
 string Get_First(string line) {
   string s = "";
@@ -48,16 +51,16 @@ string skip_blank(string line) {
 
 class GUI_Element {
 public:  
-  unsigned short Level;   //控件在第几Level？
-  string Name;  //控件名称 ，可能的Val为"<window>" "<text>" "<div>" ...
+  unsigned short Level;         //控件在第几Level？
+  string Name;                  //控件名称 ，可能的Val为"<window>" "<text>" "<div>" ...
   map<string, string> Property; //控件属性  titile=1, 1为Val的index.
   vector<string> Val;           // GUI描述中的字符串
   
-  HWND 		hwnd;                   //当前控件的句柄
+  HWND 		hwnd;                 //当前控件的句柄
   
-  class GUI_Element *parent;      //父节点
-  class GUI_Element *child;      //第一个子节点
-  class GUI_Element *brother;    //第一个兄弟节点
+  class GUI_Element *parent;    //父节点
+  class GUI_Element *child;     //第一个子节点
+  class GUI_Element *brother;   //第一个兄弟节点
 
   GUI_Element(string line);  
   
@@ -130,7 +133,7 @@ string GUI_Element::String_2_Int(string line){
 //创建并绘制控件，先父后子，先兄后弟。
 void GUI_Element::Create_Element() {
   
-  if (Name == "<WINDOW>") {
+  if (Name == "WINDOW") {
     cout << "will create a window\n";
     MSG                 msg;
     WNDCLASS            wndClass;
@@ -179,15 +182,15 @@ void GUI_Element::Create_Element() {
     }
   }
   
-  if (Name == "<TEXT>") {
-    str = "";
+  if (Name == "TEXT") {
+    string str = "";
     //找到上Level窗口句柄
     InvalidateRect(parent->hwnd, NULL, TRUE);
   }
 }
 
-//读取GUI描述文件和GS脚本文件，生成图形程序。
-void read_gui(string gui){
+//读取GUI描述文件，生成图形程序。
+void read_gui(char *gui){
   ifstream in(gui);
   string line;
       
@@ -244,9 +247,14 @@ void read_gui(string gui){
   }  
 }
 
-int main() {
+int main(int argc, char **argv) {
   SetConsoleOutputCP(65001);
-  read_gui("first.gui");
+  if (argc == 1) {
+    cout << "Need file name as args.\n";
+    exit(1);
+  }
+  cout << argv[1] << "\n";
+  read_gui(argv[1]);
   return 0;
 }
 

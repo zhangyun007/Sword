@@ -14,7 +14,7 @@ int main()
   
   char* myStr="Hello,World!";
   MyOut << myStr << "\n";
-  
+    
 	//中文占两个字符
 	TString Ts("你好abc");
 	cout << Ts.GetStr() << "\n";

@@ -38,12 +38,12 @@ int main()
  	vector<struct My*> l;
 
   struct My c;
-  c.p = &l;
+  c.p = &coll;
   strcpy(c.type, "vector");
 
   //向l中插入一个c和m
   l.push_back(&c);
-  coll.push_back(&m);
+  l.push_back(&m);
   for (auto &i : l) {
     if (strcmp(i->type, "vector") == 0 ){
         for (auto &i : coll) {

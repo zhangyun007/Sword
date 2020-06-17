@@ -1,55 +1,35 @@
-; 常量定义
-a=12
-b="helo world"
+; 变量定义
+@var
 
-1 <WINDOW> name="first" click=firstclick title="测试" top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
-  2 <DIV>
-    3 <TEXT> name="t1" caption="My..."
-  2 <WINDOW>
-    3 <TEXT> caption=b
-    3 <DIV>
-      4 <TEXT> captiion="Hello world"
-
-@main
-; 调用C++/Python等各种程序设计语言的函数，得到字符串存进本地GUI描述变量中。 ||表示调用C++函数，|表示调用GUI函数，
-; .表示取得属性
-a=cpp_fun1||12,"hello"
-Element|"first".title=a
+a=12 b="helo world" c=12.5
 
 
+; 图形界面描述
+@gui
+
+1 WINDOW name="first" click=firstclick title="测试" top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
+2 PANEL
+3 TEXT name="t1" caption="My..."
+2 WINDOW
+3 TEXT caption=b
+3 PANEL
+4 TEXT captiion="Hello world"
+
+
+; 初始化函数
+@init
+
+; 调用C++/Python等各种程序设计语言的函数，返回值可以存进变量。 
+a=cpp_fun1(12,"hello")  $first.title=a
+
+;为@gui添加一行节点 这里将在第一个参数指向的控件后，添加一个控件节点。该函数不做控件"层次"检查。
+; 你可以在第一层控件后添加第三层控件。也就是说，即使你push_back成功了，不表示你的窗口描述就是正确的。
+;系统在创建并绘制控件时，会做检查,如果检查到你的树形结构中，第一层控件节点有个第三层子节点，报错。
+
+$first.push_back("t1",4,"TEXT","caption","在函数里添加控件")
+
+
+; 控件的键盘、鼠标处理函数
 @firstclick
 
-Element|"first".title="Changed Titile" 
-
-if top
-  if Element|"first".width<100
-    Element|"first".width=200 
-    Element|"first".height=300 
-    pass
-  else
-    pass
-  end
-else 
-  Element|"t1".caption="Changed Text"
-end
-
-while Element|"t1".text!="test"
-  Element|"t1".text=12
-end
-
-
-<!--
-click：单击
-dblclick：双击
-mousedown：鼠标按下
-mouseup：鼠标抬起
-mouseover：鼠标悬浮
-mouseout：鼠标离开
-mousemove：鼠标移动
-mouseenter：鼠标进入
-mouseleave：鼠标离开
-
-keydown：按键按下
-keyup：按键抬起
-keypress：按键按下抬起
--->
+$first.title="Changed Titile"
