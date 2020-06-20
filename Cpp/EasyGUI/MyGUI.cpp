@@ -9,7 +9,8 @@
 #include <vector>
 #include <map>
 
-#include "../TinySTL/TObject.hpp"
+//#include "../TinySTL/TObject.hpp"
+#include "../TinySTL/MyLib.hpp"
 
 //用于函数SetConsoleOutputCP(65001);更改cmd编码为utf8
 
@@ -23,40 +24,21 @@ using namespace std;
 
 #define IDT_TIMER1 12
 
+// 字符串常量
+vector<string> Val;
+
 //存储@var部分的变量和值
 map<string, string> var;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-//得到一行文本的头一个单词。
-string Get_First(string line) {
-  string s = "";
-  for (int i=0; i<line.length(); i++) {
-    if (line[i] != ' ' && line[i] != '\t')
-      s += line[i];
-    else
-      break;
-  }
-  return s;
-}
-
-//去掉line开头的空白字符。
-string skip_blank(string line) {
-  for (int i=0; i<line.length(); i++) {
-    if (line[i]!=' ' && line[i]!='\t')
-      return line.substr(i, line.length()-i);
-  }
-  return line;
-}
-
 class GUI_Element {
 public:  
+  
   unsigned short Level;         //控件在第几Level？
   string Name;                  //控件名称 ，可能的Val为"<window>" "<text>" "<div>" ...
   map<string, string> Property; //控件属性  titile=1, 1为Val的index.
   vector<string> Val;           // GUI描述中的字符串
-  
-  HWND 		hwnd;                 //当前控件的句柄
   
   class GUI_Element *parent;    //父节点
   class GUI_Element *child;     //第一个子节点
@@ -67,9 +49,6 @@ public:
   /*将带空格的字符串存储到vector<string> val中，并用对应的vector下标来替换字符串。
   这么做的目的是为了方便做词法分析：以空格为间隔。*/
   string String_2_Int(string line);
-  
-  //创建并绘制控件
-  void Create_Element();
 };
 
 //line是文件中的一行：1 window title="第一个窗口"
@@ -87,9 +66,32 @@ GUI_Element::GUI_Element(string line) {
   
   Level = atoi(s.c_str());
   
-  Name = Get_First(skip_blank(line.substr(s.length())));
+  string tmp = Skip_Blank(l.substr(s.length()));
+  Name = Get_First(tmp);
   
+  tmp = Skip_Blank(tmp.substr(Name.length()));
+  string f = Get_First(tmp);
+  //不是最后一个单词
+  while (f != tmp) {
+    for (int i=0; i<f.length(); i++) {
+      if (f[i]=='=') {
+        //cout << f.substr(i+1, f.length()) << "\n";
+        Property[f.substr(0, i)] = f.substr(i+1, f.length());
+        break;
+      }
+    }
+    tmp = Skip_Blank(tmp.substr(f.length()));
+    f = Get_First(tmp);
+  }
+  for (int i=0; i<f.length(); i++) {
+    if (f[i]=='=') {
+      Property[f.substr(0, i)] = f.substr(i+1, f.length());
+    }
+  }
   cout << Level << ", "<< Name << "\n";
+  for(auto iter = Property.begin(); iter != Property.end(); iter++) {
+    cout << iter->first << " : " << iter->second << endl;
+  }
 }
 
 //字符串存到vector里，存下标，这样就消除了line中的空格。
@@ -130,31 +132,26 @@ string GUI_Element::String_2_Int(string line){
   return str;
 }
 
-//创建并绘制控件，先父后子，先兄后弟。
-void GUI_Element::Create_Element() {
+struct Window_Element {
+  HWND  hwnd;
+  class GUI_Element *head;
+};
+
+vector<struct Window_Element> v;
+
+//绘制Window
+void Draw_Window(struct Window_Element w) {
   
-  if (Name == "WINDOW") {
+  class GUI_Element *tmp = w.head;
+  
+  //绘制顶层窗口
+  if (tmp->Name == "WINDOW") {
     cout << "will create a window\n";
     MSG                 msg;
-    WNDCLASS            wndClass;
     
-    wndClass.style          = CS_HREDRAW | CS_VREDRAW;
-    //同一窗口类公用一个窗口处理过程，窗口处理过程要分析gs文件的内容才能知道。
-    wndClass.lpfnWndProc    = WndProc;
-    wndClass.cbClsExtra     = 0;
-    wndClass.cbWndExtra     = 0;
-    wndClass.hInstance      = NULL;
-    wndClass.hIcon          = LoadIcon(NULL, IDI_APPLICATION);
-    wndClass.hCursor        = LoadCursor(NULL, IDC_ARROW);
-    wndClass.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    wndClass.lpszMenuName   = NULL;
-    wndClass.lpszClassName  = TEXT("MyClass");
-    
-    RegisterClass(&wndClass);
-    
-    hwnd = CreateWindow(
+    w.hwnd = CreateWindow(
       TEXT("MyClass"),   			  // window class name
-      TEXT("First Window"),  		// window caption
+      TEXT(tmp->Property["name"].c_str()),  		// window caption
       WS_OVERLAPPEDWINDOW,     	// window style
       CW_USEDEFAULT,           	// initial x position
       CW_USEDEFAULT,           	// initial y position
@@ -165,27 +162,24 @@ void GUI_Element::Create_Element() {
       NULL,          			  	    // program instance handle
       NULL);                    	// creation parameters			
       
-    SetTimer(hwnd,             // handle to main window 
+    SetTimer(w.hwnd,             // handle to main window 
       IDT_TIMER1,            // timer identifier 
       1000,                 // 10-second interval 
       (TIMERPROC) NULL);     // no timer callback 
     
-            SetWindowText(hwnd, "aaa");
+    SetWindowText(w.hwnd, "aaa");
 
-    ShowWindow(hwnd, 1);
-    UpdateWindow(hwnd);
+    ShowWindow(w.hwnd, 1);
+    UpdateWindow(w.hwnd);
     
+    //发送一个WM_PAINTER消息，绘制子控件。
+    //InvalidateRect(w.hwnd, NULL, TRUE);
+
     //消息循环
     while(GetMessage(&msg, NULL, 0, 0)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
-  }
-  
-  if (Name == "TEXT") {
-    string str = "";
-    //找到上Level窗口句柄
-    InvalidateRect(parent->hwnd, NULL, TRUE);
   }
 }
 
@@ -198,50 +192,121 @@ void read_gui(char *gui){
   
   if (in) {
       
-    int last = -1;
+    class GUI_Element *last = NULL;
     // line中不包括每行的换行符
     while (getline (in, line)) { 
     
-      line = skip_blank(line);
+      line = Skip_Blank(line);
       cout << line << endl;
           
+      // ；开头表示注释
       if (line[0] == ';')
         continue;                
-                      
-      if (line!="") {
-        class GUI_Element con(line);
         
-        if (last == -1) {
-          if (con.Level == 1) {
-              last = 1;
-              //... 创建顶Level窗口
-              con.Create_Element();
-          } else {
-            cout << "You should start from Level 1.\n";
-            return;
+      //变量定义
+      if (line=="@var") {
+        while (getline (in, line)) {
+          line = Skip_Blank(line);
+          if (line[0] == ';')
+            continue;   
+          string f = Get_First(line);
+          //不是最后一个单词
+          while (f != line) {
+            for (int i=0; i<f.length(); i++) {
+              if (f[i]=='=') {
+                //cout << f.substr(i+1, f.length()) << "\n";
+                var[f.substr(0, i)] = f.substr(i+1, f.length());
+                break;
+              }
+            }
+            line = Skip_Blank(line.substr(f.length()));
+            f = Get_First(line);
           }
-        } else {
-          if (con.Level - last == 1) {
-              //创建子控件。
-              last = con.Level;
-          } else {
-            //
-            if (con.Level < last && con.Level != 1) {
-            
-            }
-            if (con.Level - last > 1) {
-                cout << "子控件的Level数错误。\n";
-                return;
-            }
-            if (con.Level == 1) {
-                cout << "多余的顶Level控件。\n";
-                return;
+          for (int i=0; i<f.length(); i++) {
+            if (f[i]=='=') {
+              var[f.substr(0, i)] = f.substr(i+1, f.length());
             }
           }
+          if (line=="end")
+            break;
         }
-        cout << con.Level << "\n";
       }
-    }        
+
+      //图形描述
+      if (line=="@gui") {        
+        while (getline (in, line)) {
+          line = Skip_Blank(line);
+          
+          if (line[0] == ';')
+            continue;                
+
+          if (line!="") {
+            class GUI_Element *con = new GUI_Element(line);
+            
+            //顶层控件
+            if (con->Level == 1 && con->Name=="WINDOW") {
+              con->parent=NULL;
+              con->child=NULL;
+              con->brother=NULL;
+              last = con;
+              struct Window_Element e;
+              e.hwnd = 0;
+              e.head = con;
+              v.push_back(e);
+            } 
+            
+            //非顶层控件
+            if (last->parent == NULL) {
+              //last的子控件
+              if (con->Level - last->Level == 1) {
+                  con->parent=last;
+                  con->child=NULL;
+                  con->brother=NULL;
+                  last->child = con;
+              }
+
+              //last的兄弟控件
+              if (con->Level == last->Level) {
+                last->brother=con;
+                
+                con->parent=last->parent;
+                con->child=NULL;
+                con->brother=NULL;
+              }
+              //last上层控件
+              if (con->Level < last->Level && con->Level > 1) {
+                while (con->Level != last->Level)
+                  last = last->parent;
+                last->brother = con;
+                
+                con->parent=last->parent;
+                con->child=NULL;
+                con->brother=NULL;
+              }
+              //控件层次错误
+              if (con->Level - last->Level > 1) {
+                cout << "子控件层次指定错误。\n";
+                return;
+              }
+            }
+          }
+          
+          if (line=="end")
+            break;
+        }
+      }
+      
+      //初始化函数
+      if (line=="@init") {
+        while (getline (in, line)) {
+          line = Skip_Blank(line);
+          if (line[0] == ';')
+            continue;
+          if (line=="end")
+            break;
+        }      
+      }
+    }
   } else {
       cout <<"no such file" << endl;
   }  
@@ -255,11 +320,80 @@ int main(int argc, char **argv) {
   }
   cout << argv[1] << "\n";
   read_gui(argv[1]);
+  
+  WNDCLASS            wndClass;
+  
+  wndClass.style          = CS_HREDRAW | CS_VREDRAW;
+  //同一窗口类公用一个窗口处理过程
+  wndClass.lpfnWndProc    = WndProc;
+  wndClass.cbClsExtra     = 0;
+  wndClass.cbWndExtra     = 0;
+  wndClass.hInstance      = NULL;
+  wndClass.hIcon          = LoadIcon(NULL, IDI_APPLICATION);
+  wndClass.hCursor        = LoadCursor(NULL, IDC_ARROW);
+  wndClass.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  wndClass.lpszMenuName   = NULL;
+  wndClass.lpszClassName  = TEXT("MyClass");
+  
+  RegisterClass(&wndClass);
+  
+  for(auto i: v) {
+    Draw_Window(i);
+  }
+  
   return 0;
 }
 
 int i = 0;
 
+
+//绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
+void Draw_Element(struct Window_Element w) {
+  cout << "WM_PAINT ...\n";
+  
+  PAINTSTRUCT pt;
+  HDC hdc;
+  hdc=BeginPaint(w.hwnd,&pt);
+  
+  SetTextColor(hdc,RGB(255,0,0));
+  SetBkColor(hdc,RGB(0,255,0));
+  SetBkMode(hdc,TRANSPARENT);
+  
+  class GUI_Element *tmp = w.head;
+  tmp = tmp->child;
+  
+  //绘制子控件
+  while (tmp != NULL) {
+    
+     //使用gdi函数绘制矩形
+    if (tmp->Name == "REGTANGLE") {
+      cout << "regtangel ...\n";
+      Rectangle(hdc,0,0,100,100);
+      Rectangle(hdc,50,50,200,200);          
+    }
+    
+    //绘制文本
+    if (tmp->Name == "TEXT") {
+      cout << "text ...\n";
+      TextOut(hdc, 0, 0, "aaa", 3);
+    }
+    tmp = tmp->child;
+  }
+  
+  EndPaint(w.hwnd,&pt);
+
+}
+
+//找到hwnd对应的Window_Element
+Window_Element * Find_Window(HWND hwnd) {
+  for (auto i: v){
+    if (i.hwnd == hwnd)
+      return &i;
+  }
+  return NULL;
+}
+
+//同一个窗口类公用一个窗口处理过程
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, 
    WPARAM wParam, LPARAM lParam)
 {  
@@ -271,31 +405,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_TIMER: 
       {
         ++i;
-        InvalidateRect(hWnd, NULL, TRUE);
+        //InvalidateRect(hWnd, NULL, TRUE);
         break;
       }
       return 0;
-    //子窗口的绘制应该放在WM_PAINT消息中
+    // WINDOW以外图形元素的绘制
 		case WM_PAINT:
-      {
-        int len;
-        cout << "WM_PAINT\n";
-        PAINTSTRUCT pt;
-        HDC hdc;
-        hdc=BeginPaint(hWnd,&pt);
-        SetTextColor(hdc,RGB(255,0,0));
-        SetBkColor(hdc,RGB(0,255,0));
-        SetBkMode(hdc,TRANSPARENT);
-        Rectangle(hdc,0,0,100,100);
-        char str[16] = {};
-        if (i % 2 == 1)
-          len = sprintf(str, "%d |", i);
-        else
-          len = sprintf(str, "%d", i);
-        cout << str << "\n";
-        TextOut(hdc, 0, 0, str, len);
-        EndPaint(hWnd,&pt);
-      }
+      cout<< "---------\n";
+      Draw_Element(*Find_Window(hWnd));
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);

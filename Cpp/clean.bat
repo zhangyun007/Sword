@@ -1,10 +1,12 @@
+del *.exe *.obj
+
 cd EasyGUI
 del *.exe *.obj
+cd ..
 
 cd Window
 del *.exe *.obj
 cd ..
-
 
 cd TinySTL
 del *.exe *.obj

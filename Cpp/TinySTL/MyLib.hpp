@@ -1,0 +1,21 @@
+﻿
+//去掉line开头的空白字符。
+string Skip_Blank(string line) {
+  for (int i=0; i<line.length(); i++) {
+    if (line[i]!=' ' && line[i]!='\t')
+      return line.substr(i, line.length()-i);
+  }
+  return line;
+}
+
+//得到一行文本的头一个单词。
+string Get_First(string line) {
+  string s = "";
+  for (int i=0; i<line.length(); i++) {
+    if (line[i] != ' ' && line[i] != '\t' && i < line.length())
+      s += line[i];
+    else
+      break;
+  }
+  return s;
+}

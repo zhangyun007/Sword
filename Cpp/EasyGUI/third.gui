@@ -1,0 +1,13 @@
+@var
+
+end
+
+; 图形界面描述
+@gui
+
+; 一、子控件键盘鼠标处理函数会覆盖父控件
+; 二、同一层z-index数字大的会会覆盖数字小的
+1 REGTANGLE name="f" top=10% left=10% width=80% height=90%
+2 GL name="gl" file="test.obj" top=10% left=10% width=80% height=90%
+
+end

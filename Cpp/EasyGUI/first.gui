@@ -1,26 +1,39 @@
-; 变量定义
+; 变量定义，下文中所有部分可以直接使用。
 @var
 
-a=12 b="helo world" c=12.5
+a=12 b="helo world" c=12.5 server="gui://edu.cn"
 
+end
 
 ; 图形界面描述
 @gui
 
-1 WINDOW name="first" click=firstclick title="测试" top=100 left=100 width=100 height=100 image="D:\test 1.bmp"
+; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。
+1 WINDOW name="first" click="firstclick" top=10% left=10% width=80% height=90% image="D:\test 1.bmp" z-index=1
 2 PANEL
 3 TEXT name="t1" caption="My..."
-2 WINDOW
-3 TEXT caption=b
-3 PANEL
-4 TEXT captiion="Hello world"
 
+1 WINDOW
+2 TABVIEW
+2 TEXT caption=b
+2 PANEL
+3 IMAGE
+3 TEXT caption="Hello world"
 
-; 初始化函数
+end
+
+; 初始化过程
 @init
 
-; 调用C++/Python等各种程序设计语言的函数，返回值可以存进变量。 
-a=cpp_fun1(12,"hello")  $first.title=a
+; 默认连接本地的gui服务器，调用函数。
+a=cpp_fun1(12,"hello")
+; 指定远程服务器
+a=cpp_fun1(12,"hello")@"gui://163.com"
+a=cpp_fun1(12,"hello")@server
+
+$first.title=a
+
+$first.show
 
 ;为@gui添加一行节点 这里将在第一个参数指向的控件后，添加一个控件节点。该函数不做控件"层次"检查。
 ; 你可以在第一层控件后添加第三层控件。也就是说，即使你push_back成功了，不表示你的窗口描述就是正确的。
@@ -28,8 +41,13 @@ a=cpp_fun1(12,"hello")  $first.title=a
 
 $first.push_back("t1",4,"TEXT","caption","在函数里添加控件")
 
+end
 
-; 控件的键盘、鼠标处理函数
+; 控件的键盘、鼠标处理过程
+; 子控件处理函数会覆盖父控件的处理函数
+; z-index大的图形控件处理函数可能会覆盖z-index小的处理函数
 @firstclick
 
 $first.title="Changed Titile"
+
+end
