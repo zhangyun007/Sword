@@ -26,6 +26,9 @@ def tail_call_optimized(g):
     f = sys._getframe()
     if f.f_back and f.f_back.f_back \
         and f.f_back.f_back.f_code == f.f_code:
+      print(args)
+      #print(kwargs)
+      #经测试，args为无默认值的参数对应的元组，kwargs为有默认值的参数对应的数组。
       raise TailRecurseException(args, kwargs)
     else:
       while 1:
@@ -45,7 +48,7 @@ if __name__=='__main__':
       return acc
     return factorial(n-1, n*acc)
   
-  print(factorial(987))
+  print(factorial(12))
   # prints a big, big number,
   # but doesn't hit the recursion limit.
   
@@ -58,4 +61,4 @@ if __name__=='__main__':
   print(sum(100, 0))
   
   sum=tail_call_optimized(sum)
-  print(sum(2000000, 0))
+  print(sum(4, 0))

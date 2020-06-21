@@ -19,3 +19,12 @@ string Get_First(string line) {
   }
   return s;
 }
+
+//判断某字符串是否正整数
+bool Is_Int(string s) {
+  for (auto i:s) {
+    if (isdigit(i) == false)
+      return false;
+  }
+  return true;
+}

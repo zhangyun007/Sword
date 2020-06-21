@@ -9,8 +9,8 @@
 #include <vector>
 #include <map>
 
-//#include "../TinySTL/TObject.hpp"
-#include "../TinySTL/MyLib.hpp"
+#include "../TinyTL/TObject.hpp"
+#include "../TinyTL/MyLib.hpp"
 
 //用于函数SetConsoleOutputCP(65001);更改cmd编码为utf8
 
@@ -147,11 +147,15 @@ void Draw_Window(struct Window_Element w) {
   //绘制顶层窗口
   if (tmp->Name == "WINDOW") {
     cout << "will create a window\n";
-    MSG                 msg;
+    MSG         msg;
+    string      title;
+    
+    if (Is_Int(tmp->Property["name"]))
+      title=tmp->Val[atoi(tmp->Property["name"].c_str())];
     
     w.hwnd = CreateWindow(
       TEXT("MyClass"),   			  // window class name
-      TEXT(tmp->Property["name"].c_str()),  		// window caption
+      TEXT(title.c_str()),  		        
       WS_OVERLAPPEDWINDOW,     	// window style
       CW_USEDEFAULT,           	// initial x position
       CW_USEDEFAULT,           	// initial y position
@@ -162,24 +166,26 @@ void Draw_Window(struct Window_Element w) {
       NULL,          			  	    // program instance handle
       NULL);                    	// creation parameters			
       
+      /*
     SetTimer(w.hwnd,             // handle to main window 
       IDT_TIMER1,            // timer identifier 
       1000,                 // 10-second interval 
       (TIMERPROC) NULL);     // no timer callback 
-    
-    SetWindowText(w.hwnd, "aaa");
+
+    SetWindowText(w.hwnd, "aaa");    */
+
+    //发送一个WM_PAINTER消息，绘制子控件。
+    InvalidateRect(w.hwnd, NULL, TRUE);
 
     ShowWindow(w.hwnd, 1);
     UpdateWindow(w.hwnd);
-    
-    //发送一个WM_PAINTER消息，绘制子控件。
-    //InvalidateRect(w.hwnd, NULL, TRUE);
 
     //消息循环
     while(GetMessage(&msg, NULL, 0, 0)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
+    
   }
 }
 
@@ -209,6 +215,8 @@ void read_gui(char *gui){
           line = Skip_Blank(line);
           if (line[0] == ';')
             continue;   
+          if (line=="end")
+            break;
           string f = Get_First(line);
           //不是最后一个单词
           while (f != line) {
@@ -227,8 +235,6 @@ void read_gui(char *gui){
               var[f.substr(0, i)] = f.substr(i+1, f.length());
             }
           }
-          if (line=="end")
-            break;
         }
       }
 
@@ -238,7 +244,10 @@ void read_gui(char *gui){
           line = Skip_Blank(line);
           
           if (line[0] == ';')
-            continue;                
+            continue;   
+          
+          if (line=="end")
+            break;          
 
           if (line!="") {
             class GUI_Element *con = new GUI_Element(line);
@@ -253,16 +262,19 @@ void read_gui(char *gui){
               e.hwnd = 0;
               e.head = con;
               v.push_back(e);
+              continue;
             } 
             
             //非顶层控件
-            if (last->parent == NULL) {
+            if (last != NULL) {
               //last的子控件
               if (con->Level - last->Level == 1) {
-                  con->parent=last;
-                  con->child=NULL;
-                  con->brother=NULL;
-                  last->child = con;
+                con->parent=last;
+                con->child=NULL;
+                con->brother=NULL;
+                last->child = con;
+                last = con;
+                continue;
               }
 
               //last的兄弟控件
@@ -272,27 +284,29 @@ void read_gui(char *gui){
                 con->parent=last->parent;
                 con->child=NULL;
                 con->brother=NULL;
+                last = con;
+                continue;
               }
               //last上层控件
               if (con->Level < last->Level && con->Level > 1) {
                 while (con->Level != last->Level)
                   last = last->parent;
                 last->brother = con;
-                
                 con->parent=last->parent;
                 con->child=NULL;
                 con->brother=NULL;
+                last = con;
+                continue;
               }
               //控件层次错误
+              cout << con->Level  << "..\n";
+              cout << last->Level  << "..\n";
               if (con->Level - last->Level > 1) {
-                cout << "子控件层次指定错误。\n";
+                cout << "Level error.\n";
                 return;
               }
             }
           }
-          
-          if (line=="end")
-            break;
         }
       }
       
@@ -337,28 +351,13 @@ int main(int argc, char **argv) {
   
   RegisterClass(&wndClass);
   
-  for(auto i: v) {
-    Draw_Window(i);
-  }
-  
+  Draw_Window(v[0]);
+
   return 0;
 }
 
-int i = 0;
-
-
 //绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
-void Draw_Element(struct Window_Element w) {
-  cout << "WM_PAINT ...\n";
-  
-  PAINTSTRUCT pt;
-  HDC hdc;
-  hdc=BeginPaint(w.hwnd,&pt);
-  
-  SetTextColor(hdc,RGB(255,0,0));
-  SetBkColor(hdc,RGB(0,255,0));
-  SetBkMode(hdc,TRANSPARENT);
-  
+void Draw_Element(struct Window_Element w, HDC hdc) { 
   class GUI_Element *tmp = w.head;
   tmp = tmp->child;
   
@@ -376,43 +375,50 @@ void Draw_Element(struct Window_Element w) {
     if (tmp->Name == "TEXT") {
       cout << "text ...\n";
       TextOut(hdc, 0, 0, "aaa", 3);
+      Rectangle(hdc,0,0,100,100);
     }
     tmp = tmp->child;
   }
-  
-  EndPaint(w.hwnd,&pt);
-
 }
 
-//找到hwnd对应的Window_Element
-Window_Element * Find_Window(HWND hwnd) {
-  for (auto i: v){
-    if (i.hwnd == hwnd)
-      return &i;
+//找到hwnd对应的Window_Element的数组下标，如果返回-1表示没有找到。
+int Find_Window(HWND hwnd) {
+  for (int i=0; i< v.size(); i++){
+    if (v[i].hwnd == hwnd)
+      return i;
   }
-  return NULL;
+  return -1;
 }
 
 //同一个窗口类公用一个窗口处理过程
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, 
    WPARAM wParam, LPARAM lParam)
-{  
+{
   switch(message) {
     //设置Edit控件的文本
 		case WM_SETTEXT:
-      {} 
       return 0;
     case WM_TIMER: 
-      {
-        ++i;
-        //InvalidateRect(hWnd, NULL, TRUE);
-        break;
-      }
+      //InvalidateRect(hWnd, NULL, TRUE);
       return 0;
     // WINDOW以外图形元素的绘制
 		case WM_PAINT:
-      cout<< "---------\n";
-      Draw_Element(*Find_Window(hWnd));
+      PAINTSTRUCT pt;
+      HDC hdc;
+      
+      cout<< "paint...\n";
+      hdc=BeginPaint(hWnd,&pt);
+      SetTextColor(hdc,RGB(255,0,0));
+      SetBkColor(hdc,RGB(0,255,0));
+      SetBkMode(hdc,TRANSPARENT);
+      
+      int i;
+      
+      i = Find_Window(hWnd);
+      cout << i << ";;;;;\n";
+      
+      Draw_Element(v[i], hdc);
+      EndPaint(hWnd,&pt);
 			return 0;
 		case WM_DESTROY:
 			PostQuitMessage(0);

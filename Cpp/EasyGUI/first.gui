@@ -1,19 +1,22 @@
-; 变量定义，下文中所有部分可以直接使用。
+﻿; 变量定义，下文中所有部分可以直接使用。
 @var
 
 a=12 b="helo world" c=12.5 server="gui://edu.cn"
 
 end
 
-; 图形界面描述
+; 图形界面描述。
+; 每一个图形元素可指定处理过程；在子元素对应的屏幕范围内，其处理过程会覆盖父元素的处理过程；
+; 对于兄弟元素，如果有重叠，重叠区域内，z-index大的会覆盖小的。
+
 @gui
 
 ; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。
 1 WINDOW name="first" click="firstclick" top=10% left=10% width=80% height=90% image="D:\test 1.bmp" z-index=1
-2 PANEL
-3 TEXT name="t1" caption="My..."
+2 TEXT name="t1" caption="My..."
 
 1 WINDOW
+2 PANEL
 2 TABVIEW
 2 TEXT caption=b
 2 PANEL
