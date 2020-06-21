@@ -8,7 +8,7 @@ cd Window
 del *.exe *.obj
 cd ..
 
-cd TinySTL
+cd TinyTL
 del *.exe *.obj
 cd .. 
 

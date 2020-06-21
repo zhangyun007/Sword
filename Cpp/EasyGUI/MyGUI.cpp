@@ -137,12 +137,12 @@ struct Window_Element {
   class GUI_Element *head;
 };
 
-vector<struct Window_Element> v;
+vector<struct Window_Element *> v;
 
 //绘制Window
-void Draw_Window(struct Window_Element w) {
+void Draw_Window(struct Window_Element *w) {
   
-  class GUI_Element *tmp = w.head;
+  class GUI_Element *tmp = w->head;
   
   //绘制顶层窗口
   if (tmp->Name == "WINDOW") {
@@ -153,7 +153,7 @@ void Draw_Window(struct Window_Element w) {
     if (Is_Int(tmp->Property["name"]))
       title=tmp->Val[atoi(tmp->Property["name"].c_str())];
     
-    w.hwnd = CreateWindow(
+    w->hwnd = CreateWindow(
       TEXT("MyClass"),   			  // window class name
       TEXT(title.c_str()),  		        
       WS_OVERLAPPEDWINDOW,     	// window style
@@ -166,7 +166,7 @@ void Draw_Window(struct Window_Element w) {
       NULL,          			  	    // program instance handle
       NULL);                    	// creation parameters			
       
-      /*
+    /*
     SetTimer(w.hwnd,             // handle to main window 
       IDT_TIMER1,            // timer identifier 
       1000,                 // 10-second interval 
@@ -174,11 +174,13 @@ void Draw_Window(struct Window_Element w) {
 
     SetWindowText(w.hwnd, "aaa");    */
 
+    cout << "hwnd =" << w->hwnd << "\n";
+  
     //发送一个WM_PAINTER消息，绘制子控件。
-    InvalidateRect(w.hwnd, NULL, TRUE);
+    InvalidateRect(w->hwnd, NULL, TRUE);
 
-    ShowWindow(w.hwnd, 1);
-    UpdateWindow(w.hwnd);
+    ShowWindow(w->hwnd, 1);
+    UpdateWindow(w->hwnd);
 
     //消息循环
     while(GetMessage(&msg, NULL, 0, 0)) {
@@ -258,9 +260,9 @@ void read_gui(char *gui){
               con->child=NULL;
               con->brother=NULL;
               last = con;
-              struct Window_Element e;
-              e.hwnd = 0;
-              e.head = con;
+              struct Window_Element *e = (struct Window_Element *)malloc(sizeof(struct Window_Element));
+              e->hwnd = 0;
+              e->head = con;
               v.push_back(e);
               continue;
             } 
@@ -357,8 +359,8 @@ int main(int argc, char **argv) {
 }
 
 //绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
-void Draw_Element(struct Window_Element w, HDC hdc) { 
-  class GUI_Element *tmp = w.head;
+void Draw_Element(struct Window_Element *w, HDC hdc) { 
+  class GUI_Element *tmp = w->head;
   tmp = tmp->child;
   
   //绘制子控件
@@ -374,8 +376,11 @@ void Draw_Element(struct Window_Element w, HDC hdc) {
     //绘制文本
     if (tmp->Name == "TEXT") {
       cout << "text ...\n";
-      TextOut(hdc, 0, 0, "aaa", 3);
-      Rectangle(hdc,0,0,100,100);
+      string s;
+      if (Is_Int(tmp->Property["caption"]))
+        s = tmp->Val[atoi(tmp->Property["caption"].c_str())];
+      cout << s << "___\n";
+      TextOut(hdc, 0, 0, s.c_str(), s.length());
     }
     tmp = tmp->child;
   }
@@ -384,8 +389,10 @@ void Draw_Element(struct Window_Element w, HDC hdc) {
 //找到hwnd对应的Window_Element的数组下标，如果返回-1表示没有找到。
 int Find_Window(HWND hwnd) {
   for (int i=0; i< v.size(); i++){
-    if (v[i].hwnd == hwnd)
+    cout << v[i]->hwnd << " --- " << hwnd << " find .... \n";
+    if (v[i]->hwnd == hwnd) {
       return i;
+    }
   }
   return -1;
 }
@@ -406,18 +413,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       PAINTSTRUCT pt;
       HDC hdc;
       
-      cout<< "paint...\n";
+      cout << "paint hwnd =" << hWnd << "\n";
       hdc=BeginPaint(hWnd,&pt);
       SetTextColor(hdc,RGB(255,0,0));
       SetBkColor(hdc,RGB(0,255,0));
       SetBkMode(hdc,TRANSPARENT);
       
       int i;
-      
       i = Find_Window(hWnd);
-      cout << i << ";;;;;\n";
-      
       Draw_Element(v[i], hdc);
+      
       EndPaint(hWnd,&pt);
 			return 0;
 		case WM_DESTROY:

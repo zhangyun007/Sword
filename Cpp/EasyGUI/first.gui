@@ -13,7 +13,7 @@ end
 
 ; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。
 1 WINDOW name="first" click="firstclick" top=10% left=10% width=80% height=90% image="D:\test 1.bmp" z-index=1
-2 TEXT name="t1" caption="My..."
+2 TEXT name="t1" caption="My name is text"
 
 1 WINDOW
 2 PANEL
