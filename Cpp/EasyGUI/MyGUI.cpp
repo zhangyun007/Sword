@@ -24,11 +24,14 @@ using namespace std;
 
 #define IDT_TIMER1 12
 
+
 // 字符串常量
 vector<string> Val;
 
 //存储@var部分的变量和值
 map<string, string> var;
+
+int cxScreen,cyScreen;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -109,6 +112,8 @@ string GUI_Element::String_2_Int(string line){
         return str;
       i++;
     }
+    
+    //此处，检测到第一个“
     i++;
     
     while (line[i] != '\"') {
@@ -120,7 +125,10 @@ string GUI_Element::String_2_Int(string line){
       i++;
     }
     
+    //此处，第二个"被检测到
     Val.push_back(s);
+    
+    //存数字索引
     itoa(n, m, 4);
     str+=m;
     n++;
@@ -140,9 +148,9 @@ struct Window_Element {
 vector<struct Window_Element *> v;
 
 //绘制Window
-void Draw_Window(struct Window_Element *w) {
+void Draw_Window(struct Window_Element *w_e) {
   
-  class GUI_Element *tmp = w->head;
+  class GUI_Element *tmp = w_e->head;
   
   //绘制顶层窗口
   if (tmp->Name == "WINDOW") {
@@ -153,14 +161,19 @@ void Draw_Window(struct Window_Element *w) {
     if (Is_Int(tmp->Property["name"]))
       title=tmp->Val[atoi(tmp->Property["name"].c_str())];
     
-    w->hwnd = CreateWindow(
+    int x = atof(tmp->Property["left"].c_str()) * cxScreen;
+    int y = atof(tmp->Property["top"].c_str()) * cyScreen;
+    int w = atof(tmp->Property["width"].c_str()) * cxScreen;
+    int h = atof(tmp->Property["height"].c_str()) * cyScreen;
+    
+    w_e->hwnd = CreateWindow(
       TEXT("MyClass"),   			  // window class name
       TEXT(title.c_str()),  		        
       WS_OVERLAPPEDWINDOW,     	// window style
-      CW_USEDEFAULT,           	// initial x position
-      CW_USEDEFAULT,           	// initial y position
-      CW_USEDEFAULT,           	// initial x size
-      CW_USEDEFAULT,           	// initial y size
+      x,           	// initial x position
+      y,           	// initial y position
+      w,           	// initial x size
+      h,           	// initial y size
       NULL,						            // parent window handle
       NULL,                     	// window menu handle
       NULL,          			  	    // program instance handle
@@ -174,13 +187,13 @@ void Draw_Window(struct Window_Element *w) {
 
     SetWindowText(w.hwnd, "aaa");    */
 
-    cout << "hwnd =" << w->hwnd << "\n";
+    cout << "hwnd =" << w_e->hwnd << "\n";
   
     //发送一个WM_PAINTER消息，绘制子控件。
-    InvalidateRect(w->hwnd, NULL, TRUE);
+    InvalidateRect(w_e->hwnd, NULL, TRUE);
 
-    ShowWindow(w->hwnd, 1);
-    UpdateWindow(w->hwnd);
+    ShowWindow(w_e->hwnd, 1);
+    UpdateWindow(w_e->hwnd);
 
     //消息循环
     while(GetMessage(&msg, NULL, 0, 0)) {
@@ -330,6 +343,8 @@ void read_gui(char *gui){
 
 int main(int argc, char **argv) {
   SetConsoleOutputCP(65001);
+  cxScreen=GetSystemMetrics(SM_CXSCREEN);
+  cyScreen=GetSystemMetrics(SM_CYSCREEN);
   if (argc == 1) {
     cout << "Need file name as args.\n";
     exit(1);
@@ -369,17 +384,33 @@ void Draw_Element(struct Window_Element *w, HDC hdc) {
      //使用gdi函数绘制矩形
     if (tmp->Name == "REGTANGLE") {
       cout << "regtangel ...\n";
-      Rectangle(hdc,0,0,100,100);
-      Rectangle(hdc,50,50,200,200);          
+      int x = atof(tmp->Property["left"].c_str()) * cxScreen;
+      int y = atof(tmp->Property["top"].c_str()) * cyScreen;
+      int w = atof(tmp->Property["width"].c_str()) * cxScreen;
+      int h = atof(tmp->Property["height"].c_str()) * cyScreen;
+    
+      //取得窗口客户区坐标
+      //GetClientRect
+      Rectangle(hdc,x,y,w,h);
     }
     
     //绘制文本
     if (tmp->Name == "TEXT") {
-      cout << "text ...\n";
       string s;
       if (Is_Int(tmp->Property["caption"]))
         s = tmp->Val[atoi(tmp->Property["caption"].c_str())];
-      cout << s << "___\n";
+      else
+        s = tmp->Property["caption"];
+      cout<< tmp->Property["caption"] << " ... \n";
+      TextOut(hdc, 0, 0, s.c_str(), s.length());
+    }
+    
+    //链接
+    if (tmp->Name == "A") {
+      string s;
+      if (Is_Int(tmp->Property["caption"]))
+        s = tmp->Val[atoi(tmp->Property["caption"].c_str())];
+      cout<< s << "--- \n";
       TextOut(hdc, 0, 0, s.c_str(), s.length());
     }
     tmp = tmp->child;
@@ -402,6 +433,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
    WPARAM wParam, LPARAM lParam)
 {
   switch(message) {
+    case WM_LBUTTONDOWN:
+      POINT point;
+      GetCursorPos(&point);            // 获取鼠标指针位置（屏幕坐标）
+      ScreenToClient(hWnd, &point);    // 将鼠标指针位置转换为窗口坐标
+      cout << point.x << " "<< point.y << "\n";
+      //判断点落在哪个控件范围内，调用其指定的处理函数。
+      return 0;
+    case WM_LBUTTONDBLCLK:
+      return 0;
+    case WM_RBUTTONDOWN:
+      return 0;
+    case WM_RBUTTONDBLCLK:
+      return 0;
+    case WM_MBUTTONDOWN:
+      return 0;
+    case WM_MBUTTONDBLCLK:
+      return 0;
     //设置Edit控件的文本
 		case WM_SETTEXT:
       return 0;

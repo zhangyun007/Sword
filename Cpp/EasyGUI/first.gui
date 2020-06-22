@@ -11,17 +11,24 @@ end
 
 @gui
 
-; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。
-1 WINDOW name="first" click="firstclick" top=10% left=10% width=80% height=90% image="D:\test 1.bmp" z-index=1
-2 TEXT name="t1" caption="My name is text"
+; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。 
+; top left width height 通过百分比定位而不是像素定位
+1 WINDOW name="first" top=0.1 left=0.2 width=0.5 height=0.5 image="D:\test 1.bmp" z-index=1
+2 REGTANGLE name="f1" top=0.1 left=0.1 width=0.8 height=0.8
+2 REGTANGLE name="f2" top=0.1 left=0.1 width=0.6 height=0.4
+2 TEXT name="t1" caption="点击以下文字运行示例程序"
+2 A href="file://d/second.gui" caption="你好"
+2 A href="file://d/third.gui" caption="测试"
+
 
 1 WINDOW
+2 BUTTON name="b1" caption="按钮"
 2 PANEL
 2 TABVIEW
 2 TEXT caption=b
 2 PANEL
 3 IMAGE
-3 TEXT caption="Hello world"
+2 TEXT caption="Hello world"
 
 end
 
@@ -49,8 +56,18 @@ end
 ; 控件的键盘、鼠标处理过程
 ; 子控件处理函数会覆盖父控件的处理函数
 ; z-index大的图形控件处理函数可能会覆盖z-index小的处理函数
-@firstclick
+@first.click
 
 $first.title="Changed Titile"
+
+end
+
+
+@f1.click
+
+end
+
+
+@f2.click
 
 end
