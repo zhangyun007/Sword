@@ -14,11 +14,11 @@ end
 ; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。 
 ; top left width height 通过百分比定位而不是像素定位
 1 WINDOW name="first" top=0.1 left=0.2 width=0.5 height=0.5 image="D:\test 1.bmp" z-index=1
-2 REGTANGLE name="f1" top=0.1 left=0.1 width=0.8 height=0.8
-2 REGTANGLE name="f2" top=0.1 left=0.1 width=0.6 height=0.4
-2 TEXT name="t1" caption="点击以下文字运行示例程序"
+2 REGTANGLE name="f1" top=0.1 left=0.1 width=0.2 height=0.2
 2 A href="file://d/second.gui" caption="你好"
 2 A href="file://d/third.gui" caption="测试"
+2 REGTANGLE name="f2" top=0.5 left=0.6 width=0.4 height=0.4
+2 TEXT name="t1" caption="点击以下文字运行示例程序"
 
 
 1 WINDOW

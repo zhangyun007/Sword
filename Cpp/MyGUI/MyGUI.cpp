@@ -376,7 +376,11 @@ int main(int argc, char **argv) {
 //绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
 void Draw_Element(struct Window_Element *w, HDC hdc) { 
   class GUI_Element *tmp = w->head;
-  tmp = tmp->child;
+  
+  if (tmp->child)
+    tmp = tmp->child;
+  else if (tmp->brother)
+      tmp = tmp->brother;
   
   //绘制子控件
   while (tmp != NULL) {
@@ -396,6 +400,7 @@ void Draw_Element(struct Window_Element *w, HDC hdc) {
     
     //绘制文本
     if (tmp->Name == "TEXT") {
+      cout << "text ...\n";
       string s;
       if (Is_Int(tmp->Property["caption"]))
         s = tmp->Val[atoi(tmp->Property["caption"].c_str())];
@@ -407,13 +412,15 @@ void Draw_Element(struct Window_Element *w, HDC hdc) {
     
     //链接
     if (tmp->Name == "A") {
-      string s;
-      if (Is_Int(tmp->Property["caption"]))
-        s = tmp->Val[atoi(tmp->Property["caption"].c_str())];
-      cout<< s << "--- \n";
-      TextOut(hdc, 0, 0, s.c_str(), s.length());
+      cout<< "A...\n";
     }
-    tmp = tmp->child;
+    
+    if (tmp->child)
+      tmp = tmp->child;
+    else if (tmp->brother)
+      tmp = tmp->brother;
+    else
+      break;
   }
 }
 
