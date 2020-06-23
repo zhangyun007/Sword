@@ -329,10 +329,25 @@ void read_gui(char *gui){
       if (line=="@init") {
         while (getline (in, line)) {
           line = Skip_Blank(line);
+          cout << line << "\n";
           if (line[0] == ';')
             continue;
           if (line=="end")
             break;
+          continue;
+        }      
+      }
+      
+      //以@开头，表示各种键盘鼠标处理函数。
+      if (line[0] == '@') {
+        while (getline (in, line)) {
+          line = Skip_Blank(line);
+          cout << line << "\n";
+          if (line[0] == ';')
+            continue;
+          if (line=="end")
+            break;
+          continue;
         }      
       }
     }
@@ -349,7 +364,6 @@ int main(int argc, char **argv) {
     cout << "Need file name as args.\n";
     exit(1);
   }
-  cout << argv[1] << "\n";
   read_gui(argv[1]);
   
   WNDCLASS            wndClass;
@@ -367,8 +381,9 @@ int main(int argc, char **argv) {
   wndClass.lpszClassName  = TEXT("MyClass");
   
   RegisterClass(&wndClass);
-  
+  cout<< "...1233.\n";  
   Draw_Window(v[0]);
+  cout<< "...12.\n";
 
   return 0;
 }
@@ -376,6 +391,10 @@ int main(int argc, char **argv) {
 //绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
 void Draw_Element(struct Window_Element *w, HDC hdc) { 
   class GUI_Element *tmp = w->head;
+  
+  RECT r;  
+  //取得窗口客户区坐标
+  GetClientRect(w->hwnd, &r);
   
   if (tmp->child)
     tmp = tmp->child;
@@ -388,13 +407,11 @@ void Draw_Element(struct Window_Element *w, HDC hdc) {
      //使用gdi函数绘制矩形
     if (tmp->Name == "REGTANGLE") {
       cout << "regtangel ...\n";
-      int x = atof(tmp->Property["left"].c_str()) * cxScreen;
-      int y = atof(tmp->Property["top"].c_str()) * cyScreen;
-      int w = atof(tmp->Property["width"].c_str()) * cxScreen;
-      int h = atof(tmp->Property["height"].c_str()) * cyScreen;
-    
-      //取得窗口客户区坐标
-      //GetClientRect
+      int x = atof(tmp->Property["left"].c_str()) * (r.right-r.left);
+      int y = atof(tmp->Property["top"].c_str()) * (r.bottom-r.top);
+      int w = atof(tmp->Property["right"].c_str()) * (r.right-r.left);
+      int h = atof(tmp->Property["bottom"].c_str()) * (r.bottom-r.top);
+      
       Rectangle(hdc,x,y,w,h);
     }
     

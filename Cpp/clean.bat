@@ -1,6 +1,6 @@
 del *.exe *.obj
 
-cd EasyGUI
+cd MyGUI
 del *.exe *.obj
 cd ..
 
