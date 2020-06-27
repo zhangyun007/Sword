@@ -1,37 +1,41 @@
 ﻿; 变量定义，下文中所有部分可以直接使用。
 @var
 
-a=12 b="helo world" c=12.5 server="gui://edu.cn"
+; \\表示字符'\' \"表示字符"  \'表示'
+a=12 b="GVIM is nice" c=12.5 server="gui://edu.cn"
 
 end
 
 ; 图形界面描述。
-; 每一个图形元素可指定处理过程；在子元素对应的屏幕范围内，其处理过程会覆盖父元素的处理过程；
-; 对于兄弟元素，如果有重叠，重叠区域内，z-index大的会覆盖小的。
+; 每一个控件可指定处理过程；在子控件范围内，其处理过程会覆盖父控件的处理过程；
+; 相同层次的几个控件，后创建的可能会覆盖先创建的。
 
 @gui
 
-; z-index属性决定绘制图形元素的次序，数字大的后绘制，可能会覆盖z-index小的图形元素。 
-; top left width height 通过百分比定位而不是像素定位
-1 WINDOW name="first" top=0.1 left=0.2 width=0.5 height=0.5 image="D:\test 1.bmp" z-index=1
-2 TABLE
-3 TR
-4 TEXT caption="test1"
-4 BUTTON name="b1" caption="按钮"
-3 TR
-4 TEXT caption="test3"
-4 TEXT caption="test4"
+; 每行开始的数字，表示控件的层次，用于控件定位。
+; 每一层控件以其上层控件所形成矩形区域为参照，进行定位。
+; top和botton为上层控件的纵向高度百分比，left和right为父层控件的横向宽度百分比。
+
+1 WINDOW name="first" top=0.1 left=0.2 right=1.0 bottom=1.0 image="D:\test 1.bmp"
+; RECTANGLE和RECT的区别在于，前者画出矩形。
+2 RECTANGLE name="f1" top=0.0 left=0.0 right=0.2 bottom=0.2
+3 TEXT caption=b
+2 RECTANGLE name="f1" top=0.2 left=0.0 right=0.2 bottom=0.4
+3 TEXT caption="NotePad++ is Nice"
+
+2 RECTANGLE name="f2" top=0.5 left=0.5 right=1 bottom=1
+3 TEXT caption=server
+
+; RECT也是矩形，但是并不在窗口中画出矩形。
+2 RECT name="f1" top=0.4 left=0.4 right=1 bottom=1
+3 TEXT caption="test"
+2 Ellipse
 
 2 A href="file://d/second.gui" caption="点击文字运行示例程序"
 2 A href="file://d/third.gui" caption="测试"
 
-1 WINDOW
-2 BUTTON name="b1" caption="按钮"
-2 PANEL
-2 TEXT caption=b
-2 PANEL
-3 IMAGE
-2 TEXT caption="Hello world"
+1 WINDOW name="second"
+2 TEXT caption="aaa"
 
 end
 
@@ -39,17 +43,17 @@ end
 @init
 
 ; 默认连接本地的gui服务器，调用函数。
-a=cpp_fun1(12,"hello")
+a=cpp_fun1#12,"hello"@gui://localhost
 ; 指定远程服务器
-a=cpp_fun1(12,"hello")@"gui://163.com"
-a=cpp_fun1(12,"hello")@server
+a=cpp_fun1#12,"hello"@gui://163.com
+a=cpp_fun1#12,"hello"@server
 
-$first.title=a
+a=$first.title $first.title=a
 
 $first.show
 
 ;为@gui添加一行节点 这里将在第一个参数指向的控件后，添加一个控件节点。该函数不做控件"层次"检查。
-; 你可以在第一层控件后添加第三层控件。也就是说，即使你push_back成功了，不表示你的窗口描述就是正确的。
+;你可以在第一层控件后添加第三层控件。也就是说，即使你push_back成功了，不表示你的窗口描述就是正确的。
 ;系统在创建并绘制控件时，会做检查,如果检查到你的树形结构中，第一层控件节点有个第三层子节点，报错。
 
 $first.push_back("t1",4,"TEXT","caption","在函数里添加控件")
@@ -58,10 +62,9 @@ end
 
 ; 控件的键盘、鼠标处理过程
 ; 子控件处理函数会覆盖父控件的处理函数
-; z-index大的图形控件处理函数可能会覆盖z-index小的处理函数
 @first.click
 
-$first.title="Changed Titile"
+$first.left=0.2
 
 end
 

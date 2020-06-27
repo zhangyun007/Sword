@@ -27,7 +27,6 @@ def cube(x): return x*x*x;
 a = map(cube, range(1,11))
 print(list(a))
 
-
 funa = lambda x: x + 1
 print(funa(3))
 
@@ -37,7 +36,6 @@ print("L=", L[0](1), L[1](2), L[2](3))
 #返回最后一个参数
 funb = lambda *x: x[-1] 
 print(funb(12, 23, 34))
-
 
 # 列表转成字典
 a = dict([('sape', 4139), ('guido', 4127), ('jack', 4098)])
