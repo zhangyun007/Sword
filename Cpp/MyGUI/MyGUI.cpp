@@ -157,7 +157,6 @@ void Draw_Window(struct Window_Element *w_e) {
   
   //绘制顶层窗口
   if (tmp->Name == "WINDOW") {
-    cout << "will create a window\n";
     MSG         msg;
     string      title = "Test Window";
     
@@ -170,13 +169,17 @@ void Draw_Window(struct Window_Element *w_e) {
 
     //存储top和left right bottom，单位为像素。
     itoa(x,buffer,10);
+    cout << " Window L is " << buffer << "\n";
     tmp->Property["l"] = buffer;
+    cout << " Window T is " << buffer << "\n";
     itoa(y,buffer,10);
     tmp->Property["t"] = buffer;
     
     itoa(x+w,buffer,10);
+    cout << " Window R is " << buffer << "\n";
     tmp->Property["r"] = buffer;
     itoa(y+h,buffer,10);
+    cout << " Window B is " << buffer << "\n";
     tmp->Property["b"] = buffer;
     
     w_e->hwnd = CreateWindow(
@@ -230,8 +233,6 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
     
-    cout << l << " "<< t  << " " << r  << " " << b <<" in RECT \n";
-    
     char buffer[10];
     
     //存储top和left right bottom，单位为像素。
@@ -259,9 +260,9 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
 
-    cout << pl << " "<< pt  << " " << pr  << " " << pb <<"  p.. RECTANGLE\n";
-    
-    cout << l << " "<< t  << " " << r  << " " << b <<" RECTANGLE\n";
+    //Why Wrong?
+    cout << pl << " ---- "<< tmp->parent->Property["t"]  << " " << pr  << " " << pb <<"  parent... RECTANGLE\n";
+    cout << l << " "<< t  << " " << r  << " " << b <<" local ... RECTANGLE\n";
     
     char buffer[10];
     
@@ -319,7 +320,6 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
 //找到hwnd对应的Window_Element的数组下标，如果返回-1表示没有找到。
 int Find_Window(HWND hwnd) {
   for (int i=0; i< v.size(); i++){
-    cout << v[i]->hwnd << " --- " << hwnd << " find .... \n";
     if (v[i]->hwnd == hwnd) {
       return i;
     }
@@ -551,10 +551,11 @@ GUI_Element * Find_Element(POINT p, GUI_Element *e) {
   int l = atoi(e->Property["l"].c_str());
   int r = atoi(e->Property["r"].c_str());
   int b = atoi(e->Property["b"].c_str());
-  
+
+  cout << "e->name = " << e->Name << "\n";
   cout << t << " " << l << " " << r << " " << b << " " << " in find element....\n";
   
-  if (p.x > t && p.y > l && p.x < r && p.y < b)
+  if ((p.x > t) && (p.y > l) && (p.x < r) && (p.y < b))
       last = e;
     
   if (e->child != NULL) {
@@ -577,10 +578,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
    WPARAM wParam, LPARAM lParam)
 {
   int i;
+  string s;
+  RECT r;  
   
   switch(message) {
+    //移动标题栏等
+    case WM_SYSCOMMAND:
+      i = Find_Window(hWnd);
+      
+      //取得窗口客户区坐标
+      GetClientRect(hWnd, &r);
+      
+      //取得移动后，窗体的客户区坐标。
+      v[i]->head->Property["l"] = r.left;
+      v[i]->head->Property["t"] = r.top;
+      v[i]->head->Property["r"] = r.right;
+      v[i]->head->Property["b"] = r.bottom;
+      
+      return DefWindowProc(hWnd, message, wParam, lParam);
+      
     case WM_LBUTTONDOWN:
+      
       POINT point;
+      
       GetCursorPos(&point);            // 获取鼠标指针位置（屏幕坐标）
       ScreenToClient(hWnd, &point);    // 将鼠标指针位置转换为窗口坐标
       cout << point.x << " "<< point.y << "\n";
@@ -590,8 +610,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       //遍历方式：先父后子，先兄后弟。
       class GUI_Element * tmp;
       tmp = Find_Element(point, v[i]->head);   
-      cout<<tmp <<"\n";
-      
+      s = tmp->Property["name"];
+      int j;
+      if (s.substr(0, 4) == "_VAL")
+        j = atoi(s.substr(4).c_str());
+      cout << Val[j] << "\n";
       return 0;
     case WM_LBUTTONDBLCLK:
       return 0;
@@ -615,16 +638,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       PAINTSTRUCT pt;
       HDC hdc;
       
-      cout << "paint hwnd =" << hWnd << "\n";
       hdc=BeginPaint(hWnd,&pt);
       SetTextColor(hdc,RGB(255,0,0));
       SetBkColor(hdc,RGB(0,255,0));
       SetBkMode(hdc,TRANSPARENT);
       
       i = Find_Window(hWnd);
-      
-      RECT r;  
-      
+            
       //取得窗口客户区坐标
       GetClientRect(hWnd, &r);
       
