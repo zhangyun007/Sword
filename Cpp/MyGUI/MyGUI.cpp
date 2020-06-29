@@ -40,6 +40,7 @@ public:
   vector<string> s; //把过程的内容以空格区分，存进vector<string> s
 };
 
+//过程列表
 vector<class Proc *> vp;
 
 /*将字符串存储到vector<string> val中，并用对应的vector下标来替换字符串。
@@ -93,6 +94,12 @@ public:
   unsigned short Level;         //控件在第几Level？
   string Name;                  //控件名称 ，可能的Val为"<window>" "<text>" "<div>" ...
   map<string, string> Property; //控件属性  titile=1, 1为Val的index.
+  
+  //控件矩形坐标  单位是分辨率  left top right bottom
+  int l;
+  int t;
+  int r;
+  int b;
   
   class GUI_Element *parent;    //父节点
   class GUI_Element *child;     //第一个子节点
@@ -148,6 +155,7 @@ struct Window_Element {
   class GUI_Element *head;
 };
 
+//窗口列表
 vector<struct Window_Element *> v;
 
 //绘制Window
@@ -164,23 +172,6 @@ void Draw_Window(struct Window_Element *w_e) {
     int y = atof(tmp->Property["top"].c_str()) * cyScreen;
     int w = (atof(tmp->Property["right"].c_str()) - atof(tmp->Property["left"].c_str())) * cxScreen;
     int h = (atof(tmp->Property["bottom"].c_str()) - atof(tmp->Property["top"].c_str())) * cyScreen;
-    
-    char buffer[10];
-
-    //存储top和left right bottom，单位为像素。
-    itoa(x,buffer,10);
-    cout << " Window L is " << buffer << "\n";
-    tmp->Property["l"] = buffer;
-    cout << " Window T is " << buffer << "\n";
-    itoa(y,buffer,10);
-    tmp->Property["t"] = buffer;
-    
-    itoa(x+w,buffer,10);
-    cout << " Window R is " << buffer << "\n";
-    tmp->Property["r"] = buffer;
-    itoa(y+h,buffer,10);
-    cout << " Window B is " << buffer << "\n";
-    tmp->Property["b"] = buffer;
     
     w_e->hwnd = CreateWindow(
       TEXT("MyClass"),   			  // window class name
@@ -218,63 +209,49 @@ void Draw_Window(struct Window_Element *w_e) {
 }
 
 //绘制Window以外的子控件。同一层，后绘制的可能会覆盖先绘制的;  先父后子，先兄后弟。
-void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) { 
-  
-   //使用gdi函数绘制矩形
+void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
+
+  //使用gdi函数绘制矩形
   if (tmp->Name == "RECT") {   
     //像素值
-    int pt = atoi(tmp->parent->Property["t"].c_str());
-    int pl = atoi(tmp->parent->Property["l"].c_str());
-    int pr = atoi(tmp->parent->Property["r"].c_str());
-    int pb = atoi(tmp->parent->Property["b"].c_str());
+    int pt = tmp->parent->t;
+    int pl = tmp->parent->l;
+    int pr = tmp->parent->r;
+    int pb = tmp->parent->b;
     
     int l = atof(tmp->Property["left"].c_str()) * (pr - pl) + pl;
     int t = atof(tmp->Property["top"].c_str()) * (pb - pt) + pt;
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
     
-    char buffer[10];
-    
-    //存储top和left right bottom，单位为像素。
-    itoa(l,buffer,10);
-    tmp->Property["l"] = buffer;
-    itoa(t,buffer,10);
-    tmp->Property["t"] = buffer;
-    itoa(r,buffer,10);
-    tmp->Property["r"] = buffer;
-    itoa(b,buffer,10);
-    tmp->Property["b"] = buffer;    
+	tmp->l = l;
+	tmp->t = t;
+	tmp->r = r;
+	tmp->b = b;
   }
   
   //RECT和RECTANGEL的区别是前者只做定位使用，并不绘制；后者会绘制矩形。
  
-  if (tmp->Name == "RECTANGLE") {    
+  if (tmp->Name == "RECTANGLE") {
     //像素值
-    int pt = atoi(tmp->parent->Property["t"].c_str());
-    int pl = atoi(tmp->parent->Property["l"].c_str());
-    int pr = atoi(tmp->parent->Property["r"].c_str());
-    int pb = atoi(tmp->parent->Property["b"].c_str());
+    int pt = tmp->parent->t;
+    int pl = tmp->parent->l;
+    int pr = tmp->parent->r;
+    int pb = tmp->parent->b;
     
     int l = atof(tmp->Property["left"].c_str()) * (pr - pl) + pl;
     int t = atof(tmp->Property["top"].c_str()) * (pb - pt) + pt;
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
 
-    //Why Wrong?
-    cout << pl << " ---- "<< tmp->parent->Property["t"]  << " " << pr  << " " << pb <<"  parent... RECTANGLE\n";
+	cout << tmp->parent->Name << " parent name .. \n";
+    cout << pl << " "<< pt << " " << pr  << " " << pb <<"  parent ... RECTANGLE\n";
     cout << l << " "<< t  << " " << r  << " " << b <<" local ... RECTANGLE\n";
-    
-    char buffer[10];
-    
-    //存储top和left right bottom，单位为像素。
-    itoa(l,buffer,10);
-    tmp->Property["l"] = buffer;
-    itoa(t,buffer,10);
-    tmp->Property["t"] = buffer;
-    itoa(r,buffer,10);
-    tmp->Property["r"] = buffer;
-    itoa(b,buffer,10);
-    tmp->Property["b"] = buffer;
+
+	tmp->l = l;
+	tmp->t = t;
+	tmp->r = r;
+	tmp->b = b;
     
     Rectangle(hdc,l,t,r,b);
     //Draw_Rectangle();
@@ -291,13 +268,13 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
       }
     }
    
-    int t = atoi(tmp->parent->Property["t"].c_str());
-    int l = atoi(tmp->parent->Property["l"].c_str());
-    int r = atoi(tmp->parent->Property["r"].c_str());
-    int b = atoi(tmp->parent->Property["b"].c_str());
+    tmp->t = tmp->parent->t;
+    tmp->l = tmp->parent->l;
+    tmp->r = tmp->parent->r;
+    tmp->b = tmp->parent->b;
     
     RECT re;  
-    re.left=l; re.top=t; re.right=r; re.bottom=b;
+    re.left=tmp->l; re.top=tmp->t; re.right=tmp->r; re.bottom=tmp->b;
     
     int i;
     if (s.substr(0, 4) == "_VAL")
@@ -327,7 +304,7 @@ int Find_Window(HWND hwnd) {
   return -1;
 }
 
-//读取GUI描述文件，生成图形程序。
+//读取GUI描述文件，生成树形结构。
 void read_gui(char *gui){
   ifstream in(gui);
   string line;
@@ -546,28 +523,26 @@ int main(int argc, char **argv) {
 //返回p所处的控件
 GUI_Element * Find_Element(POINT p, GUI_Element *e) {
   GUI_Element *last = NULL;
-  
-  int t = atoi(e->Property["t"].c_str());
-  int l = atoi(e->Property["l"].c_str());
-  int r = atoi(e->Property["r"].c_str());
-  int b = atoi(e->Property["b"].c_str());
 
   cout << "e->name = " << e->Name << "\n";
-  cout << t << " " << l << " " << r << " " << b << " " << " in find element....\n";
   
-  if ((p.x > t) && (p.y > l) && (p.x < r) && (p.y < b))
+  if ((p.x > e->t) && (p.y > e->l) && (p.x < e->r) && (p.y < e->b))
       last = e;
     
   if (e->child != NULL) {
-    GUI_Element *tmp = Find_Element(p, e->child);
-    if (tmp!=NULL)
-      last = tmp;
+    if (e->child->Name == "RECTANGLE") {
+      GUI_Element *tmp = Find_Element(p, e->child);
+      if (tmp!=NULL)
+        last = tmp;
+    }
   } 
   
   if (e->brother!= NULL) {
-    GUI_Element *tmp = Find_Element(p, e->brother);
-    if (tmp!=NULL)
-      last = tmp;
+    if (e->brother->Name == "RECTANGLE") {
+      GUI_Element *tmp = Find_Element(p, e->brother);
+      if (tmp!=NULL)
+        last = tmp;
+    }
   } 
   
   return last;
@@ -611,10 +586,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       class GUI_Element * tmp;
       tmp = Find_Element(point, v[i]->head);   
       s = tmp->Property["name"];
+	  cout << s  << " s = \n";
       int j;
-      if (s.substr(0, 4) == "_VAL")
+      if (s.substr(0, 4) == "_VAL") {
         j = atoi(s.substr(4).c_str());
-      cout << Val[j] << "\n";
+        cout<< j << " j =\n";
+      }
+      cout << Val[j] << " is clicked\n";
       return 0;
     case WM_LBUTTONDBLCLK:
       return 0;
@@ -627,13 +605,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MBUTTONDBLCLK:
       return 0;
     //设置Edit控件的文本
-		case WM_SETTEXT:
+	case WM_SETTEXT:
       return 0;
     case WM_TIMER: 
       //InvalidateRect(hWnd, NULL, TRUE);
       return 0;
-    // WINDOW以外图形元素的绘制
-		case WM_PAINT:
+    
+	// WINDOW以外图形元素的绘制
+	case WM_PAINT:
 
       PAINTSTRUCT pt;
       HDC hdc;
@@ -647,18 +626,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             
       //取得窗口客户区坐标
       GetClientRect(hWnd, &r);
-      
-      char buffer[10];
-      
+            
       //存储当前窗口客户区的top left right bottom
-      itoa(r.left, buffer, 10);
-      v[i]->head->Property["l"] = buffer;
-      itoa(r.top, buffer, 10);
-      v[i]->head->Property["t"] = buffer;
-      itoa(r.right, buffer, 10);
-      v[i]->head->Property["r"] = buffer;
-      itoa(r.bottom , buffer, 10);
-      v[i]->head->Property["b"] = buffer;
+      v[i]->head->l = r.left;
+      v[i]->head->t = r.top;
+      v[i]->head->r = r.right;
+      v[i]->head->b = r.bottom;
 
       Draw_Element(v[i]->head->child, hdc, hWnd);
       
