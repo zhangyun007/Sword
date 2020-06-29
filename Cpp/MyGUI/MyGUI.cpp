@@ -526,7 +526,7 @@ GUI_Element * Find_Element(POINT p, GUI_Element *e) {
 
   cout << "e->name = " << e->Name << "\n";
   
-  if ((p.x > e->t) && (p.y > e->l) && (p.x < e->r) && (p.y < e->b))
+  if ((p.x >= e->l) && (p.y >= e->t) && (p.x <= e->r) && (p.y <= e->b))
       last = e;
     
   if (e->child != NULL) {
