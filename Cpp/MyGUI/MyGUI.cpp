@@ -42,7 +42,7 @@ public:
 };
 
 void Proc::Call(){
-	cout << "calling " << name << "\n";
+	cout << "calling .." << name << "\n";
 }
 
 //过程列表
@@ -463,7 +463,7 @@ void read_gui(char *gui){
       //以@开头，可能为@init--初始化函数或者键盘鼠标处理函数。
       if (line[0] == '@') {
         class Proc *p = new(class Proc);
-        p->name = line;
+        p->name = line.substr(1);
         
         while (getline (in, line)) {
           line = Skip_Blank(line);
@@ -555,7 +555,11 @@ GUI_Element * Find_Element(POINT p, GUI_Element *e) {
 
 // vp里查找名为name的过程
 class Proc * Find_Proc(string name) {
-    return NULL;
+		for (auto i:vp) {
+			if (i->name == name)
+				return i;
+		}
+		return NULL;
 }
 
 //同一个窗口类公用一个窗口处理过程
@@ -596,7 +600,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       class GUI_Element * tmp;
       tmp = Find_Element(point, v[i]->head);
       
-      s = tmp->Property["name"];
+      s = tmp->Property["click"];
 			cout << s  << " s = \n";
       int j;
       if (s.substr(0, 4) == "_VAL") {
@@ -604,9 +608,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         cout<< j << " j =\n";
       }
       cout << Val[j] << " is clicked\n";
-      class Proc * p; 
-			p = Find_Proc(tmp->Property["click"]);
-      p->Call();
+      
+			class Proc * p; 
+			p = Find_Proc(Val[j]);
+      if (p!=NULL)
+				p->Call();
+			
 			return 0;
     case WM_LBUTTONDBLCLK:
       return 0;
