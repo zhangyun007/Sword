@@ -6,19 +6,6 @@ a|=“0000”,1,2,3
 @gui
 
 1 WINDOW name="a" 
-2 Ellipse
-3 TEXT name="t1" caption="My..."
-2 RECT 
-3 INPUT type="radio"
-3 TEXT name="t1" caption="My..."
-2 RECT
-3 TEXT name="t2" caption="My..."
-2 RECT 
-3 TEXT name="t3" caption="My..."
-2 RECT 
-3 TEXT name="t4" caption="My..."
-
-1 WINDOW name="b" 
 2 RECT name="db" layout="horizon“
 ; a|0引用数组的某一元素，等价于多数程序中的a[0]，使用单符号操作符，解析更加容易。
 3 TEXT name="t1" caption=a|0
@@ -32,4 +19,4 @@ a|=“0000”,1,2,3
 
 @init
 ；调用C++/Python等实现语言函数，获得数据库记录，存在数组变量中.
-a|=cpp_fun() $db.w=10 $t1.caption=a|0 $t2.caption=a|1 $t3.caption=a|2
+a|=cpp_fun@@"edn.cn" $db.w=10 $t1.caption=a|0 $t2.caption=a|1 $t3.caption=a|2

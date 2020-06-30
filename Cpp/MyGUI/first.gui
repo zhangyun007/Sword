@@ -11,18 +11,19 @@ end
 ; 相同层次的几个控件，后创建的可能会覆盖先创建的。
 
 @gui
+   
 
 ; 每行开始的数字，表示控件的层次，用于控件定位。
 ; 每一层控件以其上层控件所形成矩形区域为参照，进行定位。
 ; top和botton为上层控件的纵向高度百分比，left和right为父层控件的横向宽度百分比。
 
-1 WINDOW name="First Window" top=0.1 left=0.2 right=1.0 bottom=1.0 image="D:\test 1.bmp"
-
+1 WINDOW name="First Window" top=0.1 left=0.2 right=1.0 bottom=1.0 image="D:\test 1.bmp" click="WindowClick"
+  
 ; RECTANGLE和RECT的区别在于，前者画出矩形。
-2 RECTANGLE name="f1 RECTANGLE" top=0.0 left=0.0 right=0.2 bottom=0.2
+2 RECTANGLE name="f1 RECTANGLE" top=0.0 left=0.0 right=0.2 bottom=0.2 click="f1click"
 3 TEXT caption=b
 
-2 RECTANGLE name="f2 RECTANGLE" top=0.2 left=0.0 right=0.2 bottom=0.4
+2 RECTANGLE name="f2 RECTANGLE" top=0.1 left=0.0 right=0.2 bottom=0.4 click="f2click"
 3 TEXT caption="NotePad++ is Nice"
 
 2 RECTANGLE name="f3 RECTANGLE" top=0.5 left=0.5 right=1 bottom=1
@@ -44,14 +45,15 @@ end
 
 end
 
+
 ; 初始化过程
 @init
 
 ; 默认连接本地的gui服务器，调用函数。
-a=cpp_fun1#12,"hello"@gui://localhost
+a=cpp_fun1,12,"hello"@gui://localhost
 ; 指定远程服务器
-a=cpp_fun1#12,"hello"@gui://163.com
-a=cpp_fun1#12,"hello"@server
+a=cpp_fun,12,"hello"@gui://163.com
+a=cpp_fun1,12,"hello"@server
 
 a=$first.title $first.title=a
 
@@ -65,20 +67,29 @@ $first.push_back("t1",4,"TEXT","caption","在函数里添加控件")
 
 end
 
+
 ; 控件的键盘、鼠标处理过程
 ; 子控件处理函数会覆盖父控件的处理函数
-@first.click
+@WindowClick
 
 $first.left=0.2
 
-end
-
-
-@f1.click
+myfun,1,"12"
 
 end
 
 
-@f2.click
+@f1click
+
+end
+
+
+@f2click
+
+end
+
+
+; a b c为参数 r为返回值
+@myfun a,b,c r
 
 end

@@ -36,9 +36,14 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 class Proc {
 public:
-  string name;    //过程名，可能是"@init" "@first.click" ...
+  string name;    //过程名，可能是"@init" "" ...
   vector<string> s; //把过程的内容以空格区分，存进vector<string> s
+  void Call();
 };
+
+void Proc::Call(){
+	cout << "calling " << name << "\n";
+}
 
 //过程列表
 vector<class Proc *> vp;
@@ -367,9 +372,9 @@ void read_gui(char *gui){
       //图形描述
       if (line=="@gui") {        
         while (getline (in, line)) {
-          cout << line << "\n";
           line = Skip_Blank(line);
-
+          cout << line << "\n";
+					
           if (line == "")
             continue;
           if (line[0] == ';')
@@ -548,6 +553,11 @@ GUI_Element * Find_Element(POINT p, GUI_Element *e) {
   return last;
 }
 
+// vp里查找名为name的过程
+class Proc * Find_Proc(string name) {
+    return NULL;
+}
+
 //同一个窗口类公用一个窗口处理过程
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, 
    WPARAM wParam, LPARAM lParam)
@@ -565,10 +575,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       GetClientRect(hWnd, &r);
       
       //取得移动后，窗体的客户区坐标。
-      v[i]->head->Property["l"] = r.left;
-      v[i]->head->Property["t"] = r.top;
-      v[i]->head->Property["r"] = r.right;
-      v[i]->head->Property["b"] = r.bottom;
+      v[i]->head->l = r.left;
+      v[i]->head->t = r.top;
+      v[i]->head->t = r.right;
+      v[i]->head->b = r.bottom;
       
       return DefWindowProc(hWnd, message, wParam, lParam);
       
@@ -584,16 +594,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       //遍历Window_Element，得到鼠标点击点所在的控件，并调用其处理函数。
       //遍历方式：先父后子，先兄后弟。
       class GUI_Element * tmp;
-      tmp = Find_Element(point, v[i]->head);   
+      tmp = Find_Element(point, v[i]->head);
+      
       s = tmp->Property["name"];
-	  cout << s  << " s = \n";
+			cout << s  << " s = \n";
       int j;
       if (s.substr(0, 4) == "_VAL") {
         j = atoi(s.substr(4).c_str());
         cout<< j << " j =\n";
       }
       cout << Val[j] << " is clicked\n";
-      return 0;
+      class Proc * p; 
+			p = Find_Proc(tmp->Property["click"]);
+      p->Call();
+			return 0;
     case WM_LBUTTONDBLCLK:
       return 0;
     case WM_RBUTTONDOWN:
@@ -605,14 +619,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MBUTTONDBLCLK:
       return 0;
     //设置Edit控件的文本
-	case WM_SETTEXT:
+		case WM_SETTEXT:
       return 0;
-    case WM_TIMER: 
+		case WM_TIMER: 
       //InvalidateRect(hWnd, NULL, TRUE);
       return 0;
     
-	// WINDOW以外图形元素的绘制
-	case WM_PAINT:
+		// WINDOW以外图形元素的绘制
+		case WM_PAINT:
 
       PAINTSTRUCT pt;
       HDC hdc;
@@ -637,11 +651,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       
       EndPaint(hWnd,&pt);
 			return 0;
-		case WM_DESTROY:
+    case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
    }
-   return 0;
+  return 0;
 }
