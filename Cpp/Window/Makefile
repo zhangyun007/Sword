@@ -1,3 +1,1 @@
-Clean: 
-	del *.obj 
-	del *.exe
+cl /EHsc d3dtest.cpp /I "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include" /link /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86" 
