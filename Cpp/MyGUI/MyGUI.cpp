@@ -34,6 +34,69 @@ int cxScreen,cyScreen;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+//判断s是否是Element函数调用，该函数为内置函数，用于返回某个节点。
+bool Is_Fun_Element(string s) {
+  return true;
+}
+
+//取得函数名
+string Get_Fun_Name(string s) {
+  return "";
+}
+
+//检测s是否包含ch
+bool HasChar(string s, char ch) {
+  for (int i=0; i<=s.length(); i++) {
+    if (s[i] == ch)
+      return true;
+  }
+  return false;
+}
+
+// 计算S。注意，运算符优先级。
+string Evaluate(string f) {	  
+  for (int i=0; i<f.length(); i++) {
+    //赋值语句
+    if (f[i]=='=') {
+      string v = f.substr(0, i);
+      
+      //列表或者字典元素赋值
+      if (HasChar(v, '|') == true) {
+        break;
+      }
+      
+      //以$开头，表示为节点属性赋值
+      if (v[0]=='$') {
+        break;
+      }
+      
+      for (auto j: var) {
+        if (j.first == v) {
+          //变量赋值
+          var[v] = Evaluate(f.substr(i+1, f.length()));
+          break;
+        }
+      }
+      
+      break;
+    }
+  }
+  
+  //节点Insert Delete 
+  if (f[0]=='$') {
+  
+  }
+  
+  //Close连接
+  
+  //调用远程服务器函数。
+  
+  //解析函数名和参数
+  string n = Get_Fun_Name(f);
+  //vector<string> v = Get_Fun_Args(f);
+  return "";
+}
+
 class Proc {
 public:
   string name;    //过程名，可能是"@init" "" ...
@@ -43,6 +106,19 @@ public:
 
 void Proc::Call(){
 	cout << "calling .." << name << "\n";
+	for (auto i: s) {
+		Evaluate(i);
+	}
+}
+
+//返回索引，-1表示没找到。
+int InVal(string s) {
+	for (int i=0; i<Val.size(); i++) {
+		if (Val[i] == s) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 //过程列表
@@ -78,13 +154,20 @@ string String_2_Int(string line){
     }
     
     //此处，第二个"被检测到
-    Val.push_back(s);
-    n = Val.size();
+    int m = InVal(s);
     
     //存数字索引   
     char buf[10];
-    sprintf(buf,"%d",n-1);
-    str=str+"_VAL"+buf;
+    
+    if (m >= 0 ) {
+      sprintf(buf,"%d",m);
+      str=str+"_VAL"+buf;				
+    } else {
+      Val.push_back(s);
+      n = Val.size();		
+      sprintf(buf,"%d",n-1);
+      str=str+"_VAL"+buf;		
+    }
     
     if (i == (line.length()-1))
       break;
@@ -199,11 +282,11 @@ void Draw_Window(struct Window_Element *w_e) {
 
     SetWindowText(w.hwnd, "aaa");    */
   
-    //发送一个WM_PAINTER消息，绘制子控件。
-    InvalidateRect(w_e->hwnd, NULL, TRUE);
-  
     ShowWindow(w_e->hwnd, 1);
     UpdateWindow(w_e->hwnd);
+		
+		//发送一个WM_PAINTER消息，绘制子控件。
+    //InvalidateRect(w_e->hwnd, NULL, TRUE);
 
     //消息循环
     while(GetMessage(&msg, NULL, 0, 0)) {
@@ -229,10 +312,10 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
     
-	tmp->l = l;
-	tmp->t = t;
-	tmp->r = r;
-	tmp->b = b;
+		tmp->l = l;
+		tmp->t = t;
+		tmp->r = r;
+		tmp->b = b;
   }
   
   //RECT和RECTANGEL的区别是前者只做定位使用，并不绘制；后者会绘制矩形。
@@ -249,14 +332,14 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
     int r = atof(tmp->Property["right"].c_str()) * (pr - pl) + pl;
     int b = atof(tmp->Property["bottom"].c_str()) * (pb - pt) + pt;
 
-	cout << tmp->parent->Name << " parent name .. \n";
+		cout << tmp->parent->Name << " parent name .. \n";
     cout << pl << " "<< pt << " " << pr  << " " << pb <<"  parent ... RECTANGLE\n";
     cout << l << " "<< t  << " " << r  << " " << b <<" local ... RECTANGLE\n";
 
-	tmp->l = l;
-	tmp->t = t;
-	tmp->r = r;
-	tmp->b = b;
+		tmp->l = l;
+		tmp->t = t;
+		tmp->r = r;
+		tmp->b = b;
     
     Rectangle(hdc,l,t,r,b);
     //Draw_Rectangle();
@@ -288,11 +371,17 @@ void Draw_Element(class GUI_Element *tmp, HDC hdc, HWND hwnd) {
     DrawText(hdc, Val[i].c_str(), Val[i].length(), &re, DT_LEFT);
   }
   
+  if (tmp->Name == "LINE") {
+  }
+  
   //链接
   if (tmp->Name == "A") {
     cout<< "A...\n";
   }
   
+	if (tmp->Property["sleep"]!="")
+		Sleep(atoi(tmp->Property["sleep"].c_str()));
+	
   if (tmp->child)
     Draw_Element(tmp->child, hdc, hwnd);
   if (tmp->brother)
@@ -350,22 +439,11 @@ void read_gui(char *gui){
           string f = Get_First(l);
           //不是最后一个单词
           while (f != l) {
-            for (int i=0; i<f.length(); i++) {
-              if (f[i]=='=') {
-                cout << f.substr(i+1, f.length()) << "\n";
-                var[f.substr(0, i)] = f.substr(i+1, f.length());
-                break;
-              }
-            }
+            Evaluate(f);
             l = Skip_Blank(l.substr(f.length()));
             f = Get_First(l);
           }
-          for (int i=0; i<f.length(); i++) {
-            if (f[i]=='=') {
-              cout << f.substr(i+1, f.length()) << "\n";
-              var[f.substr(0, i)] = f.substr(i+1, f.length());
-            }
-          }
+          Evaluate(f);
         }
       }
 
@@ -578,11 +656,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       //取得窗口客户区坐标
       GetClientRect(hWnd, &r);
       
-      //取得移动后，窗体的客户区坐标。
+      //取得移动后，修改窗体的客户区坐标。
       v[i]->head->l = r.left;
       v[i]->head->t = r.top;
       v[i]->head->t = r.right;
       v[i]->head->b = r.bottom;
+			
+      //InvalidateRect(hWnd, NULL, TRUE);
       
       return DefWindowProc(hWnd, message, wParam, lParam);
       
@@ -609,7 +689,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       }
       cout << Val[j] << " is clicked\n";
       
-			class Proc * p; 
+			class Proc * p;
 			p = Find_Proc(Val[j]);
       if (p!=NULL)
 				p->Call();
@@ -626,15 +706,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MBUTTONDBLCLK:
       return 0;
     //设置Edit控件的文本
-		case WM_SETTEXT:
+    case WM_SETTEXT:
       return 0;
-		case WM_TIMER: 
+    case WM_TIMER: 
       //InvalidateRect(hWnd, NULL, TRUE);
       return 0;
-    
-		// WINDOW以外图形元素的绘制
-		case WM_PAINT:
-
+      
+    // WINDOW以外图形元素的绘制
+    case WM_PAINT:
       PAINTSTRUCT pt;
       HDC hdc;
       
@@ -654,15 +733,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
       v[i]->head->r = r.right;
       v[i]->head->b = r.bottom;
 
+			Sleep(atoi(v[i]->head->Property["sleep"].c_str()));
       Draw_Element(v[i]->head->child, hdc, hWnd);
       
       EndPaint(hWnd,&pt);
 			return 0;
     case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-   }
+      PostQuitMessage(0);
+      return 0;
+    default:
+      return DefWindowProc(hWnd, message, wParam, lParam);
+  }
   return 0;
 }
