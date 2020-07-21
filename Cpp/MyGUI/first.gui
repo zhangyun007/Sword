@@ -94,8 +94,6 @@ a=cpp_fun1,12,"hello"@hosta
 ; 调用最后连接的服务器
 a=cpp_fun1,12,"hello"
 
-;关闭gui连接
-#hosta.Close 
 
 
 
@@ -108,8 +106,6 @@ a=cpp_fun1,12,"hello"
 
 cpp_fun2,12,"hello"
 
-;关闭gui连接
-#hostb.Close
 
 end
 

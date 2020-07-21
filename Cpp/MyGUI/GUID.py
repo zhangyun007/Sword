@@ -1,17 +1,34 @@
-from multiprocessing import Pool
+#!/usr/bin/python3
 
-def long_time_task(name):
-    f  = open("test.l", "w")
-    f.write("This is in fun\n")
-    print('Run task %s (%s)...' % (name, os.getpid()))
-    f.close()
-    exit(0)
-    
-# 同时最多10个进程
-p = Pool(10)
+import socket
+import sys
 
-# 产生500个进程
-for i in range(5):
-    p.apply_async(long_time_task, args=(i,))
+# 创建 socket 对象
+serversocket = socket.socket(
+            socket.AF_INET, socket.SOCK_STREAM) 
+
+# 获取本地主机名
+host = socket.gethostname()
+print(host)
+
+port = 9999
+
+# 最好是bind 0.0.0.0,这样127.0.0.1, localhost，以及192.168... 客户都可以连接:
+# serversocket.bind(('0.0.0.0', port))
+
+# bind公网地址会失败？p2p软件怎么做的？
+# serversocket.bind(('36.7.226.209', port))
+
+
+# 设置最大连接数，超过后排队
+serversocket.listen(5)
+
+while True:
+    # accept函数返回一个元组(a ,b)，将a赋给clientsocket, b赋给addr。
+    clientsocket,addr = serversocket.accept()      
+
+    print("Address: %s" % str(addr))
     
-p.close()
+    msg = 'Welcome to Server\n'
+    clientsocket.send(msg.encode('utf-8'))
+    clientsocket.close()

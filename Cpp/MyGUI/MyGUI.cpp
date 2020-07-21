@@ -53,6 +53,47 @@ bool HasChar(string s, char ch) {
   return false;
 }
 
+class Connection {
+    string Host;
+    SOCKET sock;
+    void Connection(string s);
+    void ~Connection();
+    //调用服务器远程函数，得到返回值
+    string RPC(string name, vector<string> args);
+};
+
+//构造函数
+void Connection::Connection(string h) {
+  //初始化DLL
+  WSADATA wsaData;
+  WSAStartup(MAKEWORD(2, 2), &wsaData);
+  //创建套接字
+  SOCKET sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+  //向服务器发起请求
+  sockaddr_in sockAddr;
+  memset(&sockAddr, 0, sizeof(sockAddr));  //每个字节都用0填充
+  sockAddr.sin_family = PF_INET;
+  sockAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  sockAddr.sin_port = htons(1234);
+  connect(sock, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR));
+}
+
+void Connection::~Connection() {
+  //关闭套接字
+  closesocket(sock);
+  //终止使用 DLL
+  WSACleanup();
+}
+
+string Connection::RPC(string name, vector<string> args) {
+  //接收服务器传回的数据
+  char szBuffer[MAXBYTE] = {0};
+  recv(sock, szBuffer, MAXBYTE, NULL);
+  //输出接收到的数据
+  printf("Message form server: %s\n", szBuffer);
+}
+
+
 // 计算S。注意，运算符优先级。
 string Evaluate(string f) {	  
   for (int i=0; i<f.length(); i++) {
@@ -87,13 +128,13 @@ string Evaluate(string f) {
   
   }
   
-  //Close连接
+  //得到远程服务器。
+  string host = Get_Host(f)
   
-  //调用远程服务器函数。
-  
-  //解析函数名和参数
+  //得到函数名和参数
   string n = Get_Fun_Name(f);
   //vector<string> v = Get_Fun_Args(f);
+  
   return "";
 }
 
