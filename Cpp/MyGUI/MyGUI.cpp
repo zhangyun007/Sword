@@ -21,6 +21,7 @@ using namespace std;
 #pragma comment(lib,"ComCtl32.lib")
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "gdi32.lib")
+#pragma comment(lib, "wsock32.lib")
 
 #define IDT_TIMER1 12
 
@@ -39,8 +40,6 @@ bool Is_Fun_Element(string s) {
   return true;
 }
 
-cpp_fun,12,"hello"@hostb
-
 //最近一次连接的远程服务器
 string lasthost = "";
 
@@ -48,7 +47,7 @@ string Get_Host(string s) {
   string tmp;
   for (int i; i<s.length(); i++) {
     if (s[i]=='@') {
-      tmp=substr(i+1);
+      tmp=s.substr(i+1);
       if (tmp == "_VAL") {
        i = atoi(s.substr(i+4).c_str());
         lasthost = Val[i];
@@ -75,12 +74,13 @@ string Get_Fun_Name(string s) {
 //取得函数参数
 vector<string> *Get_Fun_Args(string s) {
   static vector<string> v;
-  for (int i = 0; i < s.length(); i++) {
+  int i;
+  for (i = 0; i < s.length(); i++) {
     if (s[i]==',')
       break;
   }
   
-  for (j=i+1; j<s.length(); j++) {
+  for (int j=i+1; j<s.length(); j++) {
     if (s[j]==',') {
       v.push_back(s.substr(i+1, j));
     }
@@ -98,18 +98,19 @@ bool HasChar(string s, char ch) {
 }
 
 class Connection {
+  public:
     string Host;
     SOCKET sock;
-    void Connection(string s);
-    void ~Connection();
+    Connection(string s);
+    ~Connection();
     //调用服务器远程函数，得到返回值
-    string RPC(string name, vector<string> args);
+    string RPC(string name, vector<string> *args);
 };
 
 vector<class Connection*> vc;
 
 //构造函数
-void Connection::Connection(string h) {
+Connection::Connection(string h) {
   Host = h;
   
   //初始化DLL
@@ -126,14 +127,14 @@ void Connection::Connection(string h) {
   connect(sock, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR));
 }
 
-void Connection::~Connection() {
+Connection::~Connection() {
   //关闭套接字
   closesocket(sock);
   //终止使用 DLL
   WSACleanup();
 }
 
-string Connection::RPC(string name, vector<string> args) {
+string Connection::RPC(string name, vector<string> *args) {
   //接收服务器传回的数据
   char szBuffer[MAXBYTE] = {0};
   recv(sock, szBuffer, MAXBYTE, NULL);
@@ -178,14 +179,14 @@ string Evaluate(string f) {
   }
   
   //得到远程服务器。
-  string host = Get_Host(f)
+  string host = Get_Host(f);
   
   //得到函数名和参数
   string n = Get_Fun_Name(f);
   vector<string> *v = Get_Fun_Args(f);
   
   for (auto i:vc) {
-    if (i->host==host) {
+    if (i->Host==host) {
       return i->RPC(n, v);
     } else {
       class Connection *con = new Connection(host);
