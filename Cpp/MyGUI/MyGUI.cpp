@@ -39,9 +39,53 @@ bool Is_Fun_Element(string s) {
   return true;
 }
 
+cpp_fun,12,"hello"@hostb
+
+//最近一次连接的远程服务器
+string lasthost = "";
+
+string Get_Host(string s) {
+  string tmp;
+  for (int i; i<s.length(); i++) {
+    if (s[i]=='@') {
+      tmp=substr(i+1);
+      if (tmp == "_VAL") {
+       i = atoi(s.substr(i+4).c_str());
+        lasthost = Val[i];
+        return lasthost;
+      } else {
+        lasthost = var[tmp];
+        return lasthost;
+      }
+    }
+  }
+  return lasthost;
+}
+
 //取得函数名
 string Get_Fun_Name(string s) {
-  return "";
+  for (int i = 0; i < s.length(); i++) {
+    if (s[i] == ',') {
+      return s.substr(0, i);
+    }
+  }
+  return s;
+}
+
+//取得函数参数
+vector<string> *Get_Fun_Args(string s) {
+  static vector<string> v;
+  for (int i = 0; i < s.length(); i++) {
+    if (s[i]==',')
+      break;
+  }
+  
+  for (j=i+1; j<s.length(); j++) {
+    if (s[j]==',') {
+      v.push_back(s.substr(i+1, j));
+    }
+  }
+  return &v;
 }
 
 //检测s是否包含ch
@@ -62,8 +106,12 @@ class Connection {
     string RPC(string name, vector<string> args);
 };
 
+vector<class Connection*> vc;
+
 //构造函数
 void Connection::Connection(string h) {
+  Host = h;
+  
   //初始化DLL
   WSADATA wsaData;
   WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -91,6 +139,7 @@ string Connection::RPC(string name, vector<string> args) {
   recv(sock, szBuffer, MAXBYTE, NULL);
   //输出接收到的数据
   printf("Message form server: %s\n", szBuffer);
+  return szBuffer;
 }
 
 
@@ -133,9 +182,17 @@ string Evaluate(string f) {
   
   //得到函数名和参数
   string n = Get_Fun_Name(f);
-  //vector<string> v = Get_Fun_Args(f);
+  vector<string> *v = Get_Fun_Args(f);
   
-  return "";
+  for (auto i:vc) {
+    if (i->host==host) {
+      return i->RPC(n, v);
+    } else {
+      class Connection *con = new Connection(host);
+      vc.push_back(con);
+      return con->RPC(n, v);
+    }
+  }
 }
 
 class Proc {
