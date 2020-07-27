@@ -86,30 +86,23 @@ end
 
 @f1click
 
-hosta="gui://localhost"
-
+hosta="localhost"
 ; 指定服务器
 a=cpp_fun1,12,"hello"@hosta
-
 ; 调用最后连接的服务器
-a=cpp_fun1,12,"hello"
-
-
-
-
-hostb="gui://163.com"
-;换一个服务器调用函数
-a=cpp_fun,12,"hello"@hostb
-
-;这里会使用163.com作为服务器
-a=cpp_fun1,12,"hello"
-
+a=cpp_fun1,45,"hello"
 cpp_fun2,12,"hello"
-
 
 end
 
 
 @f2click
+
+hostb="163.com"
+;换一个服务器调用函数
+a=cpp_fun,12,"hello"@hostb
+
+;这里会使用163.com作为服务器
+a=cpp_fun1,12,"hello"
 
 end

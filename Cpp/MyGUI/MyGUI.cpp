@@ -45,7 +45,7 @@ string lasthost = "";
 
 string Get_Host(string s) {
   string tmp;
-  for (int i; i<s.length(); i++) {
+  for (int i=0; i<s.length(); i++) {
     if (s[i]=='@') {
       tmp=s.substr(i+1);
       if (tmp == "_VAL") {
@@ -62,30 +62,13 @@ string Get_Host(string s) {
 }
 
 //取得函数名
-string Get_Fun_Name(string s) {
+string Get_Fun_Call(string s) {
   for (int i = 0; i < s.length(); i++) {
-    if (s[i] == ',') {
+    if (s[i] == '@') {
       return s.substr(0, i);
     }
   }
   return s;
-}
-
-//取得函数参数
-vector<string> *Get_Fun_Args(string s) {
-  static vector<string> v;
-  int i;
-  for (i = 0; i < s.length(); i++) {
-    if (s[i]==',')
-      break;
-  }
-  
-  for (int j=i+1; j<s.length(); j++) {
-    if (s[j]==',') {
-      v.push_back(s.substr(i+1, j));
-    }
-  }
-  return &v;
 }
 
 //检测s是否包含ch
@@ -104,7 +87,7 @@ class Connection {
     Connection(string s);
     ~Connection();
     //调用服务器远程函数，得到返回值
-    string RPC(string name, vector<string> *args);
+    string RPC(string s);
 };
 
 vector<class Connection*> vc;
@@ -123,7 +106,7 @@ Connection::Connection(string h) {
   memset(&sockAddr, 0, sizeof(sockAddr));  //每个字节都用0填充
   sockAddr.sin_family = PF_INET;
   sockAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-  sockAddr.sin_port = htons(1234);
+  sockAddr.sin_port = htons(9999);
   connect(sock, (SOCKADDR*)&sockAddr, sizeof(SOCKADDR));
 }
 
@@ -134,10 +117,11 @@ Connection::~Connection() {
   WSACleanup();
 }
 
-string Connection::RPC(string name, vector<string> *args) {
+string Connection::RPC(string s) {
   //接收服务器传回的数据
-  char szBuffer[MAXBYTE] = {0};
-  recv(sock, szBuffer, MAXBYTE, NULL);
+  char szBuffer[64] = {0};
+  send(sock, s.c_str(), s.length(), 0);
+  recv(sock, szBuffer, 64, NULL);
   //输出接收到的数据
   printf("Message form server: %s\n", szBuffer);
   return szBuffer;
@@ -182,18 +166,19 @@ string Evaluate(string f) {
   string host = Get_Host(f);
   
   //得到函数名和参数
-  string n = Get_Fun_Name(f);
-  vector<string> *v = Get_Fun_Args(f);
+  string n = Get_Fun_Call(f);
   
   for (auto i:vc) {
     if (i->Host==host) {
-      return i->RPC(n, v);
+      return i->RPC(n);
     } else {
       class Connection *con = new Connection(host);
       vc.push_back(con);
-      return con->RPC(n, v);
+      return con->RPC(n);
     }
   }
+  
+  return "";
 }
 
 class Proc {
