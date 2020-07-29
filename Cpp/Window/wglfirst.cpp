@@ -1,11 +1,10 @@
 ﻿#include <iostream>
 #include <Windows.h>
-#include<gl/gl.h>
+#include <gl/gl.h>
 
 #pragma comment(lib,"User32.lib")
 #pragma comment(lib,"gdi32.lib")
 #pragma comment(lib, "OpenGL32.lib")
-
 
 LRESULT CALLBACK WndProc(HWND hWnd,//定义窗口回调函数，没啥解释的
 
