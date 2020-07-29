@@ -71,11 +71,13 @@ void Render()
 		return;
 	}
  
-	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(30, 60, 90), 1.0f, 0);
+	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 0), 1.0f, 0);
  
 	if (SUCCEEDED(g_pDevice->BeginScene()))
 	{
-		g_pDevice->EndScene();
+		// render ...
+		
+		g_pDevice->EndScene();		
 	}
  
 	g_pDevice->Present(NULL, NULL, NULL, NULL);

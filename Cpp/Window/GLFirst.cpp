@@ -1,6 +1,8 @@
 #include <GLFW/glfw3.h>
 
 #pragma comment(lib, "glfw3dll.lib")
+#pragma comment(lib, "glfw3.lib")
+#pragma comment(lib, "OpenGL32.lib")
 
 int main(void)
 {
