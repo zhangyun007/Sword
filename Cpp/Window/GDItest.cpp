@@ -1,164 +1,201 @@
-#include <windows.h>         // include all the windows headers
-#include <windowsx.h>       // include useful macros
-#include <mmsystem.h>    // very important and include WINMM.LIB too!
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <windows.h>
+#include <gdiplus.h>
 
+//使用CString
+//#include <atlstr.h>
+
+#pragma comment(lib,"User32.lib")
 #pragma comment(lib,"gdi32.lib")
-#pragma comment(lib,"user32.lib")
+#pragma comment(lib, "GdiPlus.lib")
 
-// DEFINES ////////////////////////////////////////////////
+using namespace Gdiplus;
 
-// defines for windows 
-#define WINDOW_CLASS_NAME "WINCLASS1"
-
-// GLOBALS ////////////////////////////////////////////////
-HWND      main_window_handle = NULL; // globally track main window
-HINSTANCE hinstance_app      = NULL; // globally track hinstance
-
-// FUNCTIONS //////////////////////////////////////////////
-LRESULT CALLBACK WindowProc(HWND hwnd, 
-                            UINT msg, 
-                            WPARAM wparam, 
-                            LPARAM lparam)
-{
-// this is the main message handler of the system
-PAINTSTRUCT        ps;        // used in WM_PAINT
-HDC                hdc;    // handle to a device context
-
-// what is the message 
-switch(msg)
-    {    
-    case WM_CREATE: 
-        {
-        // do initialization stuff here
-        // return success
-        return(0);
-        } break;
+//按钮ID
+#define IDB_ONE     3301  
+#define IDB_TWO     3302  
+#define IDB_THREE   3303  
+ 
+//函数声明
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);  
   
+LPCSTR WINDOWS_CLASS = "MyWindowClass";    //类名  
+LPCSTR WINDOWS_TITLE = "测试按钮";   //窗口标题  
 
-    case WM_PAINT: 
-        {
-        // simply validate the window
-        hdc = BeginPaint(hwnd,&ps);     
-        // you would do all your painting here
-        EndPaint(hwnd,&ps);
+//CString str("abcd");
 
-        // return success
-        return(0);
-           } break;
+WNDCLASSEX wc = { };  
 
-    case WM_DESTROY: 
-        {
-
-        // kill the application, this sends a WM_QUIT message 
-        PostQuitMessage(0);
-
-        // return success
-        return(0);
-        } break;
-
-    default:break;
-
-    } // end switch
-
-// process any messages that we didn't take care of 
-return (DefWindowProc(hwnd, msg, wparam, lparam));
-
-} // end WinProc
-
-// WINMAIN ////////////////////////////////////////////////
-int WINAPI WinMain(    HINSTANCE hinstance,
-                    HINSTANCE hprevinstance,
-                    LPSTR lpcmdline,
-                    int ncmdshow)
+void draw_image(HWND hWnd)
 {
+    HDC hdc;
+    int width,height;
 
-WNDCLASSEX winclass; // this will hold the class we create
-HWND       hwnd;     // generic window handle
-MSG           msg;         // generic message
+	/*
+    if(image.GetLastStatus() != Status::Ok){
+        MessageBox(hWnd,"图片无效!",NULL,MB_OK);
+        return;
+    }*/
+	
+	Image image(L"d1.bmp");
+    
+    //取得宽度和高度
+    width = image.GetWidth();
+    height = image.GetHeight();
 
-// first fill in the window class stucture
-winclass.cbSize         = sizeof(WNDCLASSEX);
-winclass.style            = CS_DBLCLKS | CS_OWNDC | 
-                          CS_HREDRAW | CS_VREDRAW;
-winclass.lpfnWndProc    = WindowProc;
-winclass.cbClsExtra        = 0;
-winclass.cbWndExtra        = 0;
-winclass.hInstance        = hinstance;
-//winclass.hIcon            = LoadIcon(hinstance, MAKEINTRESOURCE(ICON_GL));
-winclass.hCursor        = LoadCursor(NULL, IDC_ARROW); 
-winclass.hbrBackground    = (HBRUSH)GetStockObject(BLACK_BRUSH);
-winclass.lpszMenuName    = NULL;
-winclass.lpszClassName    = WINDOW_CLASS_NAME;
-//winclass.hIconSm        = LoadIcon(hinstance, MAKEINTRESOURCE(ICON_GL));
+    hdc = GetDC(hWnd);
 
-// save hinstance in global
-hinstance_app = hinstance;
+    //绘图
+    Graphics graphics(hdc);
+	graphics.DrawImage(&image,RectF(0,0,width,height));
+    //graphics.DrawImage(&image,0,0,width,height);
 
-// register the window class
-if (!RegisterClassEx(&winclass))
-    return(0);
+    ReleaseDC(hWnd,hdc);
 
-// create the window
-if (!(hwnd = CreateWindowEx(NULL,                  // extended style
-                            WINDOW_CLASS_NAME,     // class
-                            "GDI Text Printing Demo", // title
-                            WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-                             0,0,      // initial x,y
-                            800,800,  // initial width, height
-                            NULL,      // handle to parent 
-                            NULL,      // handle to menu
-                            hinstance,// instance of this application
-                            NULL)))    // extra creation parms
-return(0);
+    return;
+}
 
-// save main window handle
-main_window_handle = hwnd;
-
-// get the dc and hold it
-HDC hdc = GetDC(hwnd);
-
-// enter main event loop, but this time we use PeekMessage()
-// instead of GetMessage() to retrieve messages
-while(TRUE)
+ 
+int WINAPI wWinMain(HINSTANCE hThisApp,  
+    HINSTANCE hPrevApp,  
+    LPWSTR lpCmd,  
+    int nShow)  
+{  
+    wc.cbSize = sizeof(WNDCLASSEX);  
+    wc.hbrBackground = (HBRUSH)COLOR_WINDOW;  
+    wc.hInstance = hThisApp;  
+    wc.lpfnWndProc = (WNDPROC)WindowProc;  
+    wc.lpszClassName = WINDOWS_CLASS;  
+    wc.style = CS_HREDRAW | CS_VREDRAW;  
+	//wc.style = WS_POPUP | WS_BORDER | WS_THICKFRAME;
+    RegisterClassEx(&wc);  
+    
+    
+    HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE | WS_HSCROLL,  
+                    WINDOWS_CLASS,  
+                    WINDOWS_TITLE,  
+                    WS_OVERLAPPEDWINDOW,  
+                    20,  
+                    25,  
+                    400,  
+                    300,  
+                    NULL,  
+                    NULL,  
+                    hThisApp,  
+                    NULL);  
+    if (hwnd == NULL)  
     {
-    // test if there is a message in queue, if so get it
-    if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))
-       { 
-       // test if this is a quit
-       if (msg.message == WM_QUIT)
-           break;
+        return -1;
+    }
+          
+	ShowWindow(hwnd, nShow);  
+    UpdateWindow(hwnd);  
+
+	draw_image(hwnd);
+	
+    MSG msg;  
+	HDC hdc = GetDC(hwnd);
+	
+	// enter main event loop, but this time we use PeekMessage()
+	// instead of GetMessage() to retrieve messages
+	while(TRUE) {
+		// test if there is a message in queue, if so get it
+		if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) { 
+			// test if this is a quit
+			if (msg.message == WM_QUIT)
+				break;
+			
+			// translate any accelerator keys
+			TranslateMessage(&msg);
+			
+			// send the message to the window proc
+			DispatchMessage(&msg);
+		} // end if
+		
+		// main game processing goes here
+		
+		// set the foreground color to random
+		SetTextColor(hdc, RGB(rand()%256,rand()%256,rand()%256));
+	
+		// set the background color to black
+		SetBkColor(hdc, RGB(0,0,0));
+	
+		// finally set the transparency mode to transparent
+		SetBkMode(hdc, TRANSPARENT);
+	
+		// draw some text at a random location
+		TextOut(hdc,rand()%800,rand()%800, "Green Light", strlen("Green Light"));
+	
+		Sleep(10);
+		
+	}
+	
+	ReleaseDC(hwnd,hdc);
+	
     
-       // translate any accelerator keys
-       TranslateMessage(&msg);
+    return 0;  
+}  
+  
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)  
+{  
+    switch(msg) {  
+	
+    case WM_DESTROY:  
+        PostQuitMessage(0);  
+        return 0;  
+ 
+    case WM_CREATE: 
+		{  
+			//MessageBox(hwnd, "ФЫВФЫ", "提示", MB_OK | MB_ICONINFORMATION);  
+			
+            //创建三个按钮  
+            HWND mymdiwnd = CreateWindow("MDICLIENT", "MDICLIENT", WS_VISIBLE | WS_CHILD,  
+                35, 10, 200, 100, hwnd, (HMENU)IDB_ONE, NULL, NULL);  
 
-       // send the message to the window proc
-       DispatchMessage(&msg);
-       } // end if
+			HDC hdc = GetDC(mymdiwnd);
+			
+			// 创建红色1像素宽度的实线画笔
+			HPEN hpen1 = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+			HPEN hpen_old = (HPEN)SelectObject(hdc, hpen1);
+			
+			Rectangle(hdc, 40, 40, 50, 50);
+				
+                
+            CreateWindow("LISTBOX", "LISTBOX", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+                35, 150, 160, 60, hwnd, (HMENU)IDB_TWO, NULL, NULL); 
+                 
+            CreateWindow("Button", "Button", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,  
+                35, 250, 160, 60, hwnd, (HMENU)IDB_THREE, NULL, NULL);  
+		}  
+		return 0; 
+         
+    case WM_COMMAND:  
+        {  
+            switch(LOWORD(wParam))  
+            {  
+            case IDB_ONE:  
+                //MessageBox(hwnd, L"您点击了第一个按钮。", L"提示", MB_OK | MB_ICONINFORMATION);  
+                SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"First");  
+                break;  
+                
+            case IDB_TWO:  
+                //MessageBox(hwnd, L"您点击了第二个按钮。", L"提示", MB_OK | MB_ICONINFORMATION);  
+                SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"Second");  
+                break;  
+                
+            case IDB_THREE:  
+                //MessageBox(hwnd, L"您点击了第三个按钮。", L"提示", MB_OK | MB_ICONINFORMATION);  
+                SendMessage((HWND)lParam, WM_SETTEXT, (WPARAM)NULL, (LPARAM)"第三个按鈕已点击");  
+                break;  
+                
+            default:  
+                break;  
+            }  
+        }  
+        return 0;  
+        
+    default:  
+        return DefWindowProc(hwnd,msg,wParam,lParam);  
+    }  
     
-    // main game processing goes here
-    
-    // set the foreground color to random
-    SetTextColor(hdc, RGB(rand()%256,rand()%256,rand()%256));
-
-    // set the background color to black
-    SetBkColor(hdc, RGB(0,0,0));
-
-    // finally set the transparency mode to transparent
-    SetBkMode(hdc, TRANSPARENT);
-
-    // draw some text at a random location
-    TextOut(hdc,rand()%800,rand()%800, "Green Light", strlen("Green Light"));
-
-    Sleep(10);
-    
-    } // end while
-
-// release the dc
-ReleaseDC(hwnd,hdc);
-
-return(msg.wParam);
-
-} 
+    return 0;  
+}  
