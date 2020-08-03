@@ -1,4 +1,4 @@
-#include <windows.h>
+﻿#include <windows.h>
 #include <gdiplus.h>
 
 //使用CString
@@ -25,35 +25,18 @@ LPCSTR WINDOWS_TITLE = "测试按钮";   //窗口标题
 
 WNDCLASSEX wc = { };  
 
-void draw_image(HWND hWnd)
+void DrawBitmap(char *filename, int x, int y, HDC device)
 {
-    HDC hdc;
-    int width,height;
-
-	/*
-    if(image.GetLastStatus() != Status::Ok){
-        MessageBox(hWnd,"图片无效!",NULL,MB_OK);
-        return;
-    }*/
+	HBITMAP image = (HBITMAP)LoadImage(0, filename, IMAGE_BITMAP, 0 ,0, LR_LOADFROMFILE);
+	BITMAP bm;
 	
-	Image image(L"d1.bmp");
-    
-    //取得宽度和高度
-    width = image.GetWidth();
-    height = image.GetHeight();
-
-    hdc = GetDC(hWnd);
-
-    //绘图
-    Graphics graphics(hdc);
-	graphics.DrawImage(&image,RectF(0,0,width,height));
-    //graphics.DrawImage(&image,0,0,width,height);
-
-    ReleaseDC(hWnd,hdc);
-
-    return;
+	GetObject(image, sizeof(BITMAP), &bm);
+	HDC hdcimage = CreateCompatibleDC(device);
+	SelectObject(hdcimage, image);
+	BitBlt(device, x, y, bm.bmWidth, bm.bmHeight, hdcimage, 0, 0, SRCCOPY);
+	DeleteDC(hdcimage);
+	DeleteObject((HBITMAP)image);
 }
-
  
 int WINAPI wWinMain(HINSTANCE hThisApp,  
     HINSTANCE hPrevApp,  
@@ -89,11 +72,10 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
           
 	ShowWindow(hwnd, nShow);  
     UpdateWindow(hwnd);  
-
-	draw_image(hwnd);
 	
     MSG msg;  
 	HDC hdc = GetDC(hwnd);
+	DrawBitmap("d1.bmp", 20, 40, hdc);
 	
 	// enter main event loop, but this time we use PeekMessage()
 	// instead of GetMessage() to retrieve messages

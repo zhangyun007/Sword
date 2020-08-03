@@ -82,9 +82,9 @@ int main(int argc,char **argv)
 
         0,      //window position, y
 
-        0,  //height
+        400,  //height
 
-        0, //width
+        400, //width
 
         NULL,          // Parent window
 
@@ -95,6 +95,16 @@ int main(int argc,char **argv)
         NULL);         // pass this toWM_CREATE
 
 	//第 3）步：获取HDC，并随意设置一个空像素格式
+	ShowWindow(hWnd, SW_SHOWNORMAL);
+    UpdateWindow(hWnd);
+
+    MSG msg;  
+
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 
     hDC = GetDC(hWnd); 
 
@@ -138,7 +148,8 @@ int main(int argc,char **argv)
 
     wglMakeCurrent(NULL,NULL); 
 
-    wglDeleteContext(hRC); 
+
+    wglDeleteContext(hRC);
 
     ReleaseDC(hWnd, hDC); 
 

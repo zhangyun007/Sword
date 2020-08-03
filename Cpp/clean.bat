@@ -14,6 +14,7 @@ cd ..
 
 cd STL
 del *.exe *.obj
+
 cd "Associate Containers"
 del *.exe *.obj
 cd ..
