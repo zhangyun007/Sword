@@ -29,9 +29,7 @@
     <script>
         var list = document.querySelectorAll(".options a"); //先获取所有标签
         console.log(list); //类数组
-        // list.onclick = function() { //一组元素不能直接操作，只能通过下标操作，哪怕这组元素只有一个
-
-        // }
+       
         for (var i = 0; i < list.length; i++) {
             list[i].onclick = function() {
 
@@ -48,7 +46,8 @@
 
                 //第三种方法
                 for (var i = 0; i < list.length; i++) {
-                    if (this == list[i]) { //this 是当前操作的option,如果list[i]和this相等，说明list[i]就是我们当前操作的这一项
+					//this 是当前点击的option, 如果list[i]和this相等，说明list[i]就是用户点击的那一项
+                    if (this == list[i]) { 
                         this.classList.add("checked");
                     } else {
                         list[i].classList.remove("checked");
