@@ -1,14 +1,21 @@
 ﻿#include <windows.h>
 #include <gdiplus.h>
+#include <gl/gl.h>
+#include <cmath>
 
 //使用CString
 //#include <atlstr.h>
 
+#pragma comment(lib, "gdiplus.lib") 
+#pragma comment(lib, "gdi32.lib")
 #pragma comment(lib,"User32.lib")
-#pragma comment(lib,"gdi32.lib")
-#pragma comment(lib, "GdiPlus.lib")
+#pragma comment(lib, "OpenGL32.lib")
 
 using namespace Gdiplus;
+
+#define NUM 200 //绘制圆时用的顶点数
+
+GLfloat r=1.0f; //圆半径
 
 //按钮ID
 #define IDB_ONE     3301  
@@ -37,7 +44,40 @@ void DrawBitmap(char *filename, int x, int y, HDC device)
 	DeleteDC(hdcimage);
 	DeleteObject((HBITMAP)image);
 }
- 
+
+void DrawSceneGL(){
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //清除颜色及深度缓存
+	glLoadIdentity();
+	glColor3f(1.0f,0.0f,0.0f); //设置画笔颜色
+	glBegin(GL_TRIANGLES); //画三角形
+	glVertex3f(0.0f,1.0f,0.0f);
+	glVertex3f(-1.0f,-1.0f,0.0f);
+	glVertex3f(1.0f,-1.0f,0.0f);
+	glEnd();
+	glTranslatef(-1.5f,1.0f,-7.0f); //移动坐标
+	glTranslatef(3.0f,0.0f,0.0f);
+	glColor3f(0.0f,0.0f,1.0f); //设置画笔为蓝色
+	glBegin(GL_QUADS); //画四边形
+	glVertex3f(-1.0f,1.0f,0.0f);
+	glVertex3f(-1.0f,-1.0f,0.0f);
+	glVertex3f(1.0f,-1.0f,0.0f);
+	glVertex3f(1.0f,1.0f,0.0f);
+	glEnd();
+	glColor3f(1.0f,1.0f,0.0f);
+	glTranslatef(-1.5f,-2.5f,0.0f);
+	glLineWidth(2.0f); //画黄色线
+	glBegin(GL_LINES);
+	glVertex2f(-1.0f,0.0f);
+	glVertex2f(-1.0f,0.0f);
+	glEnd();
+	glBegin(GL_LINE_LOOP); //画圆
+	for(int i=0;i<NUM;i++) {
+		glVertex3f(r*float(sin(2*3.14*i/NUM)),r*float(cos(2*3.14*i/NUM)),0.0);
+	}
+	glEnd();
+	glFlush();
+}
+
 int WINAPI wWinMain(HINSTANCE hThisApp,  
     HINSTANCE hPrevApp,  
     LPWSTR lpCmd,  
@@ -52,15 +92,14 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
 	//wc.style = WS_POPUP | WS_BORDER | WS_THICKFRAME;
     RegisterClassEx(&wc);  
     
-    
     HWND hwnd = CreateWindowEx(WS_EX_WINDOWEDGE | WS_HSCROLL,  
                     WINDOWS_CLASS,  
                     WINDOWS_TITLE,  
                     WS_OVERLAPPEDWINDOW,  
                     20,  
                     25,  
-                    400,  
-                    300,  
+                    800,  
+                    600,  
                     NULL,  
                     NULL,  
                     hThisApp,  
@@ -76,6 +115,21 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
     MSG msg;  
 	HDC hdc = GetDC(hwnd);
 	DrawBitmap("d1.bmp", 20, 40, hdc);
+	
+	HGLRC   hglrc;
+	// create a rendering context
+	hglrc = wglCreateContext (hdc);
+	
+	// make it the calling thread's current rendering context
+	wglMakeCurrent(hdc, hglrc);
+	
+	DrawSceneGL();
+	
+	// make the rendering context not current
+	wglMakeCurrent (NULL, NULL) ;
+	
+	// delete the rendering context		
+	wglDeleteContext (hglrc);
 	
 	// enter main event loop, but this time we use PeekMessage()
 	// instead of GetMessage() to retrieve messages
@@ -113,7 +167,6 @@ int WINAPI wWinMain(HINSTANCE hThisApp,
 	
 	ReleaseDC(hwnd,hdc);
 	
-    
     return 0;  
 }  
   
