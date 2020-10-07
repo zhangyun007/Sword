@@ -1,8 +1,4 @@
-ToBeDone：
-
-1. Python实现Scheme解释器
-2. C++ Easy GUI库，使用Json格式为UI排版
-
+ToBeDone：C++ Easy GUI库
 
 git for windows镜像下载：
 https://github.com/waylau/git-for-win
@@ -32,12 +28,10 @@ notepad++编辑器：https://notepad-plus-plus.org/
 
 目录结构
 
-JS			Vue框架
+JS			LayUI库
 Python3		数据可视化、网站框架(Tornado, Flask)，使用stable版本：Python3.6.8。
 Php			Wordpress，Drupal
 Fly/		C++/STL程序，用visual studio c++(cl.exe)编译
-ErLang		用于设计并发服务器程序，函数式程序设计。
-
 
 C:\Windows\System32\drivers\etc\hosts文件，修改后能连上大部分国外网站：
 https://raw.githubusercontent.com/racaljk/hosts/master/hosts
