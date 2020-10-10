@@ -19,6 +19,7 @@ git add *
 git commit -a
 git push
 
+创建分支
 git branch new
 git checkout new
 
